@@ -1,0 +1,1658 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Honzíkovic Cesta — Jan Kohoutek</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Jost:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    @font-face {
+      font-family: 'Kohymaaa';
+      src: url('Kohymaaa-Regular.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+      font-display: swap;
+    }
+  </style>
+  <script src="https://cdn.amcharts.com/lib/5/index.js"></script>
+  <script src="https://cdn.amcharts.com/lib/5/map.js"></script>
+  <script src="https://cdn.amcharts.com/lib/5/geodata/worldLow.js"></script>
+  <script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
+  <style>
+    :root {
+      --solar:   #F5C518;
+      --meadow:  #2A9D8F;
+      --fuchsia: #EE3C95;
+      --sage:    #A8C4BC;
+      --cream:   #EDE8DC;
+      --night:   #264040;
+      --dust:    #8A9E9B;
+      --earth:   #6B5B4F;
+    }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+    body { font-family: 'Jost', sans-serif; background: var(--cream); color: var(--night); line-height: 1.7; overflow-x: hidden; }
+
+    /* ─── NAVIGACE ─── */
+    #navbar {
+      position: fixed; top: 0; left: 1.5rem; right: 1.5rem; z-index: 1000;
+      display: flex; align-items: center; justify-content: flex-start; gap: 3rem;
+      padding: 0 2rem; height: 64px;
+      background: #F5C518;
+      border-radius: 1.5rem;
+      box-sizing: border-box;
+    }
+    .nav-logo { display: block; text-decoration: none; flex-shrink: 0; line-height: 1; }
+    .nav-links {
+      display: flex; align-items: center; gap: 1.5rem;
+      list-style: none; flex-wrap: nowrap;
+      position: absolute; left: 50%; transform: translateX(-50%);
+    }
+    .nav-links a {
+      color: #404040; text-decoration: none; font-size: .82rem;
+      font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+      white-space: nowrap; transition: opacity .2s;
+    }
+    .nav-links a:hover { opacity: .6; }
+    .nav-cta {
+      background: #264040; color: #F5C518 !important;
+      padding: .4rem 1.1rem; border-radius: 100px; font-weight: 800 !important;
+    }
+    .nav-cta:hover { opacity: .85; }
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; flex-shrink: 0; }
+    .hamburger span { width: 22px; height: 2px; background: #264040; border-radius: 2px; }
+
+    /* ─── HERO ─── */
+    #hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      justify-content: flex-start; align-items: flex-start;
+      text-align: left; padding: 7.5rem 2rem 8rem 2rem;
+      position: relative; overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute; inset: 0;
+      background: url('jan.jpg') 72% 15% / cover no-repeat;
+      transform: scale(1.04);
+      animation: herozoom 10s ease-in-out infinite alternate;
+      transition: opacity .8s ease;
+    }
+    @keyframes herozoom {
+      from { transform: scale(1.04); }
+      to   { transform: scale(1.10) translate(1%, -1%); }
+    }
+    #hero::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(
+        to right,
+        rgba(15,28,28,.88) 0%,
+        rgba(15,28,28,.65) 45%,
+        rgba(15,28,28,.10) 100%
+      );
+    }
+    .hero-badge {
+      position: relative; z-index: 1;
+      font-size: .65rem; font-weight: 700; letter-spacing: 4px; text-transform: uppercase;
+      color: var(--solar); border: 1px solid rgba(245,197,24,.3);
+      padding: .45rem 1.5rem; border-radius: 100px; margin-bottom: 2rem;
+    }
+    .hero-title {
+      position: relative; z-index: 1;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(4rem, 13vw, 10rem);
+      line-height: .9; letter-spacing: 4px; color: #fff; margin-bottom: 1.5rem;
+    }
+    .hero-title .solar { color: var(--solar); }
+    .hero-tagline {
+      position: relative; z-index: 1;
+      font-family: 'Kohymaaa', cursive;
+      font-size: clamp(2.8rem, 6vw, 4.4rem);
+      color: var(--sage); margin-top: auto; margin-bottom: 1rem;
+    }
+    .hero-dots { position: relative; z-index: 1; display: flex; gap: .6rem; margin-bottom: 3rem; }
+    .hero-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .hero-ctas { position: relative; z-index: 1; display: flex; gap: 1rem; flex-wrap: wrap; justify-content: flex-start; margin-top: 0; }
+    .btn {
+      display: inline-flex; align-items: center; gap: .5rem;
+      padding: .85rem 2rem; border-radius: 100px;
+      font-weight: 700; font-size: .9rem; letter-spacing: .5px;
+      text-decoration: none; transition: transform .2s, box-shadow .2s;
+      cursor: pointer; border: none;
+    }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,.25); }
+    .btn-solar { background: var(--solar); color: var(--night); }
+    .btn-outline { background: transparent; color: #fff; border: 2px solid rgba(255,255,255,.3); }
+    .btn-outline:hover { border-color: var(--solar); color: var(--solar); }
+    .scroll-hint {
+      position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+      z-index: 1; display: flex; flex-direction: column; align-items: center; gap: .5rem;
+      color: rgba(255,255,255,.3); font-size: .65rem; letter-spacing: 3px; text-transform: uppercase;
+    }
+    .scroll-arrow { width: 20px; height: 20px; border-right: 2px solid rgba(255,255,255,.3); border-bottom: 2px solid rgba(255,255,255,.3); transform: rotate(45deg); animation: bounce .9s infinite alternate; }
+    @keyframes bounce { from { transform: rotate(45deg) translateY(-3px); } to { transform: rotate(45deg) translateY(3px); } }
+
+    /* ─── SEKCE — obecné ─── */
+    .section { padding: 6rem 2rem; scroll-margin-top: 80px; }
+    .container { max-width: 1100px; margin: 0 auto; }
+    .section-label {
+      font-size: .65rem; font-weight: 700; letter-spacing: 4px;
+      text-transform: uppercase; color: var(--solar); margin-bottom: .6rem;
+    }
+    .section-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.2rem, 5vw, 4rem);
+      line-height: 1; letter-spacing: 1px; margin-bottom: 1rem;
+    }
+    .divider { width: 50px; height: 3px; background: var(--solar); border-radius: 2px; margin: 1rem 0 1.8rem; }
+    .section-dark { background: var(--night); color: #fff; }
+    .section-dark .section-label { color: var(--solar); }
+    .section-dark .body-text { color: var(--sage); }
+    .section-solar { background: var(--solar); color: var(--night); }
+    .section-solar .section-label { color: var(--night); opacity: .5; }
+    .section-solar .divider { background: var(--night); }
+    .body-text { font-size: 1rem; line-height: 1.8; color: var(--earth); max-width: 640px; }
+
+    /* ─── O JANOVI ─── */
+    #o-janovi { background: var(--cream); }
+    .bio-gallery {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 3rem;
+    }
+    .bio-gallery-item {
+      aspect-ratio: 1 / 1;
+      border-radius: 16px;
+      overflow: hidden;
+      background: var(--night);
+    }
+    .bio-gallery-item img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform .4s ease;
+    }
+    .bio-gallery-item:hover img { transform: scale(1.05); }
+
+    /* ─── O JANOVI TEASER ─── */
+    .o-teaser {
+      display: grid;
+      grid-template-columns: 340px 1fr;
+      gap: 4rem;
+      align-items: center;
+    }
+    .o-teaser-photo {
+      border-radius: 20px;
+      overflow: hidden;
+      aspect-ratio: 3/4;
+      background: var(--night);
+    }
+    .o-teaser-photo img {
+      width: 100%; height: 100%;
+      object-fit: cover; object-position: center top;
+      display: block;
+    }
+    @media (max-width: 860px) {
+      .o-teaser { grid-template-columns: 1fr; gap: 2rem; }
+      .o-teaser-photo { aspect-ratio: 4/3; max-width: 100%; }
+    }
+
+    /* ─── HERO AVATAR ─── */
+    .hero-avatar-wrap {
+      position: relative; z-index: 1;
+      margin-bottom: 2.5rem;
+    }
+    .hero-avatar {
+      width: 96px; height: 96px;
+      border-radius: 50%;
+      object-fit: cover; object-position: center top;
+      border: 3px solid var(--solar);
+      box-shadow: 0 0 0 7px rgba(245,197,24,.12), 0 0 28px rgba(245,197,24,.18);
+      display: block;
+    }
+    .bio-cards {
+      display: flex;
+      flex-wrap: nowrap;
+      gap: .75rem; margin-top: 2rem;
+    }
+    .bio-card { flex: 0 0 140px; }
+    .bio-card {
+      aspect-ratio: 1;
+      display: flex; flex-direction: column;
+      justify-content: center; align-items: center; text-align: center;
+      border-radius: 14px; padding: 1rem;
+      border: 2.5px solid; transition: transform .3s, box-shadow .3s;
+    }
+    .bio-card:nth-child(1) { background: rgba(245,197,24,.08);  border-color: var(--solar);   }
+    .bio-card:nth-child(2) { background: rgba(42,157,143,.08);  border-color: var(--meadow);  }
+    .bio-card:nth-child(3) { background: rgba(238,60,149,.07);  border-color: var(--fuchsia); }
+    .bio-card:nth-child(4) { background: rgba(107,91,79,.07);   border-color: var(--earth);   }
+    .bio-card:nth-child(1):hover { transform: translateY(-4px); box-shadow: 0 10px 28px rgba(245,197,24,.25); }
+    .bio-card:nth-child(2):hover { transform: translateY(-4px); box-shadow: 0 10px 28px rgba(42,157,143,.25); }
+    .bio-card:nth-child(3):hover { transform: translateY(-4px); box-shadow: 0 10px 28px rgba(238,60,149,.25); }
+    .bio-card:nth-child(4):hover { transform: translateY(-4px); box-shadow: 0 10px 28px rgba(107,91,79,.2);  }
+    .bio-card .icon { font-size: 1.6rem; margin-bottom: .4rem; }
+    .bio-card h3 { font-family: 'Bebas Neue', sans-serif; font-size: .95rem; letter-spacing: 1px; margin-bottom: 0; }
+    .bio-card p { font-size: .72rem; color: var(--earth); line-height: 1.4; margin-top: .35rem; }
+
+    /* ─── FORREST OFFICE ─── */
+    #forrest-office { background: var(--night); }
+    .fo-header { display: flex; align-items: flex-end; justify-content: space-between; gap: 2rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+    .fo-title-block .fo-main {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.5rem, 7vw, 5.5rem);
+      line-height: .9; letter-spacing: 3px; color: #fff;
+    }
+    .fo-title-block .fo-main .accent { color: var(--fuchsia); }
+    .fo-sub { font-family: 'Kohymaaa', cursive; font-size: 2.8rem; color: var(--sage); margin-top: .5rem; }
+    .fo-progress-wrap { flex-shrink: 0; }
+    .fo-progress-label { font-size: .65rem; letter-spacing: 3px; text-transform: uppercase; color: var(--solar); margin-bottom: .6rem; }
+    .fo-progress-bar {
+      width: 280px; height: 8px; background: rgba(255,255,255,.1); border-radius: 100px; overflow: hidden;
+    }
+    .fo-progress-fill {
+      height: 100%; background: linear-gradient(90deg, var(--solar), var(--fuchsia));
+      border-radius: 100px; width: 0%;
+      transition: width 1.5s cubic-bezier(.25,.8,.25,1);
+    }
+    .fo-progress-count { margin-top: .5rem; font-size: .8rem; color: var(--sage); }
+    .fo-progress-count strong { color: var(--solar); font-size: 1.1rem; }
+    .fo-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 2rem; }
+    .fo-desc { color: var(--sage); line-height: 1.8; font-size: .95rem; margin-bottom: .4rem; }
+    .fo-tags { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 1.5rem; }
+    .fo-tag {
+      padding: .3rem .9rem; border-radius: 100px; font-size: .72rem;
+      font-weight: 700; letter-spacing: 1px;
+    }
+    .fo-tag.solar { background: rgba(245,197,24,.15); color: var(--solar); }
+    .fo-tag.fuchsia { background: rgba(238,60,149,.15); color: var(--fuchsia); }
+    .fo-tag.meadow { background: rgba(42,157,143,.15); color: #4dc5b8; }
+    .fo-strava {
+      background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1);
+      border-radius: 16px; padding: 1.75rem;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center; gap: 1rem; min-height: 220px;
+    }
+    .fo-strava .strava-icon { font-size: 3rem; }
+    .fo-strava h3 { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; letter-spacing: 2px; color: #fff; }
+    .fo-strava p { font-size: .82rem; color: var(--sage); }
+    .fo-map-wrap { margin-top: 3rem; }
+    .fo-map-header { margin-bottom: 1rem; }
+    #dmapchart { width: 100%; height: 520px; border-radius: 16px; overflow: hidden; }
+    .fo-updates { margin-top: 2rem; }
+    .fo-updates-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; letter-spacing: 2px; color: var(--solar); margin-bottom: 1rem; }
+    .fo-update-item {
+      display: flex; gap: 1rem; padding: .9rem 0;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+    .fo-update-item:last-child { border-bottom: none; }
+    .fo-update-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--fuchsia); flex-shrink: 0; margin-top: 7px; }
+    .fo-update-text { font-size: .85rem; color: var(--sage); }
+    .fo-update-text strong { color: #fff; }
+    .fo-update-date { font-size: .7rem; color: var(--dust); margin-top: .2rem; }
+
+    /* ─── COUNTDOWN ─── */
+    .fo-countdown {
+      margin-top: 2.5rem;
+      padding: 1.75rem 2rem;
+      background: rgba(238,60,149,.07);
+      border: 1px solid rgba(238,60,149,.3);
+      border-radius: 18px;
+    }
+    .fo-countdown-label {
+      font-size: .65rem; font-weight: 700; letter-spacing: 4px;
+      text-transform: uppercase; color: var(--solar); margin-bottom: 1.25rem;
+      display: flex; align-items: center; gap: .5rem;
+    }
+    .fo-countdown-label::before {
+      content: ''; display: inline-block;
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--fuchsia);
+      animation: blink 1s infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.2} }
+    .fo-countdown-units {
+      display: flex; gap: 1rem; flex-wrap: wrap;
+    }
+    .fo-unit {
+      flex: 1; min-width: 60px; text-align: center;
+      background: rgba(255,255,255,.05); border-radius: 12px; padding: .9rem .5rem;
+    }
+    .fo-unit-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1; color: var(--solar);
+      letter-spacing: 2px;
+    }
+    .fo-unit-lbl {
+      font-size: .6rem; color: var(--dust);
+      letter-spacing: 2px; text-transform: uppercase;
+      margin-top: .3rem;
+    }
+    .fo-countdown-date {
+      margin-top: 1rem; font-family: 'Kohymaaa', cursive;
+      font-size: 2rem; color: var(--sage); text-align: center;
+    }
+    .fo-countdown-done {
+      display: none; text-align: center; padding: 1rem 0;
+    }
+    .fo-stats-live { display: block; }
+    .stat-of { font-size: .45em; opacity: .55; font-weight: 400; vertical-align: middle; }
+    .fo-stat-progress { margin-top: 1rem; }
+    .fo-stat-last {
+      margin-top: .75rem; font-size: .88rem; color: var(--sage);
+    }
+    .fo-stat-last strong { color: #fff; }
+    .fo-countdown-done .done-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2rem; color: var(--solar); letter-spacing: 3px;
+    }
+    .fo-countdown-done .done-sub {
+      font-family: 'Kohymaaa', cursive; font-size: 2.2rem; color: var(--sage); margin-top: .3rem;
+    }
+
+    /* ─── CESTA AZ ─── */
+    .az-stats {
+      display: flex; gap: 2rem; margin: 2rem 0; flex-wrap: wrap;
+    }
+    .az-stat {
+      background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.08);
+      border-radius: 14px; padding: 1.25rem 1.75rem; text-align: center;
+    }
+    .az-num {
+      font-family: 'Bebas Neue', sans-serif; font-size: 2.8rem;
+      color: var(--solar); line-height: 1;
+    }
+    .az-lbl {
+      font-size: .62rem; letter-spacing: 3px; text-transform: uppercase;
+      color: var(--dust); margin-top: .3rem;
+    }
+    #azchart {
+      width: 100%; height: 520px; border-radius: 16px; overflow: hidden;
+      background: #1a2e2e; margin-top: 1rem;
+    }
+    .az-legend {
+      display: flex; gap: 2rem; margin-top: 1rem; flex-wrap: wrap;
+    }
+    .az-legend-item {
+      display: flex; align-items: center; gap: .6rem;
+      font-size: .78rem; color: var(--sage);
+    }
+    .az-legend-line {
+      width: 28px; height: 3px; border-radius: 2px;
+    }
+    .az-legend-line.solar { background: var(--solar); }
+    .az-legend-line.fuchsia { background: var(--fuchsia); }
+    .az-legend-line.dashed {
+      background: none;
+      border-top: 2.5px dashed var(--fuchsia);
+      height: 0;
+    }
+    .az-legend-dot {
+      width: 10px; height: 10px; border-radius: 50%;
+    }
+    .az-legend-dot.solar { background: var(--solar); }
+
+    /* ─── CESTA AZ na světlém pozadí ─── */
+    #cesta-az .section-label { color: var(--night); opacity: .5; }
+    #cesta-az .az-stat {
+      background: rgba(38,64,64,.05);
+      border-color: rgba(38,64,64,.12);
+    }
+    #cesta-az .az-lbl { color: var(--earth); }
+    #cesta-az .az-legend-item { color: var(--earth); }
+    #cesta-az .body-text { color: var(--earth); }
+
+    /* ─── MAPA ─── */
+    #mapa { background: var(--cream); }
+    .map-wrap { position: relative; }
+    #chartdiv { width: 100%; height: 500px; border-radius: 16px; overflow: hidden; }
+    .map-legend { display: flex; gap: 1.5rem; margin-top: 1rem; flex-wrap: wrap; }
+    .map-legend-item { display: flex; align-items: center; gap: .5rem; font-size: .78rem; color: var(--earth); }
+    .legend-dot { width: 12px; height: 12px; border-radius: 50%; }
+    .country-panel {
+      display: none; position: fixed; top: 0; right: 0; bottom: 0;
+      width: min(420px, 100vw); background: var(--night); z-index: 200;
+      overflow-y: auto; padding: 2rem;
+      box-shadow: -4px 0 40px rgba(0,0,0,.4);
+      transform: translateX(100%); transition: transform .35s ease;
+    }
+    .country-panel.open { transform: translateX(0); display: block; }
+    .panel-close {
+      position: absolute; top: 1.5rem; right: 1.5rem;
+      background: rgba(255,255,255,.1); border: none; color: #fff;
+      width: 36px; height: 36px; border-radius: 50%; font-size: 1.1rem;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: background .2s;
+    }
+    .panel-close:hover { background: var(--fuchsia); }
+    .panel-flag { font-size: 3.5rem; margin-bottom: .5rem; }
+    .panel-country { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 2px; color: #fff; margin-bottom: .25rem; }
+    .panel-tagline { font-family: 'Kohymaaa', cursive; font-size: 2.4rem; color: var(--solar); margin-bottom: 1.5rem; }
+    .panel-divider { width: 40px; height: 2px; background: var(--solar); margin-bottom: 1.5rem; }
+    .panel-text { font-size: .9rem; color: var(--sage); line-height: 1.8; }
+    .panel-photos { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; margin-top: 1.5rem; }
+    .panel-photo {
+      aspect-ratio: 1; border-radius: 8px; background: rgba(255,255,255,.05);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--dust); font-size: .7rem; letter-spacing: 2px;
+    }
+    .panel-photo-placeholder { display: flex; flex-direction: column; align-items: center; gap: .4rem; }
+    .panel-photo-icon { font-size: 1.8rem; }
+    .panel-links { margin-top: 1.5rem; display: flex; flex-direction: column; gap: .6rem; }
+    .panel-link {
+      display: flex; align-items: center; gap: .75rem;
+      padding: .75rem 1rem; border-radius: 10px;
+      background: rgba(255,255,255,.06); color: var(--sage);
+      text-decoration: none; font-size: .85rem; transition: background .2s;
+    }
+    .panel-link:hover { background: rgba(245,197,24,.1); color: var(--solar); }
+    .panel-overlay {
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 199;
+    }
+    .panel-overlay.open { display: block; }
+
+    /* ─── DENÍK ─── */
+    #denik { background: var(--night); }
+    .denik-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 2.5rem; }
+    .denik-card {
+      background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.08);
+      border-radius: 16px; overflow: hidden; transition: transform .3s, border-color .3s;
+    }
+    .denik-card:hover { transform: translateY(-4px); border-color: rgba(245,197,24,.3); }
+    .denik-photo {
+      height: 180px; background: rgba(255,255,255,.04);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 3rem; position: relative;
+    }
+    .denik-pillar {
+      position: absolute; top: .75rem; left: .75rem;
+      padding: .25rem .75rem; border-radius: 100px; font-size: .6rem;
+      font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+    }
+    .pillar-ride { background: rgba(245,197,24,.2); color: var(--solar); }
+    .pillar-thought { background: rgba(42,157,143,.2); color: #4dc5b8; }
+    .pillar-world { background: rgba(238,60,149,.2); color: var(--fuchsia); }
+    .pillar-352 { background: rgba(168,196,188,.15); color: var(--sage); }
+    .denik-body { padding: 1.5rem; }
+    .denik-date { font-size: .7rem; color: var(--dust); letter-spacing: 2px; text-transform: uppercase; margin-bottom: .5rem; }
+    .denik-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; letter-spacing: 1px; color: #fff; margin-bottom: .5rem; }
+    .denik-excerpt { font-size: .85rem; color: var(--sage); line-height: 1.6; margin-bottom: 1.2rem; }
+    .denik-more { font-size: .78rem; color: var(--solar); font-weight: 700; text-decoration: none; letter-spacing: 1px; display: inline-flex; align-items: center; gap: .3rem; }
+    .denik-more:hover { gap: .6rem; }
+
+    /* ─── INSTAGRAM ─── */
+    #instagram { background: var(--cream); }
+    #instagram .ig-cell { background: rgba(38,64,64,.1); }
+    #instagram .ig-cell:hover { background: rgba(38,64,64,.18); }
+    .ig-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 2rem; max-width: 500px; }
+    .ig-cell {
+      aspect-ratio: 1; border-radius: 6px; overflow: hidden;
+      background: rgba(38,64,64,.12);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem; cursor: pointer;
+      transition: opacity .2s, transform .2s;
+    }
+    .ig-cell:hover { opacity: .85; transform: scale(.97); }
+    .ig-handle { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; letter-spacing: 3px; color: var(--night); margin-top: 1.5rem; }
+    .ig-layout { display: flex; gap: 4rem; align-items: center; flex-wrap: wrap; }
+
+    /* ─── FAQ ─── */
+    #faq { background: var(--cream); }
+    .faq-list { max-width: 700px; margin-top: 2.5rem; }
+    .faq-item { border-bottom: 1px solid rgba(38,64,64,.15); }
+    #faq .section-label { color: var(--solar); }
+    #faq .section-title { color: var(--night); }
+    #faq .divider { background: var(--solar); }
+    .faq-q {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.2rem 0; cursor: pointer;
+      font-weight: 600; font-size: .95rem; color: var(--night);
+      transition: color .2s;
+    }
+    .faq-q:hover { color: var(--earth); }
+    .faq-icon {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: var(--night); color: var(--solar);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; flex-shrink: 0; transition: transform .3s, background .2s;
+    }
+    .faq-item.open .faq-icon { transform: rotate(45deg); background: var(--night); color: var(--solar); }
+    .faq-a {
+      font-size: .9rem; color: var(--earth); line-height: 1.8;
+      max-height: 0; overflow: hidden; transition: max-height .35s ease, padding .35s;
+    }
+    .faq-item.open .faq-a { max-height: 400px; padding-bottom: 1.2rem; }
+
+    /* ─── KONTAKT ─── */
+    #kontakt { background: var(--night); }
+    #kontakt .section-title { color: #fff; }
+    #kontakt .divider { background: var(--solar); }
+    .kontakt-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; margin-top: 2.5rem; }
+    .kontakt-info { color: var(--sage); }
+    .kontakt-info h3 { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; letter-spacing: 2px; color: #fff; margin-bottom: .5rem; }
+    .kontakt-info p { font-size: .9rem; line-height: 1.8; margin-bottom: 1.5rem; }
+    .socials { display: flex; flex-direction: column; gap: .6rem; }
+    .social-link {
+      display: flex; align-items: center; gap: .75rem;
+      padding: .75rem 1.1rem; border-radius: 12px;
+      background: rgba(255,255,255,.05); color: var(--sage);
+      text-decoration: none; font-size: .85rem;
+      transition: background .2s, color .2s;
+    }
+    .social-link:hover { background: rgba(245,197,24,.12); color: var(--solar); }
+    .social-icon { font-size: 1.2rem; }
+    .kontakt-form { display: flex; flex-direction: column; gap: 1rem; }
+    .form-group { display: flex; flex-direction: column; gap: .4rem; }
+    .form-group label { font-size: .75rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--dust); }
+    .form-group input, .form-group textarea {
+      background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1);
+      border-radius: 10px; padding: .85rem 1rem; color: #fff; font-family: 'Jost', sans-serif;
+      font-size: .9rem; transition: border-color .2s;
+      resize: vertical;
+    }
+    .form-group input:focus, .form-group textarea:focus {
+      outline: none; border-color: var(--solar);
+    }
+    .form-group input::placeholder, .form-group textarea::placeholder { color: var(--dust); }
+    .form-submit {
+      background: var(--solar); color: var(--night); border: none;
+      padding: .9rem 2rem; border-radius: 100px; font-family: 'Jost', sans-serif;
+      font-weight: 700; font-size: .9rem; cursor: pointer; transition: transform .2s, box-shadow .2s;
+      align-self: flex-start;
+    }
+    .form-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(245,197,24,.3); }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: var(--solar);
+      color: var(--night);
+      text-align: center; padding: 3rem 2rem;
+    }
+    .footer-logo {
+      font-family: 'Bebas Neue', sans-serif; font-size: 2rem;
+      letter-spacing: 3px; color: var(--night); margin-bottom: .3rem;
+    }
+    .footer-logo span { color: rgba(38,64,64,.5); }
+    .footer-tagline {
+      font-family: 'Kohymaaa', cursive; font-size: 2.4rem;
+      color: rgba(38,64,64,.65); margin-bottom: 1.5rem;
+    }
+    .footer-nav { display: flex; justify-content: flex-start; align-items: center; gap: 2rem; flex-wrap: wrap; margin-bottom: 1.5rem; max-width: 860px; margin-left: auto; margin-right: auto; }
+    .footer-nav a {
+      color: rgba(38,64,64,.6); text-decoration: none; font-size: .78rem;
+      letter-spacing: 1px; text-transform: uppercase; transition: color .2s;
+    }
+    .footer-nav a:hover { color: var(--night); }
+    .footer-nav-logo { line-height: 1; flex-shrink: 0; }
+    .footer-nav-logo:hover { opacity: .7; }
+    .footer-copy { font-size: .65rem; letter-spacing: 2px; text-transform: uppercase; color: rgba(38,64,64,.45); }
+
+    /* ─── ANIMACE PŘÍJEZDU ─── */
+    .reveal { opacity: 0; transform: translateY(30px); transition: opacity .7s ease, transform .7s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* ─── MOBILNÍ RESPONZIVITA ─── */
+    @media (max-width: 900px) {
+      .bio-gallery { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+      .fo-grid { grid-template-columns: 1fr; }
+      .fo-progress-bar { width: 100%; }
+      .kontakt-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+      .ig-layout { flex-direction: column; }
+    }
+    @media (max-width: 500px) {
+      .bio-gallery { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 860px) {
+      #navbar { padding: 1rem 1.5rem; }
+      .nav-links { display: none; flex-direction: column; position: absolute; top: 100%; left: 0; right: 0; background: rgba(38,64,64,.97); backdrop-filter: blur(12px); padding: 1.5rem 2rem; gap: 1.25rem; border-top: 1px solid rgba(255,255,255,.08); }
+      .nav-links.open { display: flex; }
+      .hamburger { display: flex; }
+      .section { padding: 4rem 1.25rem; }
+      .hero-title { letter-spacing: 1px; }
+      .bio-cards { flex-wrap: wrap; gap: .5rem; }
+      .bio-card { flex: 1 1 120px; }
+      .denik-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════ NAVIGACE ═══════════ -->
+<nav id="navbar">
+  <a href="#hero" class="nav-logo" style="display:block;text-decoration:none;flex-shrink:0;line-height:1;">
+    <span style="display:block;font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:3px;color:#1a6b5e;line-height:1.1;">HONZÍKOVIC</span>
+    <span style="display:block;font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:3px;color:#EE3C95;line-height:1.1;">CESTA</span>
+  </a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#forrest-office">Forrest Office</a></li>
+    <li><a href="o-mne.html">O mně</a></li>
+    <li><a href="#denik">Deník</a></li>
+    <li><a href="faq.html">FAQ</a></li>
+    <li><a href="#kontakt" class="nav-cta">Kontakt</a></li>
+  </ul>
+  <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- ═══════════ HERO ═══════════ -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-badge">🚴 Cyklista · Cestovatel · Vypravěč</div>
+  <h1 class="hero-title">HONZÍKOVIC<br><span class="solar">CESTA</span></h1>
+  <div class="hero-dots">
+    <div class="hero-dot" style="background:var(--solar)"></div>
+    <div class="hero-dot" style="background:var(--meadow)"></div>
+    <div class="hero-dot" style="background:var(--fuchsia)"></div>
+    <div class="hero-dot" style="background:var(--sage)"></div>
+    <div class="hero-dot" style="background:rgba(255,255,255,.25)"></div>
+  </div>
+  <p class="hero-tagline">Život je jízda. Tak jedu!</p>
+  <div class="hero-ctas">
+    <a href="#forrest-office" class="btn btn-solar">🏘️ Forrest Office</a>
+    <a href="#mapa" class="btn btn-outline">🗺️ Mapa cest</a>
+  </div>
+  <div class="scroll-hint">
+    <span>Posunout dolů</span>
+    <div class="scroll-arrow"></div>
+  </div>
+</section>
+
+<!-- ═══════════ FORREST OFFICE ═══════════ -->
+<section id="forrest-office" class="section section-dark">
+  <div class="container">
+    <div class="fo-header">
+      <div class="fo-title-block">
+        <div class="section-label">01 — Vlajkový projekt · Léto 2026</div>
+        <div class="fo-main">FORREST<br><span class="accent">OFFICE</span></div>
+        <div class="fo-sub">352 D-obcí na Rekole — psaní knihy za jízdy</div>
+      </div>
+    </div>
+    <div class="fo-grid reveal">
+      <div>
+        <p class="fo-desc">Znám spoustu krásných míst po celém světě, ale vlastní zemi jsem zatím opomíjel.</p>
+        <p class="fo-desc">Léto 2026: Těžký kolo, <strong style="color:#2A9D8F">352 českých obcí s názvem začínajícím na písmeno D</strong>, Forrest Office — kancelář v pohybu. Tvořím za jízdy. Vývoz myšlenek a úsměvů mezi své spoluobčany.</p>
+        <p class="fo-desc">Tohle nemá být závod. Chci zpomalit a vnímat.</p>
+        <p class="fo-desc"><em>D jako Domov. D jako Domestici. D jako Důstojnost. D jako Dobrodružství. D jako… Dám to?</em></p>
+        <div class="fo-tags">
+          <span class="fo-tag solar">#352D</span>
+          <span class="fo-tag fuchsia">#ForrestOffice</span>
+          <span class="fo-tag meadow">#Domestici</span>
+          <span class="fo-tag solar">#Rekola</span>
+          <span class="fo-tag meadow">#nejedusam</span>
+        </div>
+        <!-- ODPOČÍTÁVAČ -->
+        <div class="fo-countdown" id="countdownBlock">
+          <div class="fo-countdown-label">Startujeme za</div>
+          <div class="fo-countdown-units">
+            <div class="fo-unit">
+              <div class="fo-unit-num" id="cdDays">--</div>
+              <div class="fo-unit-lbl">Dní</div>
+            </div>
+            <div class="fo-unit">
+              <div class="fo-unit-num" id="cdHours">--</div>
+              <div class="fo-unit-lbl">Hodin</div>
+            </div>
+            <div class="fo-unit">
+              <div class="fo-unit-num" id="cdMinutes">--</div>
+              <div class="fo-unit-lbl">Minut</div>
+            </div>
+            <div class="fo-unit">
+              <div class="fo-unit-num" id="cdSeconds">--</div>
+              <div class="fo-unit-lbl">Sekund</div>
+            </div>
+          </div>
+          <div class="fo-countdown-date">📅 Start: 16. června 2026 — nasedáme na kolo!</div>
+        </div>
+
+        <!-- LIVE STATISTIKY – zobrazí se po 16. 6. 2026 -->
+        <div class="fo-countdown fo-stats-live" id="statsLive">
+          <div class="fo-countdown-label">🚴 Jedeme! · Live statistiky</div>
+          <div class="fo-countdown-units">
+            <div class="fo-unit">
+              <div class="fo-unit-num" id="statVillages">0<span class="stat-of">/352</span></div>
+              <div class="fo-unit-lbl">obcí</div>
+            </div>
+            <div class="fo-unit">
+              <div class="fo-unit-num" id="statDays">0</div>
+              <div class="fo-unit-lbl">dní na cestě</div>
+            </div>
+            <div class="fo-unit">
+              <div class="fo-unit-num" id="statKm">0</div>
+              <div class="fo-unit-lbl">km ujetých</div>
+            </div>
+            <div class="fo-unit">
+              <div class="fo-unit-num" id="statTime">0:00</div>
+              <div class="fo-unit-lbl">h na kole</div>
+            </div>
+          </div>
+          <div class="fo-stat-progress">
+            <div class="fo-progress-bar" style="margin-bottom:.4rem;">
+              <div class="fo-progress-fill" id="progressFill" data-target="0"></div>
+            </div>
+            <div class="fo-progress-count" style="font-size:.78rem; color:var(--sage);">
+              <strong id="progressCount" style="color:var(--solar);">0</strong> / 352 obcí dokončeno
+            </div>
+          </div>
+          <div class="fo-stat-last">
+            📍 <strong>Poslední obec:</strong> <span id="statLastVillage">—</span>
+          </div>
+        </div>
+
+        <div class="fo-updates" id="foUpdates"></div>
+      </div>
+      <div>
+        <div class="fo-strava">
+          <div class="strava-icon">🏅</div>
+          <h3>LIVE TRACKING</h3>
+          <p>Trasa se aktualizuje přímo ze Strava/Garmin. Sleduj moji cestu v reálném čase.</p>
+          <a href="https://www.strava.com" target="_blank" class="btn btn-outline" style="margin-top: .5rem; font-size: .8rem;">Otevřít na Stravě →</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mapa D-obcí -->
+    <div class="fo-map-wrap reveal">
+      <div class="fo-map-header">
+        <div class="section-label" style="color:var(--solar)">🗺️ Mapa D-obcí — 352 zastávek Forrest Office</div>
+        <p style="color:var(--sage); font-size:.85rem; margin-top:.4rem;">Najdi každou D-obec na mapě · přibliž a prozkoumej trasu</p>
+      </div>
+      <div id="dmapchart"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ CESTA DO ÁZERBÁJDŽÁNU ═══════════ -->
+<section id="cesta-az" class="section">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label">— Cesta do Ázerbájdžánu · 2024</div>
+      <h2 class="section-title">7 758 km na kole</h2>
+      <div class="divider"></div>
+      <p class="body-text">Žďár nad Sázavou → Norsko → Istanbul → ✈ Oslo → zpět domů. Sólo, na kole, s batohem a zápisníkem.</p>
+    </div>
+    <div class="az-stats reveal">
+      <div class="az-stat"><div class="az-num">95</div><div class="az-lbl">dní na cestě</div></div>
+      <div class="az-stat"><div class="az-num">7 758</div><div class="az-lbl">kilometrů</div></div>
+      <div class="az-stat"><div class="az-num">29</div><div class="az-lbl">zastávek</div></div>
+      <div class="az-stat"><div class="az-num" style="color:var(--fuchsia)">12</div><div class="az-lbl">zemí</div></div>
+    </div>
+    <div id="azchart" class="reveal"></div>
+    <div class="az-legend">
+      <div class="az-legend-item"><div class="az-legend-line solar"></div> Cyklotrasa</div>
+      <div class="az-legend-item"><div class="az-legend-line fuchsia dashed"></div> Let Istanbul → Oslo</div>
+      <div class="az-legend-item"><div class="az-legend-dot solar"></div> Klíčové zastávky</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ CESTOVNÍ DENÍK ═══════════ -->
+<section id="denik" class="section section-dark">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label">04 — Cestovní deník</div>
+      <h2 class="section-title" style="color: #fff">Zápisky z cesty</h2>
+      <div class="divider"></div>
+      <p class="body-text">Příběhy, myšlenky, emoce. Psané tak, aby se daly číst u piva — nebo na sedle kola.</p>
+    </div>
+    <div class="denik-grid">
+      <article class="denik-card reveal">
+        <div class="denik-photo">
+          🚴
+          <div class="denik-pillar pillar-352">#352D</div>
+        </div>
+        <div class="denik-body">
+          <div class="denik-date">Duben 2026</div>
+          <h3 class="denik-title">Proč jet do 352 obcí, které nikdo nezná</h3>
+          <p class="denik-excerpt">Každá vesnice začínající na D má svůj příběh. Já jen přijíždím, přečtu ho a jedu dál. Tohle je o Dolní Věstonici...</p>
+          <a href="#" class="denik-more">Číst zápisek →</a>
+        </div>
+      </article>
+      <article class="denik-card reveal" style="transition-delay: .1s">
+        <div class="denik-photo">
+          💭
+          <div class="denik-pillar pillar-thought">Myšlenka</div>
+        </div>
+        <div class="denik-body">
+          <div class="denik-date">Březen 2026</div>
+          <h3 class="denik-title">Co jsem se naučil od strangers ve vlaku</h3>
+          <p class="denik-excerpt">Seděl naproti mně muž, který nikdy nevycestoval dál než do Bratislavy. A přesto mi za hodinu změnil pohled na svět...</p>
+          <a href="#" class="denik-more">Číst zápisek →</a>
+        </div>
+      </article>
+      <article class="denik-card reveal" style="transition-delay: .2s">
+        <div class="denik-photo">
+          🌍
+          <div class="denik-pillar pillar-world">Svět</div>
+        </div>
+        <div class="denik-body">
+          <div class="denik-date">Únor 2026</div>
+          <h3 class="denik-title">Ázerbájdžán: země, která změnila všechno</h3>
+          <p class="denik-excerpt">Nevěděl jsem, kam jedu. Věděl jsem jen, že musím. Výsledkem je prvních 40 stránek knihy a pocit, který neumím popsat...</p>
+          <a href="#" class="denik-more">Číst zápisek →</a>
+        </div>
+      </article>
+    </div>
+    <div style="text-align: center; margin-top: 2.5rem;">
+      <a href="#" class="btn btn-outline">Všechny zápisky →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ INSTAGRAM ═══════════ -->
+<section id="instagram" class="section">
+  <div class="container">
+    <div class="ig-layout">
+      <div class="reveal">
+        <div class="section-label">05 — Sleduj cestu</div>
+        <h2 class="section-title">Instagram</h2>
+        <div class="divider"></div>
+        <p class="body-text">
+          Fotky, reels, příběhy. Surový záběr ze silnice, zlatá hodina, smích i píchlé kolo. Bez scénáře.
+        </p>
+        <div class="ig-handle">@honzikovic_cesta</div>
+        <a href="https://www.instagram.com/honzikovic_cesta" target="_blank" class="btn btn-solar" style="margin-top: 1.5rem;">
+          Otevřít Instagram →
+        </a>
+      </div>
+      <div class="ig-grid reveal">
+        <div class="ig-cell">🚴</div>
+        <div class="ig-cell">🌅</div>
+        <div class="ig-cell">🏘️</div>
+        <div class="ig-cell">📖</div>
+        <div class="ig-cell">🌍</div>
+        <div class="ig-cell">💛</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ KONTAKT ═══════════ -->
+<section id="kontakt" class="section section-dark">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label">07 — Kontakt</div>
+      <h2 class="section-title" style="color: #fff">Napiš mi</h2>
+      <div class="divider"></div>
+    </div>
+    <div class="kontakt-grid">
+      <div class="kontakt-info reveal">
+        <h3>Pojďme se bavit</h3>
+        <p>Přednášky, spolupráce, otázky nebo jen tak. Čtu každou zprávu — odpovídám pomaleji, protože zrovna šlapu do kopce.</p>
+        <div class="socials">
+          <a href="https://www.instagram.com/honzikovic_cesta" target="_blank" class="social-link">
+            <span class="social-icon">📸</span>
+            <span>@honzikovic_cesta — Instagram</span>
+          </a>
+          <a href="https://www.strava.com" target="_blank" class="social-link">
+            <span class="social-icon">🏅</span>
+            <span>Honzíkovic Cesta — Strava</span>
+          </a>
+          <a href="#" class="social-link">
+            <span class="social-icon">📖</span>
+            <span>Domestici.cz — #nejedusam</span>
+          </a>
+        </div>
+      </div>
+      <div class="reveal" style="transition-delay: .15s">
+        <form class="kontakt-form" onsubmit="handleForm(event)">
+          <div class="form-group">
+            <label>Jméno</label>
+            <input type="text" placeholder="Jak Ti říkají?">
+          </div>
+          <div class="form-group">
+            <label>E-mail</label>
+            <input type="email" placeholder="kde Ti napsat zpět">
+          </div>
+          <div class="form-group">
+            <label>Zpráva</label>
+            <textarea rows="5" placeholder="Co tě přivedlo na moji cestu?"></textarea>
+          </div>
+          <button type="submit" class="form-submit">Odeslat zprávu →</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ FOOTER ═══════════ -->
+<footer>
+  <div class="footer-logo">HONZÍKOVIC <span>CESTA</span></div>
+  <div class="footer-tagline">Život je jízda. Tak jedu!</div>
+  <nav class="footer-nav">
+    <a href="o-mne.html">O mně</a>
+    <a href="#forrest-office">Forrest Office</a>
+    <a href="#denik">Deník</a>
+    <a href="faq.html">FAQ</a>
+    <a href="#kontakt">Kontakt</a>
+  </nav>
+  <div class="footer-copy">© 2026 Jan Kohoutek · Honzíkovic Cesta · #nejedusam</div>
+</footer>
+
+<!-- ═══════════ GENERÁTOR WIDGET ═══════════ -->
+<style>
+  #gen-toggle {
+    position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 2000;
+    width: 52px; height: 52px; border-radius: 50%;
+    background: #EE3C95; border: none; cursor: pointer;
+    font-size: 1.4rem;
+    box-shadow: 0 4px 16px rgba(0,0,0,.25);
+    transition: transform .2s, box-shadow .2s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  #gen-toggle:hover { transform: scale(1.1); box-shadow: 0 6px 20px rgba(0,0,0,.35); }
+  #gen-panel {
+    position: fixed; bottom: 5.5rem; right: 1.5rem; z-index: 1999;
+    width: 320px; height: 420px;
+    border-radius: 1.2rem; overflow: hidden;
+    box-shadow: 0 12px 40px rgba(0,0,0,.35);
+    transform: scale(.9) translateY(20px);
+    opacity: 0; pointer-events: none;
+    transition: transform .25s ease, opacity .25s ease;
+    transform-origin: bottom right;
+  }
+  #gen-panel.open {
+    transform: scale(1) translateY(0);
+    opacity: 1; pointer-events: all;
+  }
+  #gen-panel iframe {
+    width: 100%; height: 100%; border: none; display: block;
+  }
+</style>
+
+<button id="gen-toggle" onclick="toggleGen()" title="Generátor D-slov">🎲</button>
+<div id="gen-panel">
+  <iframe src="generator-slov-d.html" loading="lazy"></iframe>
+</div>
+
+<script>
+  function toggleGen() {
+    document.getElementById('gen-panel').classList.toggle('open');
+  }
+
+  /* ── Hero slideshow ── */
+  const heroPhotos = [
+    { src: 'jan.jpg',                                              pos: '72% 15%' },
+    { src: '1F3585A5-982C-463A-B11C-89C5A7047EF8_4_5005_c.jpeg', pos: '50% 20%' },
+    { src: 'A4D20678-EC67-4A8F-9362-C161595C0B78_4_5005_c.jpeg', pos: '50% 30%' },
+    { src: 'C4BB98F5-2649-4FE7-8C83-38E1C0372737_4_5005_c.jpeg', pos: '50% 20%' },
+    { src: 'DE512C6E-C5EF-4B14-9E4A-DC2FC6630664_1_102_o.jpeg',  pos: '50% 25%' },
+    { src: 'F36EF649-2632-4CFD-947F-AE7DDEFF6F48_4_5005_c.jpeg', pos: '50% 20%' },
+  ];
+  let heroIndex = 0;
+  const heroBg = document.querySelector('.hero-bg');
+  setInterval(() => {
+    heroIndex = (heroIndex + 1) % heroPhotos.length;
+    const p = heroPhotos[heroIndex];
+    heroBg.style.backgroundImage = `url('${p.src}')`;
+    heroBg.style.backgroundPosition = p.pos;
+  }, 5000);
+</script>
+
+<script>
+  /* ── Hamburger menu ── */
+  function toggleMenu() {
+    document.getElementById("navLinks").classList.toggle("open");
+  }
+
+  /* ── Scroll reveal ── */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add("visible"); });
+  }, { threshold: 0.12 });
+  document.querySelectorAll(".reveal").forEach(el => observer.observe(el));
+
+  /* ── Progress bar animace ── */
+  const progressObserver = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const fill = document.getElementById("progressFill");
+        const target = parseInt(fill.dataset.target);
+        const pct = (target / 352) * 100;
+        fill.style.width = pct + "%";
+        document.getElementById("progressCount").textContent = 0;
+        if (target > 0) {
+          let count = 0;
+          const interval = setInterval(() => {
+            count++;
+            document.getElementById("progressCount").textContent = count;
+            if (count >= target) clearInterval(interval);
+          }, 120);
+        }
+        progressObserver.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.5 });
+  const progressEl = document.getElementById("progressFill");
+  if (progressEl) progressObserver.observe(progressEl.closest(".fo-progress-wrap") || progressEl);
+
+  /* ── FAQ accordion ── */
+  function toggleFaq(btn) {
+    const item = btn.parentElement;
+    const isOpen = item.classList.contains("open");
+    document.querySelectorAll(".faq-item.open").forEach(i => i.classList.remove("open"));
+    if (!isOpen) item.classList.add("open");
+  }
+
+  /* ── Odpočítávač / Live stats po 16. 6. 2026 ── */
+  const START_DATE = new Date("2026-06-16T00:00:00");
+  const PREVIEW_STATS = false; // nepoužívá se — stats blok je vždy vidět
+
+  // ─ Ruční data (Jan aktualizuje ručně nebo přes Strava) ─
+  const liveStats = {
+    villages:    0,    // počet dokončených obcí
+    km:          0,    // celkem km
+    time:     "0:00",  // čas na kole (h:mm)
+    lastVillage: "—"   // název poslední obce
+  };
+
+  // ─ Aktualizace — přidej novou vždy na začátek pole ─
+  // Formát: { date: "Měsíc RRRR", title: "Nadpis", text: "Popis co se děje." }
+  const foUpdates = [
+    { date: "Duben 2026", title: "Přípravy vrcholí", text: "Trasa naplánována, kolo připraveno. Do startu zbývá pár týdnů.", color: "var(--solar)" },
+  ];
+
+  // ─ Vykreslení poslední aktualizace ─
+  (function renderUpdate() {
+    const el = document.getElementById("foUpdates");
+    if (!el || foUpdates.length === 0) return;
+    const u = foUpdates[0]; // vždy první = nejnovější
+    el.innerHTML = `
+      <div class="fo-updates-title">Poslední aktualizace</div>
+      <div class="fo-update-item">
+        <div class="fo-update-dot" style="background:${u.color || 'var(--meadow)'}"></div>
+        <div>
+          <div class="fo-update-text"><strong>${u.title}</strong> — ${u.text}</div>
+          <div class="fo-update-date">${u.date}</div>
+        </div>
+      </div>`;
+  })();
+
+  function updateCountdown() {
+    const now  = new Date();
+    const diff = START_DATE - now;
+
+    // ── Dny na cestě (vždy aktuální) ──
+    const daysOnRoad = diff <= 0 ? Math.floor((now - START_DATE) / (1000 * 60 * 60 * 24)) : 0;
+    document.getElementById("statVillages").innerHTML   = liveStats.villages + '<span class="stat-of">/352</span>';
+    document.getElementById("statDays").textContent     = daysOnRoad;
+    document.getElementById("statKm").textContent       = liveStats.km;
+    document.getElementById("statTime").textContent     = liveStats.time;
+    document.getElementById("statLastVillage").textContent = liveStats.lastVillage;
+
+    if (diff <= 0) {
+      // ── Projekt běží → skryj countdown ──
+      document.getElementById("countdownBlock").style.display = "none";
+      return;
+    }
+
+    // ── Countdown ──
+    const days    = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours   = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+    document.getElementById("cdDays").textContent    = String(days).padStart(2, "0");
+    document.getElementById("cdHours").textContent   = String(hours).padStart(2, "0");
+    document.getElementById("cdMinutes").textContent = String(minutes).padStart(2, "0");
+    document.getElementById("cdSeconds").textContent = String(seconds).padStart(2, "0");
+  }
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+
+  /* ── Mapa cesty do Ázerbájdžánu ── */
+  (function() {
+    const azRoot = am5.Root.new("azchart");
+    azRoot.setThemes([am5themes_Animated.new(azRoot)]);
+
+    const azChart = azRoot.container.children.push(
+      am5map.MapChart.new(azRoot, {
+        panX: "translateX",
+        panY: "translateY",
+        projection: am5map.geoMercator(),
+        minZoomLevel: 3.5,
+        maxZoomLevel: 32,
+        maxPanOut: 0.5,
+        homeGeoPoint: { longitude: 17, latitude: 51 },
+        homeZoomLevel: 3.5
+      })
+    );
+
+    // Pozadí a polygony zemí
+    azChart.chartContainer.get("background").setAll({ fill: am5.color(0x1a2e2e), fillOpacity: 1 });
+    const azPolygons = azChart.series.push(
+      am5map.MapPolygonSeries.new(azRoot, { geoJSON: am5geodata_worldLow, exclude: ["AQ"] })
+    );
+    azPolygons.mapPolygons.template.setAll({
+      fill: am5.color(0x2a4040), fillOpacity: 0.9,
+      stroke: am5.color(0x1a2e2e), strokeWidth: 0.8,
+    });
+
+    // Zvýrazni navštívené země
+    const visitedAZ = ["CZ","DE","DK","NO","AT","HU","HR","BA","RS","BG","TR","SK"];
+    azPolygons.events.on("datavalidated", () => {
+      azPolygons.mapPolygons.each(p => {
+        if (visitedAZ.includes(p.dataItem?.get("id"))) {
+          p.setAll({ fill: am5.color(0x3D6060), fillOpacity: 1 });
+        }
+      });
+    });
+
+    // Odchozí trasa: Žďár → pobřeží Norska → Istanbul
+    const outboundCoords = [
+      [15.94, 49.56],  // Žďár — start
+      [13.74, 51.05],  // Dresden
+      [13.40, 52.52],  // Berlín
+      [9.99,  53.55],  // Hamburg
+      [8.70,  55.00],  // jih Jutlandu
+      [8.40,  56.90],  // sever Jutlandu
+      [8.15,  58.15],  // Kristiansand
+      [5.73,  58.97],  // Stavanger
+      [5.32,  60.39],  // Bergen — nejsevernější bod
+      [5.73,  58.97],  // zpět Stavanger
+      [8.15,  58.15],  // Kristiansand
+      [8.40,  56.90],  // Aalborg, Dánsko
+      [9.99,  53.55],  // Hamburg
+      [13.40, 52.52],  // Berlín
+      [15.94, 49.56],  // Žďár / Česko
+      [17.11, 48.15],  // Slovensko / Bratislava
+      [19.04, 47.50],  // Budapešť
+      [17.50, 45.33],  // východní Chorvatsko
+      [18.41, 44.20],  // Bosna (Sarajevo)
+      [20.46, 44.80],  // Bělehrad, Srbsko
+      [21.89, 43.32],  // Niš, jižní Srbsko
+      [23.32, 42.70],  // Sofie, Bulharsko
+      [25.60, 43.84],  // severní Bulharsko
+      [26.56, 42.50],  // východní Bulharsko
+      [27.50, 41.70],  // blízko Turecka
+      [28.95, 41.01],  // Istanbul — konec kola
+    ];
+    // Zpáteční trasa po letu: Oslo → pobřeží Norska → Žďár
+    const returnCoords = [
+      [10.74, 59.91],  // Oslo — start po letu
+      [9.65,  59.20],  // Tønsberg, Oslofjord
+      [9.05,  58.74],  // Arendal
+      [8.00,  58.15],  // Kristiansand
+      [8.40,  56.90],  // Aalborg, Dánsko
+      [9.99,  53.55],  // Hamburg
+      [13.40, 52.52],  // Berlín
+      [15.94, 49.56],  // Žďár — domů
+    ];
+    const azLineSeries = azChart.series.push(am5map.MapLineSeries.new(azRoot, {}));
+    azLineSeries.mapLines.template.setAll({
+      stroke: am5.color(0xF5C518), strokeWidth: 2.5, strokeOpacity: 0.95,
+    });
+    azLineSeries.data.setAll([
+      { geometry: { type: "LineString", coordinates: outboundCoords } },
+      { geometry: { type: "LineString", coordinates: returnCoords } },
+    ]);
+
+    // Lety (růžová přerušovaná): Istanbul → Oslo → Žďár
+    const azFlightSeries = azChart.series.push(am5map.MapLineSeries.new(azRoot, {}));
+    azFlightSeries.mapLines.template.setAll({
+      stroke: am5.color(0xEE3C95), strokeWidth: 2,
+      strokeDasharray: [6, 4], strokeOpacity: 0.9,
+    });
+    azFlightSeries.data.setAll([{
+      geometry: { type: "LineString", coordinates: [
+        [28.95, 41.01],  // Istanbul
+        [10.74, 59.91],  // Oslo
+      ]}
+    }]);
+
+    // Klíčové zastávky (kliknutelné body s tooltip)
+    const azStops = [
+      { lon: 15.94, lat: 49.56, name: "Žďár nad Sázavou", note: "🚴 Start cesty · Česká republika",   color: 0xF5C518, r: 9 },
+      { lon: 5.32,  lat: 60.39, name: "Bergen, Norsko",   note: "🏔️ Nejsevernější bod · 60° s. š.",   color: 0x2A9D8F, r: 7 },
+      { lon: 13.40, lat: 52.52, name: "Berlín",           note: "🇩🇪 Německo",                         color: 0xF5C518, r: 6 },
+      { lon: 8.40,  lat: 56.90, name: "Dánsko",           note: "🇩🇰 Jutland · Dánsko",                color: 0xF5C518, r: 6 },
+      { lon: 19.04, lat: 47.50, name: "Budapešť",         note: "🇭🇺 Maďarsko",                        color: 0xF5C518, r: 6 },
+      { lon: 20.46, lat: 44.80, name: "Bělehrad",         note: "🇷🇸 Srbsko",                          color: 0xF5C518, r: 6 },
+      { lon: 23.32, lat: 42.70, name: "Sofie",            note: "🇧🇬 Bulharsko",                       color: 0xF5C518, r: 6 },
+      { lon: 28.95, lat: 41.01, name: "Istanbul",         note: "✈️ Konec kola · let do Osla",          color: 0xEE3C95, r: 8 },
+      { lon: 10.74, lat: 59.91, name: "Oslo",             note: "🛬 Přistání · návrat domů",            color: 0xEE3C95, r: 8 },
+    ];
+
+    const azPointSeries = azChart.series.push(am5map.MapPointSeries.new(azRoot, {}));
+    azPointSeries.bullets.push(function(root2, series, dataItem) {
+      const d = dataItem.dataContext;
+      const circle = am5.Circle.new(azRoot, {
+        radius: d.r, fill: am5.color(d.color),
+        stroke: am5.color(0x1a2e2e), strokeWidth: 2,
+        tooltipText: "[bold]{name}[/]\n[fontSize:12px]{note}[/]",
+        cursorOverStyle: "pointer",
+      });
+      circle.states.create("hover", { scale: 1.4 });
+      return am5.Bullet.new(azRoot, { sprite: circle });
+    });
+    azPointSeries.data.setAll(azStops.map(s => ({
+      geometry: { type: "Point", coordinates: [s.lon, s.lat] },
+      name: s.name, note: s.note, color: s.color, r: s.r,
+    })));
+
+    azChart.set("zoomControl", am5map.ZoomControl.new(azRoot, {}));
+
+    // Po načtení dat: zacentruj na oblast trasy
+    azPolygons.events.on("datavalidated", function() {
+      azChart.zoomToGeoPoint({ longitude: 17, latitude: 51 }, 3.5, true);
+    });
+
+  })();
+
+  /* ── Mapa D-obcí (Forrest Office) ── */
+  (function() {
+    const dmRoot = am5.Root.new("dmapchart");
+    dmRoot.setThemes([am5themes_Animated.new(dmRoot)]);
+    const dmChart = dmRoot.container.children.push(
+      am5map.MapChart.new(dmRoot, {
+        panX: "translateX", panY: "translateY",
+        projection: am5map.geoMercator(),
+        minZoomLevel: 7, maxZoomLevel: 64,
+        homeGeoPoint: { longitude: 15.5, latitude: 49.8 },
+        homeZoomLevel: 8
+      })
+    );
+    dmChart.chartContainer.get("background").setAll({ fill: am5.color(0x1a2e2e), fillOpacity: 1 });
+    const dmPolygons = dmChart.series.push(
+      am5map.MapPolygonSeries.new(dmRoot, { geoJSON: am5geodata_worldLow, exclude: ["AQ"] })
+    );
+    dmPolygons.mapPolygons.template.setAll({
+      fill: am5.color(0x2a4040), fillOpacity: 0.9,
+      stroke: am5.color(0x1a2e2e), strokeWidth: 0.8,
+    });
+    dmPolygons.events.on("datavalidated", () => {
+      dmPolygons.mapPolygons.each(p => {
+        if (p.dataItem?.get("id") === "CZ") p.setAll({ fill: am5.color(0x3D6060), fillOpacity: 1 });
+      });
+    });
+    const dmPoints = dmChart.series.push(am5map.MapPointSeries.new(dmRoot, {
+      latitudeField: "lat", longitudeField: "lon"
+    }));
+    dmPoints.bullets.push(function() {
+      const circle = am5.Circle.new(dmRoot, {
+        radius: 4, fill: am5.color(0xF5C518), fillOpacity: 0.85,
+        stroke: am5.color(0x1a2e2e), strokeWidth: 0.5,
+        tooltipText: "{name}", cursorOverStyle: "pointer"
+      });
+      circle.states.create("hover", { fill: am5.color(0xEE3C95), radius: 6, fillOpacity: 1 });
+      return am5.Bullet.new(dmRoot, { sprite: circle });
+    });
+    const dObce = [
+    {name: 'Dalečín', lat: 49.5915559, lon: 16.2404292},
+    {name: 'Daleké Dušníky', lat: 49.7275217, lon: 14.1865392},
+    {name: 'Dalešice', lat: 50.6817579, lon: 15.1845709},
+    {name: 'Dalešice', lat: 49.129026, lon: 16.0816581},
+    {name: 'Dalovice', lat: 50.4246134, lon: 14.8845277},
+    {name: 'Dalovice', lat: 50.2548093, lon: 12.8865178},
+    {name: 'Dambořice', lat: 49.0382834, lon: 16.917572},
+    {name: 'Damnice', lat: 48.920312, lon: 16.3741},
+    {name: 'Damníkov', lat: 49.870862, lon: 16.5609709},
+    {name: 'Daňkovice', lat: 49.6539822, lon: 16.1486064},
+    {name: 'Darkovice', lat: 49.9359191, lon: 18.2221271},
+    {name: 'Daskabát', lat: 49.5835872, lon: 17.4453455},
+    {name: 'Dasnice', lat: 50.1464536, lon: 12.5672264},
+    {name: 'Dasný', lat: 49.0192736, lon: 14.4068134},
+    {name: 'Dašice', lat: 50.0284447, lon: 15.91244},
+    {name: 'Davle', lat: 49.8921766, lon: 14.4003714},
+    {name: 'Deblín', lat: 49.3205381, lon: 16.3462457},
+    {name: 'Děčany', lat: 50.438594, lon: 13.9084663},
+    {name: 'DĚČÍN', lat: 50.7824196, lon: 14.2147221},
+    {name: 'Dědice', lat: 49.0296056, lon: 15.7289793},
+    {name: 'Dědová', lat: 49.7611033, lon: 15.9864641},
+    {name: 'Dehtáře', lat: 49.4860996, lon: 15.2752824},
+    {name: 'Děhylov', lat: 49.8693836, lon: 18.1633237},
+    {name: 'Děkanovice', lat: 49.6211004, lon: 15.1509521},
+    {name: 'Děkov', lat: 50.1711759, lon: 13.5543717},
+    {name: 'Děpoltovice', lat: 50.2944568, lon: 12.8140968},
+    {name: 'Desná', lat: 50.7455988, lon: 15.3101809},
+    {name: 'Desná', lat: 49.8075422, lon: 16.2240471},
+    {name: 'Dešenice', lat: 49.2742995, lon: 13.1709455},
+    {name: 'Dešná', lat: 48.9575732, lon: 15.5428248},
+    {name: 'Dešná', lat: 49.2666598, lon: 17.8464297},
+    {name: 'Dešov', lat: 48.9856084, lon: 15.7008992},
+    {name: 'Deštná', lat: 49.2651773, lon: 14.9238356},
+    {name: 'Deštná', lat: 49.6125536, lon: 16.5635535},
+    {name: 'Deštné v Orlických horách', lat: 50.3049142, lon: 16.3505997},
+    {name: 'Deštnice', lat: 50.2306311, lon: 13.6098035},
+    {name: 'Dětenice', lat: 50.3680722, lon: 15.1701828},
+    {name: 'Dětkovice', lat: 49.2726832, lon: 17.1442091},
+    {name: 'Dětkovice', lat: 49.4155003, lon: 17.0822567},
+    {name: 'Dětmarovice', lat: 49.8942584, lon: 18.4605013},
+    {name: 'Dětřichov', lat: 50.8950823, lon: 15.0371609},
+    {name: 'Dětřichov', lat: 49.7999719, lon: 16.5325958},
+    {name: 'Dětřichov nad Bystřicí', lat: 49.8343133, lon: 17.4015875},
+    {name: 'Dětřichov u Moravské Třebové', lat: 49.7875206, lon: 16.7101952},
+    {name: 'Dílce', lat: 50.4661655, lon: 15.3554732},
+    {name: 'Díly', lat: 49.4466468, lon: 12.7924869},
+    {name: 'Dírná', lat: 49.2428632, lon: 14.8447651},
+    {name: 'Diváky', lat: 48.9847787, lon: 16.7835587},
+    {name: 'Dívčí Hrad', lat: 50.2437649, lon: 17.6340751},
+    {name: 'Dívčí Kopy', lat: 49.2602796, lon: 15.0459045},
+    {name: 'Dívčice', lat: 49.1095672, lon: 14.3083099},
+    {name: 'Divec', lat: 50.2398168, lon: 15.9220837},
+    {name: 'Divišov', lat: 49.7885743, lon: 14.8756851},
+    {name: 'Dlažkovice', lat: 50.4655493, lon: 13.9649487},
+    {name: 'Dlažov', lat: 49.3657444, lon: 13.1663432},
+    {name: 'Dlouhá Brtnice', lat: 49.2360777, lon: 15.6051608},
+    {name: 'Dlouhá Lhota', lat: 50.4246797, lon: 15.0559432},
+    {name: 'Dlouhá Lhota', lat: 49.72114, lon: 14.1207868},
+    {name: 'Dlouhá Lhota', lat: 49.352282, lon: 14.7891557},
+    {name: 'Dlouhá Lhota', lat: 49.4286623, lon: 16.509833},
+    {name: 'Dlouhá Loučka', lat: 49.7008498, lon: 16.641605},
+    {name: 'Dlouhá Loučka', lat: 49.8160707, lon: 17.178642},
+    {name: 'Dlouhá Stráň', lat: 49.9599806, lon: 17.5008035},
+    {name: 'Dlouhá Třebová', lat: 49.9404, lon: 16.4232922},
+    {name: 'Dlouhá Ves', lat: 49.1945041, lon: 13.5056385},
+    {name: 'Dlouhá Ves', lat: 49.5786694, lon: 15.6745705},
+    {name: 'Dlouhé', lat: 49.5089805, lon: 16.1230431},
+    {name: 'Dlouhomilov', lat: 49.9068993, lon: 16.9913052},
+    {name: 'Dlouhoňovice', lat: 50.070198, lon: 16.4415402},
+    {name: 'Dlouhopolsko', lat: 50.1751733, lon: 15.3054784},
+    {name: 'Dlouhý Most', lat: 50.710673, lon: 15.0769449},
+    {name: 'Dlouhý Újezd', lat: 49.7682924, lon: 12.6284661},
+    {name: 'Dnešice', lat: 49.6048203, lon: 13.2645445},
+    {name: 'Dobelice', lat: 49.0168465, lon: 16.2779787},
+    {name: 'Dobev', lat: 49.2951763, lon: 14.0495304},
+    {name: 'Dobkovice', lat: 50.7148448, lon: 14.1931462},
+    {name: 'Dobrá', lat: 49.6738284, lon: 18.4139273},
+    {name: 'Dobrá Voda', lat: 49.358144, lon: 15.2700001},
+    {name: 'Dobrá Voda', lat: 49.3530174, lon: 15.2672207},
+    {name: 'Dobrá Voda u Českých Budějovic', lat: 48.9680923, lon: 14.5246491},
+    {name: 'Dobrá Voda u Hořic', lat: 50.3483591, lon: 15.6026678},
+    {name: 'Dobrá Voda u Pacova', lat: 49.4044897, lon: 15.027791},
+    {name: 'Dobratice', lat: 49.6603922, lon: 18.4922636},
+    {name: 'Dobrčice', lat: 49.4021301, lon: 17.4803065},
+    {name: 'Dobré', lat: 50.2697571, lon: 16.2637615},
+    {name: 'Dobré Pole', lat: 48.8260464, lon: 16.5355581},
+    {name: 'Dobrkovice', lat: 49.0937915, lon: 17.66923},
+    {name: 'Dobrná', lat: 50.7695417, lon: 14.293263},
+    {name: 'Dobročkovice', lat: 49.1629358, lon: 17.1089924},
+    {name: 'Dobročovice', lat: 50.0563187, lon: 14.6999088},
+    {name: 'Dobrohošť', lat: 49.0799944, lon: 15.4930161},
+    {name: 'Dobrochov', lat: 49.385862, lon: 17.1055658},
+    {name: 'Dobroměřice', lat: 50.3700911, lon: 13.7947324},
+    {name: 'Dobromilice', lat: 49.3573001, lon: 17.1385542},
+    {name: 'Dobronice u Bechyně', lat: 49.343441, lon: 14.4967481},
+    {name: 'Dobronín', lat: 49.4779398, lon: 15.649054},
+    {name: 'Dobroslavice', lat: 49.8803361, lon: 18.1409218},
+    {name: 'Dobroutov', lat: 49.4622416, lon: 15.7364863},
+    {name: 'Dobrovice', lat: 50.369326, lon: 14.9623322},
+    {name: 'Dobrovítov', lat: 49.7875329, lon: 15.3287123},
+    {name: 'Dobrovíz', lat: 50.1130584, lon: 14.2177331},
+    {name: 'Dobršín', lat: 49.2612918, lon: 13.5610472},
+    {name: 'Dobruška', lat: 50.2921062, lon: 16.1605457},
+    {name: 'Dobřany', lat: 49.6554407, lon: 13.2908386},
+    {name: 'Dobřany', lat: 50.3221237, lon: 16.2852925},
+    {name: 'Dobřejovice', lat: 49.9818075, lon: 14.5782861},
+    {name: 'Dobřeň', lat: 50.4794028, lon: 14.5567022},
+    {name: 'Dobřenice', lat: 50.1477218, lon: 15.6410411},
+    {name: 'Dobříč', lat: 50.0197961, lon: 14.2588505},
+    {name: 'Dobříč', lat: 49.8843272, lon: 13.468581},
+    {name: 'Dobřichov', lat: 50.0794861, lon: 15.0322383},
+    {name: 'Dobřichovice', lat: 49.9275312, lon: 14.2743416},
+    {name: 'Dobříkov', lat: 50.0025062, lon: 16.1338163},
+    {name: 'Dobříň', lat: 50.4376383, lon: 14.2936904},
+    {name: 'Dobřínsko', lat: 49.0522114, lon: 16.2616661},
+    {name: 'Dobříš', lat: 49.7813749, lon: 14.1704372},
+    {name: 'Dobřív', lat: 49.7156553, lon: 13.6868137},
+    {name: 'Dobšice', lat: 50.1340852, lon: 15.2688465},
+    {name: 'Dobšice', lat: 49.2159074, lon: 14.4839074},
+    {name: 'Dobšice', lat: 48.8483464, lon: 16.0854109},
+    {name: 'Dobšín', lat: 50.4834265, lon: 15.1167488},
+    {name: 'Dohalice', lat: 50.2872721, lon: 15.6945},
+    {name: 'Doksany', lat: 50.4548867, lon: 14.1611296},
+    {name: 'Doksy', lat: 50.1183818, lon: 14.0467382},
+    {name: 'Doksy', lat: 50.5642825, lon: 14.6553399},
+    {name: 'Dolánky nad Ohří', lat: 50.4729614, lon: 14.1632994},
+    {name: 'Dolany', lat: 50.1154665, lon: 14.1496822},
+    {name: 'Dolany', lat: 49.4431417, lon: 13.2481779},
+    {name: 'Dolany', lat: 49.8078155, lon: 13.4723566},
+    {name: 'Dolany', lat: 50.3800718, lon: 15.9610063},
+    {name: 'Dolany', lat: 50.1151649, lon: 15.6871577},
+    {name: 'Dolany', lat: 49.6500055, lon: 17.3203533},
+    {name: 'Dolany nad Vltavou', lat: 50.222037, lon: 14.3495201},
+    {name: 'Dolce', lat: 49.5525245, lon: 13.3930754},
+    {name: 'Dolenice', lat: 48.9093279, lon: 16.3649551},
+    {name: 'Dolní Bečva', lat: 49.4549771, lon: 18.1941873},
+    {name: 'Dolní Bělá', lat: 49.896155, lon: 13.273258},
+    {name: 'Dolní Benešov', lat: 49.9210128, lon: 18.1083515},
+    {name: 'Dolní Beřkovice', lat: 50.3930719, lon: 14.4508695},
+    {name: 'Dolní Bezděkov', lat: 49.9604377, lon: 15.8837721},
+    {name: 'Dolní Bojanovice', lat: 48.858608, lon: 17.0285852},
+    {name: 'Dolní Bousov', lat: 50.4384383, lon: 15.1276531},
+    {name: 'Dolní Branná', lat: 50.5931657, lon: 15.5938168},
+    {name: 'Dolní Brusnice', lat: 50.4587443, lon: 15.7267695},
+    {name: 'Dolní Břežany', lat: 49.9633609, lon: 14.4581344},
+    {name: 'Dolní Bukovsko', lat: 49.1713381, lon: 14.5815038},
+    {name: 'Dolní Cerekev', lat: 49.3445822, lon: 15.4567996},
+    {name: 'Dolní Čermná', lat: 49.9795367, lon: 16.5647524},
+    {name: 'Dolní Dobrouč', lat: 49.9925741, lon: 16.4976581},
+    {name: 'Dolní Domaslavice', lat: 49.7098311, lon: 18.4773505},
+    {name: 'Dolní Dubňany', lat: 49.0557654, lon: 16.2267335},
+    {name: 'Dolní Dunajovice', lat: 48.85468, lon: 16.5922756},
+    {name: 'Dolní Dvořiště', lat: 48.6566318, lon: 14.4522503},
+    {name: 'Dolní Dvůr', lat: 50.6520957, lon: 15.6558321},
+    {name: 'Dolní Habartice', lat: 50.7471772, lon: 14.3332786},
+    {name: 'Dolní Hbity', lat: 49.6572277, lon: 14.170248},
+    {name: 'Dolní Heřmanice', lat: 49.3047506, lon: 16.060104},
+    {name: 'Dolní Hořice', lat: 49.422334, lon: 14.8715431},
+    {name: 'Dolní Hradiště', lat: 49.913679, lon: 13.4959886},
+    {name: 'Dolní Hrachovice', lat: 49.4860782, lon: 14.7970996},
+    {name: 'Dolní Chvatliny', lat: 49.980501, lon: 15.0692848},
+    {name: 'Dolní Kalná', lat: 50.538874, lon: 15.6391934},
+    {name: 'Dolní Kounice', lat: 49.0702561, lon: 16.4649901},
+    {name: 'Dolní Kralovice', lat: 49.6721559, lon: 15.157366},
+    {name: 'Dolní Krupá', lat: 50.5463175, lon: 14.8671619},
+    {name: 'Dolní Krupá', lat: 49.6594643, lon: 15.6125253},
+    {name: 'Dolní Lánov', lat: 50.5869966, lon: 15.6643195},
+    {name: 'Dolní Lažany', lat: 49.0999324, lon: 15.822713},
+    {name: 'Dolní Lhota', lat: 49.1371713, lon: 17.8123529},
+    {name: 'Dolní Lhota', lat: 49.8423607, lon: 18.0924095},
+    {name: 'Dolní Libochová', lat: 49.4082864, lon: 16.1846015},
+    {name: 'Dolní Lochov', lat: 50.4522513, lon: 15.2862544},
+    {name: 'Dolní Lomná', lat: 49.5481983, lon: 18.7058511},
+    {name: 'Dolní Loučky', lat: 49.3609921, lon: 16.3587072},
+    {name: 'Dolní Lukavice', lat: 49.602853, lon: 13.3449073},
+    {name: 'Dolní Lutyně', lat: 49.8988168, lon: 18.4281743},
+    {name: 'Dolní Město', lat: 49.6277043, lon: 15.3822968},
+    {name: 'Dolní Morava', lat: 50.122618, lon: 16.7995081},
+    {name: 'Dolní Moravice', lat: 49.977876, lon: 17.3231489},
+    {name: 'Dolní Němčí', lat: 48.9684218, lon: 17.5853622},
+    {name: 'Dolní Nětčice', lat: 49.4758307, lon: 17.6760094},
+    {name: 'Dolní Nivy', lat: 50.2431063, lon: 12.6370405},
+    {name: 'Dolní Novosedly', lat: 49.3291191, lon: 14.1959894},
+    {name: 'Dolní Olešnice', lat: 50.5242142, lon: 15.7121138},
+    {name: 'Dolní Pěna', lat: 49.1105004, lon: 15.0220515},
+    {name: 'Dolní Podluží', lat: 50.8810017, lon: 14.5946473},
+    {name: 'Dolní Pohleď', lat: 49.7434169, lon: 15.1335206},
+    {name: 'Dolní Poustevna', lat: 50.9803948, lon: 14.2873374},
+    {name: 'Dolní Přím', lat: 50.2396557, lon: 15.7081683},
+    {name: 'Dolní Radechová', lat: 50.4383387, lon: 16.1512341},
+    {name: 'Dolní Roveň', lat: 50.0292743, lon: 15.9677393},
+    {name: 'Dolní Rožínka', lat: 49.4746071, lon: 16.2100968},
+    {name: 'Dolní Rychnov', lat: 50.1647703, lon: 12.6450804},
+    {name: 'Dolní Řasnice', lat: 50.9456852, lon: 15.168675},
+    {name: 'Dolní Ředice', lat: 50.0778071, lon: 15.9239284},
+    {name: 'Dolní Slivno', lat: 50.3084673, lon: 14.733144},
+    {name: 'Dolní Sokolovec', lat: 49.7265481, lon: 15.7151717},
+    {name: 'Dolní Stakory', lat: 50.4368588, lon: 14.9726079},
+    {name: 'Dolní Studénky', lat: 49.9349838, lon: 16.9709352},
+    {name: 'Dolní Těšice', lat: 49.4949674, lon: 17.8065296},
+    {name: 'Dolní Tošanovice', lat: 49.6842527, lon: 18.4884327},
+    {name: 'Dolní Třebonín', lat: 48.85529, lon: 14.4100298},
+    {name: 'Dolní Újezd', lat: 49.8182154, lon: 16.3068054},
+    {name: 'Dolní Újezd', lat: 49.5338471, lon: 17.5435506},
+    {name: 'Dolní Věstonice', lat: 48.8881735, lon: 16.6444867},
+    {name: 'Dolní Vilémovice', lat: 49.1535606, lon: 15.9771884},
+    {name: 'Dolní Vilímeč', lat: 49.1356883, lon: 15.5203722},
+    {name: 'Dolní Zálezly', lat: 50.5973179, lon: 14.0430777},
+    {name: 'Dolní Zimoř', lat: 50.4266145, lon: 14.5013635},
+    {name: 'Dolní Žandov', lat: 50.0179426, lon: 12.5510087},
+    {name: 'Dolní Žďár', lat: 49.1011177, lon: 14.988339},
+    {name: 'Dolní Životice', lat: 49.897321, lon: 17.77969},
+    {name: 'Doloplazy', lat: 49.5671778, lon: 17.4114741},
+    {name: 'Doloplazy', lat: 49.3543308, lon: 17.1635294},
+    {name: 'Domamil', lat: 49.0832344, lon: 15.6955734},
+    {name: 'Domanín', lat: 48.9627553, lon: 14.7547633},
+    {name: 'Domanín', lat: 48.9714693, lon: 14.7399791},
+    {name: 'Dománovice', lat: 50.111855, lon: 15.3225154},
+    {name: 'Domašín', lat: 50.4206973, lon: 13.172198},
+    {name: 'Domašov', lat: 49.2451957, lon: 16.343862},
+    {name: 'Domašov nad Bystřicí', lat: 49.7421347, lon: 17.4451954},
+    {name: 'Domašov u Šternberka', lat: 49.7057876, lon: 17.3378934},
+    {name: 'Domaželice', lat: 49.4280847, lon: 17.5448737},
+    {name: 'Domažlice', lat: 49.4403546, lon: 12.929748},
+    {name: 'Domoraz', lat: 49.2506228, lon: 13.6620036},
+    {name: 'Domousnice', lat: 50.3940748, lon: 15.1027324},
+    {name: 'Domoušice', lat: 50.2341514, lon: 13.7295157},
+    {name: 'Doňov', lat: 49.2130604, lon: 14.776164},
+    {name: 'Doubek', lat: 50.0176126, lon: 14.7377649},
+    {name: 'Doubice', lat: 50.8886016, lon: 14.4616106},
+    {name: 'Doubrava', lat: 49.811369, lon: 15.6047138},
+    {name: 'Doubravčice', lat: 50.0220507, lon: 14.7930751},
+    {name: 'Doubravice', lat: 48.9359698, lon: 14.510572},
+    {name: 'Doubravice', lat: 49.3520099, lon: 13.8619198},
+    {name: 'Doubravice', lat: 50.4149002, lon: 15.7794129},
+    {name: 'Doubravice nad Svitavou', lat: 49.435856, lon: 16.6297712},
+    {name: 'Doubravička', lat: 50.3951064, lon: 14.7761042},
+    {name: 'Doubravník', lat: 49.4290528, lon: 16.3483396},
+    {name: 'Doubravy', lat: 49.1511659, lon: 17.6715393},
+    {name: 'Doudleby', lat: 48.8936179, lon: 14.5015255},
+    {name: 'Doudleby nad Orlicí', lat: 50.1073719, lon: 16.2609892},
+    {name: 'Doupě', lat: 49.2445599, lon: 15.4286072},
+    {name: 'Doupovské Hradiště', lat: 50.2354421, lon: 13.0108231},
+    {name: 'Drahanovice', lat: 49.5785573, lon: 17.0770128},
+    {name: 'Drahany', lat: 49.43326, lon: 16.8973813},
+    {name: 'Drahelčice', lat: 50.0317981, lon: 14.2030247},
+    {name: 'Drahenice', lat: 49.5208419, lon: 13.958404},
+    {name: 'Drahkov', lat: 49.5570495, lon: 13.4723058},
+    {name: 'Drahlín', lat: 49.7322336, lon: 13.9694318},
+    {name: 'Drahňovice', lat: 49.8224724, lon: 14.9016448},
+    {name: 'Drahobudice', lat: 49.9374776, lon: 15.0662554},
+    {name: 'Drahobuz', lat: 50.5251183, lon: 14.3206979},
+    {name: 'Drahonice', lat: 49.2008028, lon: 14.0755724},
+    {name: 'Drahonín', lat: 49.4140613, lon: 16.2769004},
+    {name: 'Drahoňův Újezd', lat: 49.8768297, lon: 13.7250403},
+    {name: 'Drahotěšice', lat: 49.1243326, lon: 14.5465812},
+    {name: 'Drahotín', lat: 49.5238629, lon: 12.758059},
+    {name: 'Drahouš', lat: 50.0801242, lon: 13.4756587},
+    {name: 'Drahov', lat: 49.1753616, lon: 14.7541752},
+    {name: 'Drachkov', lat: 49.2406647, lon: 13.8374525},
+    {name: 'Dráchov', lat: 49.2264342, lon: 14.7066216},
+    {name: 'Drásov', lat: 49.7026533, lon: 14.1182829},
+    {name: 'Drásov', lat: 49.3320138, lon: 16.4781153},
+    {name: 'Dražeň', lat: 49.9268445, lon: 13.2878667},
+    {name: 'Draženov', lat: 49.4556926, lon: 12.8725625},
+    {name: 'Dražice', lat: 49.4296309, lon: 14.5894681},
+    {name: 'Dražíč', lat: 49.3058685, lon: 14.3838199},
+    {name: 'Dražičky', lat: 49.3990262, lon: 14.5987166},
+    {name: 'Drážov', lat: 49.1673069, lon: 13.7406036},
+    {name: 'Dražovice', lat: 49.2239036, lon: 13.6091603},
+    {name: 'Dražovice', lat: 49.1947426, lon: 16.9433776},
+    {name: 'Dražůvky', lat: 49.026524, lon: 17.0176954},
+    {name: 'Drevníky', lat: 49.7201546, lon: 14.2740263},
+    {name: 'Drhovice', lat: 49.4328103, lon: 14.5583773},
+    {name: 'Drhovle', lat: 49.334743, lon: 14.036318},
+    {name: 'Drhovy', lat: 49.7392521, lon: 14.2320701},
+    {name: 'Drmoul', lat: 49.9366842, lon: 12.6644339},
+    {name: 'Drnek', lat: 50.1956797, lon: 13.9715511},
+    {name: 'Drnholec', lat: 48.8572958, lon: 16.4858072},
+    {name: 'Drnovice', lat: 49.4680432, lon: 16.540633},
+    {name: 'Drnovice', lat: 49.2762951, lon: 16.951463},
+    {name: 'Drnovice', lat: 49.1867341, lon: 17.9606778},
+    {name: 'Drobovice', lat: 49.8913959, lon: 15.4123886},
+    {name: 'Droužetice', lat: 49.2891708, lon: 13.8977533},
+    {name: 'Droužkovice', lat: 50.4307789, lon: 13.4290914},
+    {name: 'Drozdov', lat: 49.8631347, lon: 13.8405766},
+    {name: 'Drozdov', lat: 49.9092869, lon: 16.7867487},
+    {name: 'Drslavice', lat: 49.0253198, lon: 13.9207641},
+    {name: 'Drslavice', lat: 49.0502688, lon: 17.6035286},
+    {name: 'Druhanov', lat: 49.6987784, lon: 15.4102188},
+    {name: 'Drunče', lat: 49.2967472, lon: 14.9357832},
+    {name: 'Druztová', lat: 49.7974077, lon: 13.4487195},
+    {name: 'Družec', lat: 50.1029559, lon: 14.0456678},
+    {name: 'Drysice', lat: 49.3345421, lon: 17.0577393},
+    {name: 'Držkov', lat: 50.6876177, lon: 15.3013264},
+    {name: 'Držková', lat: 49.3322773, lon: 17.7937197},
+    {name: 'Držovice', lat: 49.4910793, lon: 17.1338622},
+    {name: 'Dřenice', lat: 49.9825003, lon: 15.7451323},
+    {name: 'Dřešín', lat: 49.1555793, lon: 13.7736959},
+    {name: 'Dřetovice', lat: 50.1826849, lon: 14.2102595},
+    {name: 'Dřevčice', lat: 50.1677519, lon: 14.62822},
+    {name: 'Dřevěnice', lat: 50.4525124, lon: 15.4470919},
+    {name: 'Dřevnovice', lat: 49.3280872, lon: 17.143257},
+    {name: 'Dřevohostice', lat: 49.426187, lon: 17.5914716},
+    {name: 'Dřínov', lat: 50.2756115, lon: 14.0695289},
+    {name: 'Dřínov', lat: 50.25222, lon: 14.08313},
+    {name: 'Dřínov', lat: 49.2864987, lon: 17.2386875},
+    {name: 'Dřísy', lat: 50.2559959, lon: 14.6434597},
+    {name: 'Dříteč', lat: 50.1051014, lon: 15.8090919},
+    {name: 'Dříteň', lat: 49.1428094, lon: 14.3459563},
+    {name: 'Dub', lat: 49.1083445, lon: 14.0114409},
+    {name: 'Dub nad Moravou', lat: 49.4824865, lon: 17.2772326},
+    {name: 'Dubá', lat: 50.5403416, lon: 14.5402337},
+    {name: 'Dubany', lat: 49.9906285, lon: 15.7262715},
+    {name: 'Dubčany', lat: 49.6489667, lon: 17.0780777},
+    {name: 'Dubenec', lat: 49.695416, lon: 14.0795342},
+    {name: 'Dubenec', lat: 50.3776214, lon: 15.7950715},
+    {name: 'Dubí', lat: 50.6812997, lon: 13.788771},
+    {name: 'Dubicko', lat: 49.8280613, lon: 16.9626634},
+    {name: 'Dubičné', lat: 48.9810697, lon: 14.5387636},
+    {name: 'Dublovice', lat: 49.6709989, lon: 14.3640927},
+    {name: 'Dubňany', lat: 48.9175078, lon: 17.0955296},
+    {name: 'Dubné', lat: 48.9767819, lon: 14.3594962},
+    {name: 'Dubnice', lat: 50.7259718, lon: 14.8087129},
+    {name: 'Dubno', lat: 49.6958519, lon: 14.0517442},
+    {name: 'Dubovice', lat: 49.4325889, lon: 15.1745809},
+    {name: 'Dudín', lat: 49.451005, lon: 15.3976061},
+    {name: 'Duchcov', lat: 50.6040315, lon: 13.7461464},
+    {name: 'Dukovany', lat: 49.0809441, lon: 16.1915279},
+    {name: 'Důl', lat: 49.4520974, lon: 15.0302965},
+    {name: 'Dunajovice', lat: 49.0350449, lon: 14.6952479},
+    {name: 'Dunice', lat: 49.6028968, lon: 15.1532087},
+    {name: 'Dušejov', lat: 49.4087906, lon: 15.4332394},
+    {name: 'Dušníky', lat: 50.4245332, lon: 14.1901631},
+    {name: 'Dvakačovice', lat: 49.9790824, lon: 15.8945059},
+    {name: 'Dvorce', lat: 49.3826815, lon: 15.4856575},
+    {name: 'Dvorce', lat: 49.8334491, lon: 17.5478874},
+    {name: 'Dvory', lat: 50.2116956, lon: 14.9951313},
+    {name: 'Dvory', lat: 49.0394181, lon: 13.9460658},
+    {name: 'Dvory nad Lužnicí', lat: 48.852719, lon: 14.9005304},
+    {name: 'Dvůr Králové nad Labem', lat: 50.4319053, lon: 15.8139947},
+    {name: 'Dyjákovice', lat: 48.7720718, lon: 16.3012013},
+    {name: 'Dyjákovičky', lat: 48.7823, lon: 16.0956268},
+    {name: 'Dyje', lat: 48.8470392, lon: 16.1167758},
+    {name: 'Dyjice', lat: 49.174625, lon: 15.4938702},
+    {name: 'Dymokury', lat: 50.2476259, lon: 15.204077},
+    {name: 'Dynín', lat: 49.137199, lon: 14.6311949},
+    {name: 'Dýšina', lat: 49.7776678, lon: 13.4914023},
+    {name: 'Dzbel', lat: 49.612894, lon: 16.8508787},
+    {name: 'Džbánice', lat: 49.0012607, lon: 16.2109348},
+    {name: 'Džbánov', lat: 49.9163569, lon: 16.1594998},
+    ];
+    dmPoints.data.setAll(dObce);
+    dmChart.set("zoomControl", am5map.ZoomControl.new(dmRoot, {}));
+    dmPolygons.events.on("datavalidated", function() {
+      dmChart.zoomToGeoPoint({ longitude: 15.5, latitude: 49.8 }, 8, true);
+    });
+  })();
+
+  /* ── Kontaktní formulář ── */
+  function handleForm(e) {
+    e.preventDefault();
+    const btn = e.target.querySelector(".form-submit");
+    btn.textContent = "✓ Odesláno!";
+    btn.style.background = "var(--meadow)";
+    btn.style.color = "#fff";
+    setTimeout(() => {
+      btn.textContent = "Odeslat zprávu →";
+      btn.style.background = "";
+      btn.style.color = "";
+      e.target.reset();
+    }, 3000);
+  }
+
+</script>
+</body>
+</html>

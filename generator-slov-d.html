@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>352 D-obcí — Generátor slov</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&family=Caveat:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --solar:   #F5C518;
+      --meadow:  #2A9D8F;
+      --fuchsia: #EE3C95;
+      --sage:    #A8C4BC;
+      --cream:   #EDE8DC;
+      --night:   #264040;
+      --dust:    #8A9E9B;
+      --earth:   #6B5B4F;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { height: 100%; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--night);
+      color: #fff;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 1.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: -30%; left: -20%;
+      width: 140%; height: 160%;
+      background:
+        radial-gradient(ellipse at 70% 30%, rgba(245,197,24,0.10) 0%, transparent 50%),
+        radial-gradient(ellipse at 20% 80%, rgba(42,157,143,0.07) 0%, transparent 45%),
+        radial-gradient(ellipse at 85% 75%, rgba(238,60,149,0.05) 0%, transparent 40%);
+      pointer-events: none;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 480px;
+    }
+
+    /* BADGE */
+    .badge {
+      font-size: .65rem;
+      font-weight: 700;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--solar);
+      border: 1px solid rgba(245,197,24,.3);
+      padding: .4rem 1.4rem;
+      border-radius: 100px;
+      margin-bottom: 1.75rem;
+    }
+
+    /* TITLE */
+    h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(3rem, 12vw, 5.5rem);
+      line-height: .92;
+      letter-spacing: 3px;
+      color: #fff;
+      margin-bottom: .5rem;
+    }
+
+    h1 .accent { color: var(--solar); }
+
+    .subtitle {
+      font-family: 'Caveat', cursive;
+      font-size: clamp(1.1rem, 3vw, 1.5rem);
+      color: var(--sage);
+      margin-bottom: 2.5rem;
+    }
+
+    .box-title {
+      font-size: .65rem;
+      font-weight: 700;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--solar);
+      border: 1px solid rgba(245,197,24,.3);
+      padding: .35rem 1.2rem;
+      border-radius: 100px;
+      margin-bottom: 1.25rem;
+    }
+
+    /* WORD BOX */
+    .word-box {
+      width: 100%;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(245,197,24,.2);
+      border-radius: 24px;
+      padding: 2.5rem 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      transition: border-color .3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .word-box::after {
+      content: 'D';
+      position: absolute;
+      right: -10px;
+      bottom: -20px;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 10rem;
+      color: rgba(245,197,24,.04);
+      line-height: 1;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .word-box:hover {
+      border-color: rgba(245,197,24,.5);
+    }
+
+    .word {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(3rem, 12vw, 5rem);
+      line-height: 1;
+      letter-spacing: 4px;
+      color: #fff;
+      margin-bottom: .75rem;
+    }
+
+    .word .first-letter {
+      color: var(--solar);
+    }
+
+    .definition {
+      font-family: 'Caveat', cursive;
+      font-size: clamp(1.1rem, 3vw, 1.4rem);
+      color: var(--sage);
+      line-height: 1.5;
+      max-width: 420px;
+      margin-bottom: .75rem;
+    }
+
+    .category {
+      display: inline-block;
+      background: rgba(245,197,24,.12);
+      color: var(--solar);
+      border-radius: 100px;
+      padding: .25rem 1rem;
+      font-size: .7rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .tema {
+      display: inline-block;
+      background: rgba(42,157,143,.15);
+      color: var(--meadow);
+      border-radius: 100px;
+      padding: .25rem 1rem;
+      font-size: .65rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-left: .4rem;
+    }
+
+    .tema.hidden { display: none; }
+
+    /* BUTTON */
+    .btn-wrap {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    button {
+      background: var(--solar);
+      color: var(--night);
+      border: none;
+      padding: .6rem 2rem;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.1rem;
+      letter-spacing: 2px;
+      border-radius: 100px;
+      cursor: pointer;
+      transition: all .2s;
+      margin-top: .5rem;
+    }
+
+    button:hover {
+      background: #ffd84a;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(245,197,24,.3);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    /* COUNTER */
+    .counter {
+      font-size: .72rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.2);
+      margin-top: .25rem;
+    }
+
+    .counter span {
+      color: var(--solar);
+      opacity: .6;
+    }
+
+    /* FOOTER BADGE */
+    .footer-brand {
+      margin-top: 2.5rem;
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      opacity: .35;
+      transition: opacity .3s;
+    }
+
+    .footer-brand:hover { opacity: .6; }
+
+    .footer-brand .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--solar); }
+    .footer-brand .dot.meadow { background: var(--meadow); }
+    .footer-brand .dot.fuchsia { background: var(--fuchsia); }
+
+    .footer-brand span {
+      font-size: .6rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #fff;
+    }
+
+    /* ANIMATION */
+    @keyframes slideUp {
+      0%  { opacity: 0; transform: translateY(16px); }
+      100%{ opacity: 1; transform: translateY(0); }
+    }
+
+    .animate {
+      animation: slideUp .35s cubic-bezier(.22,.68,0,1.2) forwards;
+    }
+
+    @media (max-width: 480px) {
+      .word-box { padding: 2rem 1.5rem; min-height: 170px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <div class="word-box">
+      <div class="box-title">Generátor D-slov</div>
+      <div class="word" id="word"><span class="first-letter">D</span>omov</div>
+      <div class="definition" id="definition">Místo, kde člověk žije a cítí se bezpečně.</div>
+      <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:.4rem;margin-bottom:.25rem">
+        <span class="category" id="category">podstatné jméno</span>
+        <span class="tema hidden" id="tema"></span>
+      </div>
+      <button onclick="generate()">DALŠÍ SLOVO</button>
+      <p class="counter" id="counter">
+        Kliknutí: <span id="clicks">0</span> &nbsp;·&nbsp; Celkem slov: <span id="total">—</span>
+      </p>
+    </div>
+
+
+  </div>
+
+  <script>
+    const slova = [{"slovo":"Dres","definice":"Sportovní oblečení cyklisty; barvy týmu nosíš na kůži.","kategorie":"podstatné jméno","tema":"cyklistika"},{"slovo":"Dojezd","definice":"Poslední kilometry etapy; tělo křičí, ale nohy jedou.","kategorie":"podstatné jméno","tema":"cyklistika"},{"slovo":"Drátek","definice":"Paprsek kola spojující střed s ráfkem; drobná věc, která drží celek.","kategorie":"podstatné jméno","tema":"cyklistika"},{"slovo":"Dvojkolka","definice":"Lidový název pro kolo; dvě kola a nekonečné možnosti.","kategorie":"podstatné jméno","tema":"cyklistika"},{"slovo":"Dojíždění","definice":"Pravidelná cesta na kole; zvyk, který mění charakter.","kategorie":"podstatné jméno","tema":"cyklistika"},{"slovo":"Druhý dech","definice":"Příliv energie tam, kde jsi čekal konec.","kategorie":"podstatné jméno","tema":"cyklistika"},{"slovo":"Duše kola","definice":"Vzduchová náplň pneumatiky; bez ní nejede ani život.","kategorie":"podstatné jméno","tema":"cyklistika"},{"slovo":"Downhill","definice":"Sjezd z kopce; odměna za každý výšlap.","kategorie":"podstatné jméno","tema":"cyklistika"},{"slovo":"Dostih","definice":"Závodní klání; moment, kdy instinkty přebírají rozum.","kategorie":"podstatné jméno","tema":"cyklistika"},{"slovo":"Doping","definice":"Zakázaná zkratka; připomínka, že pravé vítězství se nedá koupit.","kategorie":"podstatné jméno","tema":"cyklistika"},{"slovo":"Dálkový závod","definice":"Klání, kde vyhrává ten, kdo nevzdá.","kategorie":"podstatné jméno","tema":"cyklistika"},{"slovo":"Depo","definice":"Zásobovací stanoviště na závodě; místo, kde závodníci přijímají pomoc.","kategorie":"podstatné jméno","tema":"cyklistika"},{"slovo":"Domácí kopec","definice":"Tréninkový terén, který znáš nazpaměť, ale nikdy tě nenudí.","kategorie":"podstatné jméno","tema":"cyklistika"},{"slovo":"Dobytý kopec","definice":"Vrchol, na který jsi nevěřil, že dojdeš.","kategorie":"podstatné jméno","tema":"cyklistika"},{"slovo":"Dlouhá etapa","definice":"Den na kole, který tě změní.","kategorie":"podstatné jméno","tema":"cyklistika"},{"slovo":"Dres s číslem","definice":"Symbol, že jsi na startu — a to stačí.","kategorie":"podstatné jméno","tema":"cyklistika"},{"slovo":"Dřina","definice":"Tvrdý trénink bez přívlastků; základ každého výkonu.","kategorie":"podstatné jméno","tema":"cyklistika"},{"slovo":"Dvoustopá","definice":"Terénní stezka pro kolo; krajinu vidíš jinak z pedálů.","kategorie":"podstatné jméno","tema":"cyklistika"},{"slovo":"Dávkování sil","definice":"Správné rozdělení energie na celou trasu; umění, které se učíš léty.","kategorie":"podstatné jméno","tema":"cyklistika"},{"slovo":"Divoký terén","definice":"Místo, kde se kolo stává součástí přírody.","kategorie":"podstatné jméno","tema":"cyklistika"},{"slovo":"Dobíjet se","definice":"Načerpávat energii po výkonu; bez odpočinku není výkon.","kategorie":"sloveso","tema":"cyklistika"},{"slovo":"Dohnat","definice":"Dostihnout závodníka před sebou — na kole i v životě.","kategorie":"sloveso","tema":"cyklistika"},{"slovo":"Dojet","definice":"Dotáhnout to až do cíle; to ostatní jsou detaily.","kategorie":"sloveso","tema":"cyklistika"},{"slovo":"Dolů z kopce","definice":"Okamžik, kdy se tělo vzdává tíži a jen letí.","kategorie":"příslovce","tema":"cyklistika"},{"slovo":"Dokola","definice":"Stále znovu; jako pedály, které se nikdy nezastaví.","kategorie":"příslovce","tema":"cyklistika"},{"slovo":"Doprovázení","definice":"Bytí po boku druhého na jeho cestě — zvláště v závěru života.","kategorie":"podstatné jméno","tema":"paliativa"},{"slovo":"Dotek","definice":"Přítomnost vyjádřená rukou; slova někdy nestačí.","kategorie":"podstatné jméno","tema":"paliativa"},{"slovo":"Dojemnost","definice":"Hloubka, která pohne srdcem i bez slov.","kategorie":"podstatné jméno","tema":"paliativa"},{"slovo":"Důstojné umírání","definice":"Právo každého odejít v klidu, lásce a bez zbytečné bolesti.","kategorie":"podstatné jméno","tema":"paliativa"},{"slovo":"Duchovní péče","definice":"Pozornost věnovaná vnitřnímu světu; to, co léky neléčí.","kategorie":"podstatné jméno","tema":"paliativa"},{"slovo":"Domácí hospic","definice":"Místo, kde odchod probíhá v prostředí domova.","kategorie":"podstatné jméno","tema":"paliativa"},{"slovo":"Doprovod rodiny","definice":"Přítomnost těch nejbližších v nejtěžších chvílích.","kategorie":"podstatné jméno","tema":"paliativa"},{"slovo":"Díkůvzdání","definice":"Slova, která by měla zaznít, dokud je čas.","kategorie":"podstatné jméno","tema":"paliativa"},{"slovo":"Dýchání","definice":"Základní rytmus života; sledovat ho u druhého je privilegium.","kategorie":"podstatné jméno","tema":"paliativa"},{"slovo":"Domácí péče","definice":"Péče v prostředí, kde se člověk cítí doma.","kategorie":"podstatné jméno","tema":"paliativa"},{"slovo":"Darování orgánů","definice":"Rozhodnutí, které přesahuje vlastní život.","kategorie":"podstatné jméno","tema":"paliativa"},{"slovo":"Dobrovolník v hospici","definice":"Člověk, který přichází bez nároku na odměnu.","kategorie":"podstatné jméno","tema":"paliativa"},{"slovo":"Dostupná paliativa","definice":"Péče, která by měla být právem, ne privilegiem.","kategorie":"podstatné jméno","tema":"paliativa"},{"slovo":"Domov jako místo odchodu","definice":"Přání, které lze splnit — s pomocí a odvahou.","kategorie":"podstatné jméno","tema":"paliativa"},{"slovo":"Dlouhá nemoc","definice":"Cesta, která mění všechny, kteří jdou vedle.","kategorie":"podstatné jméno","tema":"paliativa"},{"slovo":"Důvěrný rozhovor","definice":"Sdílení toho, co se jindy nevysloví; dar přítomnosti.","kategorie":"podstatné jméno","tema":"paliativa"},{"slovo":"Doprovodná slova","definice":"To, co zůstane po odchodu milovaného.","kategorie":"podstatné jméno","tema":"paliativa"},{"slovo":"Dojímat","definice":"Vyvolávat hluboký citový pohyb — bez manipulace, jen pravdou.","kategorie":"sloveso","tema":"paliativa"},{"slovo":"Dojemný","definice":"Vyvolávající hluboké city; pravdivý a nefalšovaný.","kategorie":"přídavné jméno","tema":"paliativa"},{"slovo":"Dokonalování","definice":"Neustálé zlepšování sebe sama malými, každodenními kroky.","kategorie":"podstatné jméno","tema":"kaizen"},{"slovo":"Dovednost","definice":"Schopnost získaná praxí, opakováním a odhodláním.","kategorie":"podstatné jméno","tema":"seberozvoj"},{"slovo":"Dozrávání","definice":"Pomalý neviditelný proces, kdy se stáváš víc sám sebou.","kategorie":"podstatné jméno","tema":"seberozvoj"},{"slovo":"Determinace","definice":"Pevné odhodlání jít za cílem navzdory všemu, co stojí v cestě.","kategorie":"podstatné jméno","tema":"seberozvoj"},{"slovo":"Důslednost","definice":"Každodenní malá akce — základ každé velké změny.","kategorie":"podstatné jméno","tema":"kaizen"},{"slovo":"Disciplína","definice":"Dělat to, co je třeba, i když se nechce.","kategorie":"podstatné jméno","tema":"kaizen"},{"slovo":"Drobný krok","definice":"Základ kaizenu; velké změny začínají maličkostí.","kategorie":"podstatné jméno","tema":"kaizen"},{"slovo":"Denní rutina","definice":"Soubor návyků, které tvoří charakter.","kategorie":"podstatné jméno","tema":"kaizen"},{"slovo":"Dotazování sebe","definice":"Pokládat si správné otázky je první krok k odpovědím.","kategorie":"podstatné jméno","tema":"seberozvoj"},{"slovo":"Důvěra v proces","definice":"Věra, že výsledek přijde, i když ho zatím nevidíš.","kategorie":"podstatné jméno","tema":"seberozvoj"},{"slovo":"Deník","definice":"Zrcadlo vlastní mysli; nástroj sebereflexe.","kategorie":"podstatné jméno","tema":"seberozvoj"},{"slovo":"Denní meditace","definice":"Chvíle ticha, která mění vše kolem.","kategorie":"podstatné jméno","tema":"seberozvoj"},{"slovo":"Dobrovolné nepohodlí","definice":"Záměrné vyhledávání výzev; posiluje odolnost.","kategorie":"podstatné jméno","tema":"seberozvoj"},{"slovo":"Dosažitelný cíl","definice":"Realistický milník na cestě k velkému snu.","kategorie":"podstatné jméno","tema":"seberozvoj"},{"slovo":"Denní výzva","definice":"Malý úkol, který posouvá hranice komfortní zóny.","kategorie":"podstatné jméno","tema":"kaizen"},{"slovo":"Dlouhodobá vize","definice":"Obraz budoucnosti, který tě udrží v pohybu.","kategorie":"podstatné jméno","tema":"seberozvoj"},{"slovo":"Dočasný neúspěch","definice":"Zpětná vazba, ne konec.","kategorie":"podstatné jméno","tema":"seberozvoj"},{"slovo":"Dobrý zvyk","definice":"Automatická akce, která slouží — každý den.","kategorie":"podstatné jméno","tema":"kaizen"},{"slovo":"Důkladná příprava","definice":"Základ každého úspěchu; co vypadá jako štěstí.","kategorie":"podstatné jméno","tema":"seberozvoj"},{"slovo":"Dílčí úspěch","definice":"Každý malý krok stojí za oslavu.","kategorie":"podstatné jméno","tema":"kaizen"},{"slovo":"Dotažení do konce","definice":"Vzácná schopnost; základ důvěryhodnosti.","kategorie":"podstatné jméno","tema":"seberozvoj"},{"slovo":"Denní bilancování","definice":"Krátké hodnocení dne; co fungovalo, co ne.","kategorie":"podstatné jméno","tema":"kaizen"},{"slovo":"Dozrávat","definice":"Postupně růst a vyzrávat jako člověk — bez spěchu.","kategorie":"sloveso","tema":"seberozvoj"},{"slovo":"Dobrat se","definice":"Dospět k poznání nebo pravdě vlastním úsilím.","kategorie":"sloveso","tema":"seberozvoj"},{"slovo":"Dotáhnout","definice":"Dokončit to, co bylo začato — nevzdávat se před cílem.","kategorie":"sloveso","tema":"seberozvoj"},{"slovo":"Dynamický","definice":"Plný energie a pohybu; člověk, který nikdy nestojí na místě.","kategorie":"přídavné jméno","tema":"seberozvoj"},{"slovo":"Dění","definice":"Živý proud přítomnosti; stav, kdy jsi v tom, co děláš, celý.","kategorie":"podstatné jméno","tema":"flow"},{"slovo":"Duchovno","definice":"Oblast vnitřního prožívání přesahující každodenní shon.","kategorie":"podstatné jméno","tema":"flow"},{"slovo":"Dynamika","definice":"Energie v pohybu; zákon živého systému.","kategorie":"podstatné jméno","tema":"flow"},{"slovo":"Dar přítomnosti","definice":"Schopnost být plně tam, kde jsi; nejcennější ze všech darů.","kategorie":"podstatné jméno","tema":"flow"},{"slovo":"Dočasnost","definice":"Vědomí, že vše přejde — i bolest, i radost.","kategorie":"podstatné jméno","tema":"flow"},{"slovo":"Duchovní klid","definice":"Vnitřní mír, který nepotřebuje vnější podmínky.","kategorie":"podstatné jméno","tema":"flow"},{"slovo":"Denní rituál","definice":"Opakovaný úkon, který vytváří pocit bezpečí a řádu.","kategorie":"podstatné jméno","tema":"flow"},{"slovo":"Dychtivost","definice":"Touha a zápal po životě; palivo každého dobrodruha.","kategorie":"podstatné jméno","tema":"flow"},{"slovo":"Dobrá nálada","definice":"Dar, který lze pěstovat vědomě.","kategorie":"podstatné jméno","tema":"flow"},{"slovo":"Důvěra v sebe","definice":"Základ každého autentického činu.","kategorie":"podstatné jméno","tema":"flow"},{"slovo":"Doznívání","definice":"Stav po silném zážitku; čas nechat ho v sobě usadit.","kategorie":"podstatné jméno","tema":"flow"},{"slovo":"Dech vědomí","definice":"Uvědomělý nádech jako návrat k sobě.","kategorie":"podstatné jméno","tema":"flow"},{"slovo":"Dimenze ticha","definice":"Prostor mezi slovy, kde se odehrává to důležité.","kategorie":"podstatné jméno","tema":"flow"},{"slovo":"Dobrá únava","definice":"Únava z plného prožití dne; znamení dobře žitého života.","kategorie":"podstatné jméno","tema":"flow"},{"slovo":"Denní vděčnost","definice":"Záměrné hledání toho dobrého v každém dni.","kategorie":"podstatné jméno","tema":"flow"},{"slovo":"Dávání bez očekávání","definice":"Čistá forma lásky v akci.","kategorie":"podstatné jméno","tema":"flow"},{"slovo":"Divoká přítomnost","definice":"Stav plného ponoření do prožívání; bez filtru, bez záznamu.","kategorie":"podstatné jméno","tema":"flow"},{"slovo":"Dvojí vědomí","definice":"Schopnost být aktérem i pozorovatelem vlastního života.","kategorie":"podstatné jméno","tema":"flow"},{"slovo":"Dobrodružství","definice":"Zážitek plný nečekaného — přesně ten, kvůli kterému vyjíždíš.","kategorie":"podstatné jméno","tema":"cestování"},{"slovo":"Destinace","definice":"Místo, kam míříš. Nebo které tě překvapí, že tam míříš.","kategorie":"podstatné jméno","tema":"cestování"},{"slovo":"Domorodec","definice":"Původní obyvatel místa; člověk, který zná kraj zevnitř.","kategorie":"podstatné jméno","tema":"cestování"},{"slovo":"Dobývání","definice":"Odvážné pronikání do neznámých míst a výzev.","kategorie":"podstatné jméno","tema":"cestování"},{"slovo":"Daleká cesta","definice":"Trasa, která mění mysl i tělo.","kategorie":"podstatné jméno","tema":"cestování"},{"slovo":"Destinační deník","definice":"Zápisník z cest; druhý život zážitků.","kategorie":"podstatné jméno","tema":"cestování"},{"slovo":"Domácí pocit v cizině","definice":"Okamžik, kdy se cizí místo stane domovem.","kategorie":"podstatné jméno","tema":"cestování"},{"slovo":"Dobrodružná duše","definice":"Člověk, který neodolá neprozkoumanému.","kategorie":"podstatné jméno","tema":"cestování"},{"slovo":"Dočasný domov","definice":"Místo, kde žiješ krátce, ale naplno.","kategorie":"podstatné jméno","tema":"cestování"},{"slovo":"Délka cesty","definice":"Číslo, které při dobrodružství přestane mít smysl.","kategorie":"podstatné jméno","tema":"cestování"},{"slovo":"Detour","definice":"Odbočka od plánované trasy; often the best part.","kategorie":"podstatné jméno","tema":"cestování"},{"slovo":"Dobývání výšin","definice":"Výstup na místo, odkud je svět jiný.","kategorie":"podstatné jméno","tema":"cestování"},{"slovo":"Dobrovolná ztráta","definice":"Záměrné opuštění mapy; cesta k nejlepším zážitkům.","kategorie":"podstatné jméno","tema":"cestování"},{"slovo":"Domov v batohu","definice":"Vše, co potřebuješ, neseš na zádech.","kategorie":"podstatné jméno","tema":"cestování"},{"slovo":"Daleký horizont","definice":"Linie, za kterou vede dobrodružství.","kategorie":"podstatné jméno","tema":"cestování"},{"slovo":"Dobrodruh","definice":"Člověk, pro kterého je neznámo pozvánka, ne hrozba.","kategorie":"podstatné jméno","tema":"cestování"},{"slovo":"Dočasná svoboda","definice":"Pocit na cestě, kdy povinnosti mizí v obzoru.","kategorie":"podstatné jméno","tema":"cestování"},{"slovo":"Důvěra v cestu","definice":"Vědomí, že cesta se skládá sama, krok po kroku.","kategorie":"podstatné jméno","tema":"cestování"},{"slovo":"Domorodá kuchyně","definice":"Nejupřímnější velvyslanec kultury.","kategorie":"podstatné jméno","tema":"cestování"},{"slovo":"Divoká příroda","definice":"Místo, kde se člověk vrací k podstatě.","kategorie":"podstatné jméno","tema":"cestování"},{"slovo":"Dálkový pochod","definice":"Každodenní kroky; meditace v pohybu.","kategorie":"podstatné jméno","tema":"cestování"},{"slovo":"Dobytá hranice","definice":"Státní hranice překročená na kole; symbolický milník.","kategorie":"podstatné jméno","tema":"cestování"},{"slovo":"Docestovat","definice":"Dorazit na konec cesty; splnit to, co si člověk předsevzal.","kategorie":"sloveso","tema":"cestování"},{"slovo":"Dívat se jinak","definice":"Vidět běžné věci s turistovýma očima; základ cestování.","kategorie":"sloveso","tema":"cestování"},{"slovo":"Dobrodružný","definice":"Vyhledávající nové výzvy; neschopný zůstat na místě.","kategorie":"přídavné jméno","tema":"cestování"},{"slovo":"Domovina","definice":"Vlast; místo, ze kterého pocházíš a které nosíš v sobě.","kategorie":"podstatné jméno","tema":"česká republika"},{"slovo":"Doubrava","definice":"Dubový les; typická součást české krajiny.","kategorie":"podstatné jméno","tema":"česká republika"},{"slovo":"Dačice","definice":"Jihočeské město; místo, kde se zrodil první cukr v kostkách.","kategorie":"podstatné jméno","tema":"česká republika"},{"slovo":"Domažlice","definice":"Chodské město; bašta tradice a muziky.","kategorie":"podstatné jméno","tema":"česká republika"},{"slovo":"Duchcov","definice":"Severočeské město se zámkem; dějiny v každém kameni.","kategorie":"podstatné jméno","tema":"česká republika"},{"slovo":"Dobříš","definice":"Středočeské město s krásným zámkem uprostřed přírody.","kategorie":"podstatné jméno","tema":"česká republika"},{"slovo":"Dvůr Králové","definice":"Město nad Labem; domov safari parku i tradičního řemesla.","kategorie":"podstatné jméno","tema":"česká republika"},{"slovo":"Dobruška","definice":"Východočeské městečko; rodný kraj Jana z Hvězdy.","kategorie":"podstatné jméno","tema":"česká republika"},{"slovo":"Doksy","definice":"Město u Máchova jezera; vůně letního dobrodružství.","kategorie":"podstatné jméno","tema":"česká republika"},{"slovo":"Dolní Morava","definice":"Skiareál a výhledy, které berou dech.","kategorie":"podstatné jméno","tema":"česká republika"},{"slovo":"Děčín","definice":"Severočeské město na Labi; hrad nad řekou a brána do Saska.","kategorie":"podstatné jméno","tema":"česká republika"},{"slovo":"Divoká Šárka","definice":"Přírodní rezervace v Praze; divoká příroda uprostřed města.","kategorie":"podstatné jméno","tema":"česká republika"},{"slovo":"Dolní Věstonice","definice":"Moravská obec; věstonická Venuše hovoří tisíce let.","kategorie":"podstatné jméno","tema":"česká republika"},{"slovo":"Dudák","definice":"Hráč na dudy; symbol chodské kultury.","kategorie":"podstatné jméno","tema":"česká republika"},{"slovo":"Dožínky","definice":"Slavnost sklizně; díkůvzdání za úrodu a práci celého roku.","kategorie":"podstatné jméno","tema":"česká republika"},{"slovo":"Dvořák Antonín","definice":"Největší český skladatel; jeho Novosvětská patří celému světu.","kategorie":"podstatné jméno","tema":"česká republika"},{"slovo":"Dobrý voják Švejk","definice":"Literární hrdina; mistr přežití skrze humor.","kategorie":"podstatné jméno","tema":"česká republika"},{"slovo":"Drak z Brna","definice":"Krokodýl zavěšený v průjezdu brněnské radnice; symbol s příběhem.","kategorie":"podstatné jméno","tema":"česká republika"},{"slovo":"Domácký","definice":"Tradiční česky; svůj, přirozený, bez přetvářky.","kategorie":"přídavné jméno","tema":"česká republika"},{"slovo":"Dubnová příroda","definice":"Kraj probouzející se z zimního spánku; naděje v zeleném.","kategorie":"podstatné jméno","tema":"česká republika"},{"slovo":"Dobrosrdečnost","definice":"Přirozená laskavost, která nepotřebuje důvod ani uznání.","kategorie":"podstatné jméno","tema":"dobrotivost"},{"slovo":"Dobročinnost","definice":"Konání dobrých skutků pro druhé bez čekání na oplátku.","kategorie":"podstatné jméno","tema":"dobrotivost"},{"slovo":"Dobrodiní","definice":"Laskavý čin, který změní něčí den — nebo celý život.","kategorie":"podstatné jméno","tema":"dobrotivost"},{"slovo":"Dárcovství","definice":"Vědomé sdílení toho, co máš; čím víc dáš, tím víc je.","kategorie":"podstatné jméno","tema":"dobrotivost"},{"slovo":"Darování","definice":"Akt uvolnění; svoboda od věcí i od ega.","kategorie":"podstatné jméno","tema":"dobrotivost"},{"slovo":"Dobrota","definice":"Jednoduché slovo pro to nejsložitější v člověku.","kategorie":"podstatné jméno","tema":"dobrotivost"},{"slovo":"Dobrovolnictví","definice":"Dávání svého času bez nároku na odměnu.","kategorie":"podstatné jméno","tema":"dobrotivost"},{"slovo":"Důvěřivost","definice":"Schopnost věřit druhým; základ každého vztahu.","kategorie":"podstatné jméno","tema":"dobrotivost"},{"slovo":"Darovaný čas","definice":"Nejcennější dar, který lze dát.","kategorie":"podstatné jméno","tema":"dobrotivost"},{"slovo":"Dlouhé přátelství","definice":"Vztah, který přežil čas, vzdálenost i rozdíly.","kategorie":"podstatné jméno","tema":"dobrotivost"},{"slovo":"Dobromyslnost","definice":"Přirozená tendence vidět v druhých to dobré.","kategorie":"podstatné jméno","tema":"dobrotivost"},{"slovo":"Darovat naslouchání","definice":"Být plně přítomen pro druhého; vzácný a ceněný dar.","kategorie":"podstatné jméno","tema":"dobrotivost"},{"slovo":"Dobrý vzor","definice":"Člověk, jehož příkladem chceš žít.","kategorie":"podstatné jméno","tema":"dobrotivost"},{"slovo":"Dávat bez počítání","definice":"Svobodné sdílení bez účetnictví.","kategorie":"podstatné jméno","tema":"dobrotivost"},{"slovo":"Důvěra druhého","definice":"Největší zodpovědnost, kterou ti může někdo svěřit.","kategorie":"podstatné jméno","tema":"dobrotivost"},{"slovo":"Darovaná radost","definice":"Štěstí, které se rozrůstá tím, že ho sdílíš.","kategorie":"podstatné jméno","tema":"dobrotivost"},{"slovo":"Dopis příteli","definice":"Slova napsaná rukou; vzácnější než kdy dřív.","kategorie":"podstatné jméno","tema":"dobrotivost"},{"slovo":"Dobromyslný člověk","definice":"Ten, u koho se cítíš bezpečně; vzácný druh.","kategorie":"podstatné jméno","tema":"dobrotivost"},{"slovo":"Drobná pomoc","definice":"Malé gesto, které někdy změní vše.","kategorie":"podstatné jméno","tema":"dobrotivost"},{"slovo":"Dlouhé objetí","definice":"Fyzický projev péče, který nepotřebuje slova.","kategorie":"podstatné jméno","tema":"dobrotivost"},{"slovo":"Drzost","definice":"Zdravá troufalost být sám sebou, i když to není pohodlné.","kategorie":"podstatné jméno","tema":"autenticita"},{"slovo":"Dobrodružnost","definice":"Sklon vyhledávat neznámo místo pohodlí.","kategorie":"podstatné jméno","tema":"autenticita"},{"slovo":"Divoká svoboda","definice":"Žití bez scénáře; autentický život v celé šíři.","kategorie":"podstatné jméno","tema":"autenticita"},{"slovo":"Dobývání komfortní zóny","definice":"Záměrné vykročení za hranice bezpečného.","kategorie":"podstatné jméno","tema":"autenticita"},{"slovo":"Dobrovolná nejistota","definice":"Přijetí toho, že nevíš — jako podmínka růstu.","kategorie":"podstatné jméno","tema":"autenticita"},{"slovo":"Divokost","definice":"Syrová autenticita bez filtrů a úprav.","kategorie":"podstatné jméno","tema":"autenticita"},{"slovo":"Dát si šanci","definice":"Pokus i bez záruky úspěchu; základ každého začátku.","kategorie":"podstatné jméno","tema":"autenticita"},{"slovo":"Důvěřovat instinktu","definice":"Naslouchat vnitřnímu hlasu, i když ho ostatní neslyší.","kategorie":"podstatné jméno","tema":"autenticita"},{"slovo":"Dopustit se chyby","definice":"Odvaha selhat a neskrývat to.","kategorie":"podstatné jméno","tema":"autenticita"},{"slovo":"Dávat najevo city","definice":"Emocionální odvaha; síla, ne slabost.","kategorie":"podstatné jméno","tema":"autenticita"},{"slovo":"Dobytí strachu","definice":"Akce navzdory strachu; definice odvahy.","kategorie":"podstatné jméno","tema":"autenticita"},{"slovo":"Dělat věci jinak","definice":"Kreativní vzdor vůči zavedeným způsobům.","kategorie":"podstatné jméno","tema":"autenticita"},{"slovo":"Dobrodružný duch","definice":"Vnitřní kompas ukazující k neprozkoumanému.","kategorie":"podstatné jméno","tema":"autenticita"},{"slovo":"Dát přednost pravdě","definice":"I když je nepříjemná; základ integrity.","kategorie":"podstatné jméno","tema":"autenticita"},{"slovo":"Divoce žít","definice":"Plně prožívaný život bez kompromisů s vlastní duší.","kategorie":"sloveso","tema":"autenticita"},{"slovo":"Dívat se pravdě do očí","definice":"Neodvracet pohled od toho, co je těžké.","kategorie":"sloveso","tema":"autenticita"},{"slovo":"Drzý","definice":"Odvážně nestydatý v dobrém smyslu — troufale autentický.","kategorie":"přídavné jméno","tema":"autenticita"},{"slovo":"Důsledné žití hodnot","definice":"Každodenní praxe integrity.","kategorie":"podstatné jméno","tema":"autenticita"},{"slovo":"Dostihnout sen","definice":"Okamžik, kdy realita a touha splývají.","kategorie":"sloveso","tema":"autenticita"},{"slovo":"Dát sebe do díla","definice":"Plné nasazení; nekompromisní přítomnost.","kategorie":"sloveso","tema":"autenticita"},{"slovo":"Důvtip","definice":"Rychlá vtipná reakce ve správný čas — umění, které nelze naučit.","kategorie":"podstatné jméno","tema":"humor"},{"slovo":"Dvojsmysl","definice":"Slovo nebo věta se dvěma výklady; zbraň dobrého humoristy.","kategorie":"podstatné jméno","tema":"humor"},{"slovo":"Drbna","definice":"Člověk, který ví vše o všech; zdroj zábavy i poučení.","kategorie":"podstatné jméno","tema":"humor"},{"slovo":"Dobrý vtip","definice":"Správné slovo ve správný čas; lék na cokoli.","kategorie":"podstatné jméno","tema":"humor"},{"slovo":"Drzá odpověď","definice":"Pohotová reakce s gustem; rys lidí, kteří se nebojí.","kategorie":"podstatné jméno","tema":"humor"},{"slovo":"Dobromyslný smích","definice":"Smích, který spojuje, ne rozděluje.","kategorie":"podstatné jméno","tema":"humor"},{"slovo":"Dvojník","definice":"Člověk nápadně podobný jinému; zdroj zábavy i zmatku.","kategorie":"podstatné jméno","tema":"humor"},{"slovo":"Drncání","definice":"Jízda po špatné cestě; každý cyklista zná.","kategorie":"podstatné jméno","tema":"humor"},{"slovo":"Duchaplný bonmot","definice":"Krátká, vtipná a přitom hluboká myšlenka.","kategorie":"podstatné jméno","tema":"humor"},{"slovo":"Dětský smích","definice":"Nejpřirozenější zvuk na světě; léčivý bez předpisu.","kategorie":"podstatné jméno","tema":"humor"},{"slovo":"Dramatická pauza","definice":"Záměrné ticho před pointou; klasika komediantů.","kategorie":"podstatné jméno","tema":"humor"},{"slovo":"Dobrý příběh","definice":"Základ každé dobré párty i dobrého obsahu.","kategorie":"podstatné jméno","tema":"humor"},{"slovo":"Dobrodružná historka","definice":"Příběh z cesty, který se vypráví stále líp.","kategorie":"podstatné jméno","tema":"humor"},{"slovo":"Důvtipný","definice":"Vtipný a bystrý; schopný pobavit ve správný moment.","kategorie":"přídavné jméno","tema":"humor"},{"slovo":"Dvojče","definice":"Dvě stejné bytosti; zdroj záměn a nepřeberných příběhů.","kategorie":"podstatné jméno","tema":"humor"},{"slovo":"Déšť","definice":"Atmosférická srážka; na kole ji zažiješ jinak než pod střechou.","kategorie":"podstatné jméno","tema":"obecné"},{"slovo":"Drak","definice":"Bájný tvor; symbol síly, odvahy a fantazie.","kategorie":"podstatné jméno","tema":"obecné"},{"slovo":"Dálka","definice":"Vzdálenost, která láká; čím větší, tím silnější.","kategorie":"podstatné jméno","tema":"obecné"},{"slovo":"Důvěra","definice":"Základ každého smysluplného vztahu.","kategorie":"podstatné jméno","tema":"obecné"},{"slovo":"Dobro","definice":"Kladná mravní hodnota; opak zla — a těžší než vypadá.","kategorie":"podstatné jméno","tema":"obecné"},{"slovo":"Domov","definice":"Místo, kde se cítíš bezpečně; i pod stanem.","kategorie":"podstatné jméno","tema":"obecné"},{"slovo":"Dialog","definice":"Rozhovor dvou; základ všeho dobrého.","kategorie":"podstatné jméno","tema":"obecné"},{"slovo":"Dlaň","definice":"Vnitřní část ruky; nástroj dotyku i dávání.","kategorie":"podstatné jméno","tema":"obecné"},{"slovo":"Dům","definice":"Budova i pocit; ne každý dům je domov.","kategorie":"podstatné jméno","tema":"obecné"},{"slovo":"Důkaz","definice":"Argument prokazující pravdu; nezbytný v době fake news.","kategorie":"podstatné jméno","tema":"obecné"},{"slovo":"Duha","definice":"Barevný oblouk po dešti; odměna za vytrvalost.","kategorie":"podstatné jméno","tema":"obecné"},{"slovo":"Dech","definice":"Základní rytmus života; zapomínáme na něj, dokud ho nemáme.","kategorie":"podstatné jméno","tema":"obecné"},{"slovo":"Divadlo","definice":"Místo, kde je lež službou pravdě.","kategorie":"podstatné jméno","tema":"obecné"},{"slovo":"Dítě","definice":"Nejlepší učitel přítomnosti; vidí svět bez filtrů.","kategorie":"podstatné jméno","tema":"obecné"},{"slovo":"Dort","definice":"Slavnostní moučník; malá oslava každého milníku.","kategorie":"podstatné jméno","tema":"obecné"},{"slovo":"Dřevo","definice":"Materiál s duší; teplý, živý, nepředvídatelný.","kategorie":"podstatné jméno","tema":"obecné"},{"slovo":"Duše","definice":"Duchovní podstata člověka; to, co nelze koupit ani prodat.","kategorie":"podstatné jméno","tema":"obecné"},{"slovo":"Dopis","definice":"Písemné sdělení; osobnější než zpráva, vzácnější než email.","kategorie":"podstatné jméno","tema":"obecné"},{"slovo":"Diskuse","definice":"Výměna názorů; základ demokracie i přátelství.","kategorie":"podstatné jméno","tema":"obecné"},{"slovo":"Deka","definice":"Teplá přikrývka; malý luxus po těžkém dni.","kategorie":"podstatné jméno","tema":"obecné"},{"slovo":"Den","definice":"24 hodin; pokaždé nová šance.","kategorie":"podstatné jméno","tema":"obecné"},{"slovo":"Dno","definice":"Nejnižší bod; odkud vede jen jedna cesta.","kategorie":"podstatné jméno","tema":"obecné"},{"slovo":"Dohoda","definice":"Vzájemné ujednání; základ každé spolupráce.","kategorie":"podstatné jméno","tema":"obecné"},{"slovo":"Dojem","definice":"První vjem, který řídí víc, než si myslíme.","kategorie":"podstatné jméno","tema":"obecné"},{"slovo":"Druhý","definice":"Ten po boku; bez druhých jsme méně sami sebou.","kategorie":"podstatné jméno","tema":"obecné"},{"slovo":"Důsledek","definice":"To, co přijde po každé akci; zákon příčiny a následku.","kategorie":"podstatné jméno","tema":"obecné"},{"slovo":"Děj","definice":"Sled událostí; i tvůj život má svůj děj.","kategorie":"podstatné jméno","tema":"obecné"},{"slovo":"Dějiny","definice":"Příběh lidstva; učíme se z nich — nebo neopakujeme.","kategorie":"podstatné jméno","tema":"obecné"},{"slovo":"Dělník","definice":"Člověk, který vytváří svýma rukama; základ každé civilizace.","kategorie":"podstatné jméno","tema":"obecné"},{"slovo":"Děs","definice":"Silný strach; překonání děsu je základ odvahy.","kategorie":"podstatné jméno","tema":"obecné"},{"slovo":"Dílo","definice":"Výtvor, který přetrvá; co po sobě zanecháš.","kategorie":"podstatné jméno","tema":"obecné"},{"slovo":"Dík","definice":"Vděčnost v jednom slově; říkej ho víc.","kategorie":"podstatné jméno","tema":"obecné"},{"slovo":"Dílna","definice":"Místo tvorby; kde se nápady stávají věcmi.","kategorie":"podstatné jméno","tema":"obecné"},{"slovo":"Dluh","definice":"Závazek; nejhorší dluh je ten vůči sobě samému.","kategorie":"podstatné jméno","tema":"obecné"},{"slovo":"Doba","definice":"Historické období; žijeme v době, která bude studována.","kategorie":"podstatné jméno","tema":"obecné"},{"slovo":"Deník závodníka","definice":"Záznamy z trasy; osobní archiv odvahy.","kategorie":"podstatné jméno","tema":"obecné"},{"slovo":"Denní světlo","definice":"Čas od úsvitu do soumraku; pro cyklistu zlatý fond.","kategorie":"podstatné jméno","tema":"obecné"},{"slovo":"Dobrý vítr","definice":"Příznivé podmínky; přijímej je vděčně, nespoléhej na ně.","kategorie":"podstatné jméno","tema":"obecné"},{"slovo":"Domácí hrdina","definice":"Člověk z tvého okolí, jehož příběh inspiruje.","kategorie":"podstatné jméno","tema":"obecné"},{"slovo":"Důvod jet","definice":"To jediné, co potřebuješ k výjezdu; zbytek se ukáže cestou.","kategorie":"podstatné jméno","tema":"obecné"},{"slovo":"Dávat","definice":"Předávat něco dál; zákon šťastného člověka.","kategorie":"sloveso","tema":"obecné"},{"slovo":"Dýchat","definice":"Vdechovat a vydechovat vzduch; začínej tím každý těžký den.","kategorie":"sloveso","tema":"obecné"},{"slovo":"Dělat","definice":"Vykonávat; méně mluvit, víc dělat.","kategorie":"sloveso","tema":"obecné"},{"slovo":"Dělit se","definice":"Sdílet něco s jinými; zákon hojnosti v praxi.","kategorie":"sloveso","tema":"obecné"},{"slovo":"Doufat","definice":"Věřit, že se něco žádoucího splní; palivový článek každé cesty.","kategorie":"sloveso","tema":"obecné"},{"slovo":"Dumat","definice":"Hluboce přemýšlet; trávit čas rozjímáním na sedáku.","kategorie":"sloveso","tema":"obecné"},{"slovo":"Dnes","definice":"V tento den; jediný čas, ve kterém žijeme.","kategorie":"příslovce","tema":"obecné"},{"slovo":"Daleko","definice":"Ve velké vzdálenosti; tam, kde začíná dobrodružství.","kategorie":"příslovce","tema":"obecné"},{"slovo":"Dobře","definice":"Správným způsobem; dělej věci dobře nebo je nedělej.","kategorie":"příslovce","tema":"obecné"},{"slovo":"Dost","definice":"V dostatečné míře; naučit se říct si dost je moudrost.","kategorie":"příslovce","tema":"obecné"},{"slovo":"Díky","definice":"Vyjádření vděčnosti; říkej to i tehdy, když se to zdá zbytečné.","kategorie":"příslovce","tema":"obecné"},{"slovo":"Dohromady","definice":"Společně; víc než součet jednotlivých částí.","kategorie":"příslovce","tema":"obecné"},{"slovo":"Dokonce","definice":"Vyjadřuje překvapení; i to, co se zdálo nemožné, se stalo.","kategorie":"příslovce","tema":"obecné"},{"slovo":"Dávno","definice":"Před delší dobou; ale vzpomínka je stále živá.","kategorie":"příslovce","tema":"obecné"},{"slovo":"Důkladně","definice":"Pečlivě a zevrubně; ničeho nevynechávaje.","kategorie":"příslovce","tema":"obecné"},{"slovo":"Dvakrát","definice":"Ve dvojím opakování; měř dvakrát, řež jednou.","kategorie":"příslovce","tema":"obecné"},{"slovo":"Dopředu","definice":"Směrem kupředu; jediný směr, který má smysl.","kategorie":"příslovce","tema":"obecné"},{"slovo":"Daleký","definice":"Nacházející se ve velké vzdálenosti; i sny jsou daleké — dokud nejsou.","kategorie":"přídavné jméno","tema":"obecné"},{"slovo":"Dobrý","definice":"Mající kladné vlastnosti; základ každého hodnocení.","kategorie":"přídavné jméno","tema":"obecné"},{"slovo":"Divoký","definice":"Žijící bez pravidel civilizace; svobodný a nepředvídatelný.","kategorie":"přídavné jméno","tema":"obecné"},{"slovo":"Důležitý","definice":"Mající velký význam; rozeznávej, co skutečně je.","kategorie":"přídavné jméno","tema":"obecné"},{"slovo":"Drahý","definice":"Mající vysokou cenu nebo velkou citovou hodnotu.","kategorie":"přídavné jméno","tema":"obecné"},{"slovo":"Dlouhý","definice":"Mající velkou délku nebo trvání; dlouhá cesta začíná prvním krokem.","kategorie":"přídavné jméno","tema":"obecné"},{"slovo":"Dokonalý","definice":"Bez chyb nebo nedostatků; nebo prostě tvůj.","kategorie":"přídavné jméno","tema":"obecné"},{"slovo":"Dočasný","definice":"Platný jen po omezenou dobu; všechno je dočasné.","kategorie":"přídavné jméno","tema":"obecné"},{"slovo":"Dobrovolný","definice":"Vykonávaný z vlastní vůle; bez nátlaku je vše lepší.","kategorie":"přídavné jméno","tema":"obecné"},{"slovo":"Ďábel","definice":"Postava zla; a zároveň metafora vnitřního pokušení.","kategorie":"podstatné jméno","tema":"obecné"},{"slovo":"Dárek","definice":"Věc s příběhem; záleží na tom, kdo ji dává a proč.","kategorie":"podstatné jméno","tema":"obecné"},{"slovo":"Dýně","definice":"Oranžová koule; symbol podzimu a transformace.","kategorie":"podstatné jméno","tema":"obecné"},{"slovo":"Dvůr","definice":"Otevřený prostor mezi zdmi; kde děti hrají a sousedé povídají.","kategorie":"podstatné jméno","tema":"obecné"}];
+    let pocetKliknuti = 0;
+    let posledniIndex = -1;
+
+    document.getElementById('total').textContent = slova.length;
+    generate();
+
+    function generate() {
+      if (!slova.length) return;
+
+      let index;
+      do {
+        index = Math.floor(Math.random() * slova.length);
+      } while (index === posledniIndex && slova.length > 1);
+      posledniIndex = index;
+
+      const item = slova[index];
+      pocetKliknuti++;
+
+      const wordEl = document.getElementById('word');
+      const defEl  = document.getElementById('definition');
+      const catEl  = document.getElementById('category');
+      const temaEl = document.getElementById('tema');
+
+      wordEl.classList.remove('animate');
+      defEl.classList.remove('animate');
+      void wordEl.offsetWidth;
+
+      const prvni = item.slovo[0];
+      const zbytek = item.slovo.slice(1);
+      wordEl.innerHTML = `<span class="first-letter">${prvni}</span>${zbytek}`;
+      defEl.textContent = item.definice;
+      catEl.textContent = item.kategorie;
+
+      if (item.tema && item.tema !== 'obecné') {
+        temaEl.textContent = item.tema;
+        temaEl.classList.remove('hidden');
+      } else {
+        temaEl.classList.add('hidden');
+      }
+
+      wordEl.classList.add('animate');
+      defEl.classList.add('animate');
+
+      document.getElementById('clicks').textContent = pocetKliknuti;
+    }
+  </script>
+</body>
+</html>
