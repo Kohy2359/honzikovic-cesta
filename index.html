@@ -744,11 +744,20 @@
         <div class="fo-updates" id="foUpdates"></div>
       </div>
       <div>
-        <div class="fo-strava">
-          <div class="strava-icon">🏅</div>
-          <h3>LIVE TRACKING</h3>
-          <p>Trasa se aktualizuje přímo ze Strava/Garmin. Sleduj moji cestu v reálném čase.</p>
-          <a href="https://www.strava.com" target="_blank" class="btn btn-outline" style="margin-top: .5rem; font-size: .8rem;">Otevřít na Stravě →</a>
+        <div class="fo-strava" id="strava-widget">
+          <div class="strava-icon">🚴</div>
+          <h3>POSLEDNÍ AKTIVITA</h3>
+          <p id="strava-name" style="font-weight:600;color:#fff;font-size:.95rem;margin-bottom:.4rem;">—</p>
+          <div style="display:flex;gap:1.2rem;flex-wrap:wrap;margin:.5rem 0;">
+            <span style="color:var(--solar);font-size:.85rem;">📏 <strong id="strava-km">—</strong> km</span>
+            <span style="color:var(--solar);font-size:.85rem;">⛰ <strong id="strava-elev">—</strong> m</span>
+            <span style="color:var(--solar);font-size:.85rem;">⏱ <strong id="strava-time">—</strong></span>
+          </div>
+          <p id="strava-date" style="font-size:.75rem;color:var(--dust);margin-bottom:.6rem;">—</p>
+          <div style="border-top:1px solid rgba(255,255,255,.1);padding-top:.7rem;margin-top:.3rem;">
+            <p style="font-size:.75rem;color:var(--dust);">Posledních 30 dní: <strong id="strava-total-km" style="color:var(--sage);">—</strong> km · <strong id="strava-total-rides" style="color:var(--sage);">—</strong> jízd</p>
+          </div>
+          <a href="https://www.strava.com/athletes/158217101" target="_blank" class="btn btn-outline" style="margin-top: .8rem; font-size: .8rem;">Sledovat na Stravě →</a>
         </div>
       </div>
     </div>
@@ -1653,6 +1662,27 @@
     }, 3000);
   }
 
+</script>
+
+<script>
+  // ── Strava widget ──
+  fetch('strava-stats.json')
+    .then(r => r.json())
+    .then(d => {
+      const a = d.last_activity;
+      document.getElementById('strava-name').textContent = a.name;
+      document.getElementById('strava-km').textContent   = a.distance_km.toFixed(1);
+      document.getElementById('strava-elev').textContent = a.elevation_m;
+      const h = Math.floor(a.moving_time_min / 60);
+      const m = a.moving_time_min % 60;
+      document.getElementById('strava-time').textContent = h > 0 ? `${h}h ${m}min` : `${m} min`;
+      const date = new Date(a.date);
+      document.getElementById('strava-date').textContent =
+        date.toLocaleDateString('cs-CZ', { day:'numeric', month:'long', year:'numeric' });
+      document.getElementById('strava-total-km').textContent  = d.totals_30d.total_km.toFixed(0);
+      document.getElementById('strava-total-rides').textContent = d.totals_30d.rides;
+    })
+    .catch(() => {});
 </script>
 </body>
 </html>

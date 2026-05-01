@@ -1,0 +1,17 @@
+{
+  "last_updated": "2026-04-30",
+  "last_activity": {
+    "name": "Příprava na #352D zahájena!",
+    "date": "2026-04-25",
+    "type": "Ride",
+    "distance_km": 81.1,
+    "moving_time_min": 229,
+    "elevation_m": 1252,
+    "avg_speed_kmh": 21.2
+  },
+  "totals_30d": {
+    "rides": 5,
+    "total_km": 229.0,
+    "total_elevation_m": 3323
+  }
+}
