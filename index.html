@@ -30,6 +30,11 @@
       --earth:   #6B5B4F;
     }
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    /* Bebas Neue má pouze weight 400 — zabráníme syntetickému tučnému písmu */
+    [style*="Bebas Neue"], .section-title, .hero-title, .page-hero-title,
+    .fo-title, .fo-strava h3, .fo-updates-title, .az-num, .panel-country,
+    .denik-title, .ig-handle, .kontakt-info h3, .footer-logo,
+    .bio-card h3, .nav-logo span { font-weight: 400 !important; }
     html { scroll-behavior: smooth; scroll-padding-top: 80px; }
     body { font-family: 'Jost', sans-serif; background: var(--cream); color: var(--night); line-height: 1.7; overflow-x: hidden; }
 
@@ -142,6 +147,7 @@
     .section-title {
       font-family: 'Bebas Neue', sans-serif;
       font-size: clamp(2.2rem, 5vw, 4rem);
+      font-weight: 400;
       line-height: 1; letter-spacing: 1px; margin-bottom: 1rem;
     }
     .divider { width: 50px; height: 3px; background: var(--solar); border-radius: 2px; margin: 1rem 0 1.8rem; }
