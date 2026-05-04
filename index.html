@@ -1054,13 +1054,7 @@ section[id], div[id] { scroll-margin-top: 90px; }
     if (!isOpen) item.classList.add("open");
   }
 
-  /* ── Odpočítávač / Live stats po 16. 6. 2026 ──
-     VARIANT:
-       'auto'      → odpočet do 16.6., pak statistiky (automaticky)
-       'countdown' → vždy odpočet (V1 – před startem)
-       'live'      → vždy statistiky (V2 – po startu / index-live.html)
-  ── */
-  const VARIANT   = 'auto';
+  /* ── Odpočítávač → po 16. 6. automaticky live statistiky ── */
   const START_DATE = new Date("2026-06-16T00:00:00");
 
   // ─ Ruční data (Jan aktualizuje ručně nebo přes Strava) ─
@@ -1093,22 +1087,14 @@ section[id], div[id] { scroll-margin-top: 90px; }
       </div>`;
   })();
 
-  function showCountdown() {
-    document.getElementById("countdownBlock").style.display = "";
-    document.getElementById("statsLive").style.display      = "none";
-  }
-  function showStats() {
-    document.getElementById("countdownBlock").style.display = "none";
-    document.getElementById("statsLive").style.display      = "block";
-  }
-
   function updateCountdown() {
     const now  = new Date();
     const diff = START_DATE - now;
-    const goLive = VARIANT === 'live' || (VARIANT === 'auto' && diff <= 0);
 
-    if (goLive) {
-      showStats();
+    if (diff <= 0) {
+      // ── Po 16. 6.: skryj odpočet, zobraz statistiky ──
+      document.getElementById("countdownBlock").style.display = "none";
+      document.getElementById("statsLive").style.display      = "block";
       const daysOnRoad = Math.max(0, Math.floor((now - START_DATE) / (1000 * 60 * 60 * 24)));
       document.getElementById("statVillages").innerHTML      = liveStats.villages + '<span class="stat-of">/352</span>';
       document.getElementById("statDays").textContent        = daysOnRoad;
@@ -1119,7 +1105,6 @@ section[id], div[id] { scroll-margin-top: 90px; }
     }
 
     // ── Odpočet ──
-    showCountdown();
     const days    = Math.floor(diff / (1000 * 60 * 60 * 24));
     const hours   = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
     const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
