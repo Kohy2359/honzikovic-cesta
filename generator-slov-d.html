@@ -98,7 +98,7 @@
     /* WORD BOX */
     .word-box {
       width: 100%;
-      min-height: 340px;
+      height: 370px;
       background: rgba(255,255,255,.04);
       border: 1px solid rgba(245,197,24,.2);
       border-radius: 24px;
@@ -106,7 +106,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
+      justify-content: space-between;
       text-align: center;
       transition: border-color .3s;
       position: relative;
@@ -147,11 +147,15 @@
 
     .definition {
       font-family: 'Caveat', cursive;
-      font-size: clamp(1rem, 3vw, 1.25rem);
+      font-size: clamp(1rem, 3vw, 1.2rem);
       color: var(--sage);
       line-height: 1.4;
       max-width: 420px;
       margin-bottom: .5rem;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
 
     .category {
@@ -297,6 +301,14 @@
       const prvni = item.slovo[0];
       const zbytek = item.slovo.slice(1);
       wordEl.innerHTML = `<span class="first-letter">${prvni}</span>${zbytek}`;
+
+      // Dynamické zmenšování podle délky slova
+      const len = item.slovo.length;
+      wordEl.style.fontSize = len > 18 ? '1.4rem'
+                            : len > 12 ? '1.8rem'
+                            : len > 8  ? '2.4rem'
+                            : '3rem';
+
       defEl.textContent = item.definice;
       catEl.textContent = item.kategorie;
 
