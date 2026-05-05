@@ -312,7 +312,7 @@
       defEl.textContent = item.definice;
       catEl.textContent = item.kategorie;
 
-      if (item.tema && item.tema !== 'obecné') {
+      if (item.tema) {
         temaEl.textContent = item.tema;
         temaEl.classList.remove('hidden');
       } else {
