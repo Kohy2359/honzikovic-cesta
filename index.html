@@ -903,14 +903,13 @@ section[id], div[id] { scroll-margin-top: 90px; }
         <form class="kontakt-form" action="https://formspree.io/f/meenwzaq" method="POST">
           <input type="hidden" name="_next" value="https://honzikovic-cesta.cz/#kontakt">
           <input type="hidden" name="_subject" value="Nová zpráva z webu – Honzíkovic Cesta">
-          <input type="hidden" name="_replyto" value="email">
           <div class="form-group">
             <label>Jméno</label>
             <input type="text" name="jmeno" placeholder="Jak Ti říkají?" required>
           </div>
           <div class="form-group">
             <label>E-mail</label>
-            <input type="email" name="email" placeholder="kde Ti napsat zpět" required>
+            <input type="email" name="_replyto" placeholder="kde Ti napsat zpět" required>
           </div>
           <div class="form-group">
             <label>Důvod</label>
