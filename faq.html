@@ -156,8 +156,9 @@
     /* ─── MOBILNÍ ─── */
     @media (max-width: 860px) {
       #navbar { padding: 1rem 1.5rem; }
-      .nav-links { display: none; flex-direction: column; position: absolute; top: 100%; left: 0; right: 0; background: rgba(38,64,64,.97); backdrop-filter: blur(12px); padding: 1.5rem 2rem; gap: 1.25rem; border-top: 1px solid rgba(255,255,255,.08); }
+      .nav-links { display: none; flex-direction: column; position: fixed; top: 64px; left: 0; right: 0; transform: none; background: rgba(38,64,64,.97); backdrop-filter: blur(12px); padding: 1.5rem 2rem; gap: 1.25rem; border-radius: 0 0 6px 6px; border-top: 1px solid rgba(255,255,255,.08); z-index: 999; }
       .nav-links.open { display: flex; }
+      .nav-links a { color: var(--fuchsia) !important; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
       .hamburger { display: flex; }
       .section { padding: 4rem 1.25rem; }
     }
