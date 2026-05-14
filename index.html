@@ -6,6 +6,8 @@
   <meta name="robots" content="noindex, nofollow">
   <title>Honzíkovic Cesta — Jan Kohoutek</title>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Jost:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <script>(() => { const d=document,s=d.createElement("script"); s.type="module"; s.src="https://w.behold.so/widget.js"; d.head.append(s); })();</script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
     @font-face {
       font-family: 'Kohymaaa';
@@ -43,11 +45,11 @@ section[id], div[id] { scroll-margin-top: 90px; }
 
     /* ─── NAVIGACE ─── */
     #navbar {
-      position: fixed; top: 0; left: 1.5rem; right: 1.5rem; z-index: 1000;
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
       display: flex; align-items: center; justify-content: flex-start; gap: 3rem;
       padding: 0 2rem; height: 64px;
       background: #F5C518;
-      border-radius: 1.5rem;
+      border-radius: 0 0 6px 6px;
       box-sizing: border-box;
     }
     .nav-logo { display: block; text-decoration: none; flex-shrink: 0; line-height: 1; }
@@ -118,6 +120,21 @@ section[id], div[id] { scroll-margin-top: 90px; }
       font-size: clamp(2rem, 4.5vw, 3.2rem);
       color: var(--sage); margin-top: auto; margin-bottom: 1rem;
     }
+    .hero-sub {
+      position: relative; z-index: 1;
+      font-family: 'Kohymaaa', cursive;
+      font-size: clamp(1.7rem, 4vw, 2.5rem);
+      color: #fff; margin-top: -.5rem; margin-bottom: 1rem;
+      line-height: 1.6;
+      text-shadow: 0 1px 8px rgba(0,0,0,.6);
+    }
+    .hero-sub-small {
+      position: relative; z-index: 1;
+      font-size: .8rem; font-weight: 600; letter-spacing: 1.5px;
+      text-transform: uppercase; color: var(--solar);
+      margin-bottom: 1.5rem;
+      text-shadow: 0 1px 6px rgba(0,0,0,.5);
+    }
     .hero-dots { position: relative; z-index: 1; display: flex; gap: .6rem; margin-bottom: 3rem; }
     .hero-dot { width: 10px; height: 10px; border-radius: 50%; }
     .hero-ctas { position: relative; z-index: 1; display: flex; gap: 1rem; flex-wrap: wrap; justify-content: flex-start; margin-top: 0; }
@@ -130,6 +147,7 @@ section[id], div[id] { scroll-margin-top: 90px; }
     }
     .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,.25); }
     .btn-solar { background: var(--solar); color: var(--night); }
+    .btn-fuchsia { background: var(--fuchsia); color: #fff; }
     .btn-outline { background: transparent; color: #fff; border: 2px solid rgba(255,255,255,.3); }
     .btn-outline:hover { border-color: var(--solar); color: var(--solar); }
     .scroll-hint {
@@ -493,6 +511,15 @@ section[id], div[id] { scroll-margin-top: 90px; }
 
     /* ─── INSTAGRAM ─── */
     #instagram { background: var(--cream); }
+    .social-icons { display: flex; gap: .75rem; flex-wrap: wrap; margin-bottom: 2rem; }
+    .social-icon-btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 48px; height: 48px; border-radius: 12px;
+      background: var(--solar); color: var(--night);
+      font-size: 1.2rem; text-decoration: none;
+      transition: transform .2s, opacity .2s;
+    }
+    .social-icon-btn:hover { transform: scale(1.1); opacity: .85; }
     #instagram .ig-cell { background: rgba(38,64,64,.1); }
     #instagram .ig-cell:hover { background: rgba(38,64,64,.18); }
     .ig-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 2rem; max-width: 500px; }
@@ -615,9 +642,9 @@ section[id], div[id] { scroll-margin-top: 90px; }
     }
     @media (max-width: 860px) {
       #navbar { padding: 1rem 1.5rem; }
-      .nav-links { display: none; flex-direction: column; position: fixed; top: 76px; left: 1.5rem; right: 1.5rem; transform: none; background: rgba(38,64,64,.97); backdrop-filter: blur(12px); padding: 1.5rem 1.5rem; gap: 1.25rem; border-radius: 1.2rem; z-index: 999; box-shadow: 0 8px 32px rgba(0,0,0,.3); }
+      .nav-links { display: none; flex-direction: column; position: fixed; top: 64px; left: 0; right: 0; transform: none; background: rgba(38,64,64,.97); backdrop-filter: blur(12px); padding: 1.5rem 1.5rem; gap: 1.25rem; border-radius: 0 0 6px 6px; z-index: 999; box-shadow: 0 8px 32px rgba(0,0,0,.3); }
       .nav-links.open { display: flex; }
-      .nav-links a { color: #fff !important; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+      .nav-links a { color: var(--fuchsia) !important; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
       .nav-links a.nav-cta { background: var(--solar); color: var(--night) !important; padding: .5rem 1.2rem; border-radius: 100px; display: inline-block; }
       .hamburger { display: flex; }
       .section { padding: 4rem 1.25rem; }
@@ -651,7 +678,7 @@ section[id], div[id] { scroll-margin-top: 90px; }
 <!-- ═══════════ HERO ═══════════ -->
 <section id="hero">
   <div class="hero-bg"></div>
-  <div class="hero-badge">🚴 Cyklista · Cestovatel · Vypravěč</div>
+  <div class="hero-badge">Dobro-druh · Cyklista · Vypravěč</div>
   <h1 class="hero-title">HONZÍKOVIC<br><span class="solar">CESTA</span></h1>
   <div class="hero-dots">
     <div class="hero-dot" style="background:var(--solar)"></div>
@@ -660,13 +687,14 @@ section[id], div[id] { scroll-margin-top: 90px; }
     <div class="hero-dot" style="background:var(--sage)"></div>
     <div class="hero-dot" style="background:rgba(255,255,255,.25)"></div>
   </div>
-  <p class="hero-tagline">Život je jízda. Tak jedu!</p>
+<p class="hero-sub">Opustil jsem jistoty dobré práce.<br>Zkouším žít, né jenom přežívat.<br>Objevuji sebe i svět okolo mě.</p>
+  <p class="hero-sub-small">Cyklista pro Domestici.cz — podpora a osvěta paliativní péče</p>
   <div class="hero-ctas">
-    <a href="#forrest-office" class="btn btn-solar">🏘️ Forrest Office</a>
-    <a href="#mapa" class="btn btn-outline">🗺️ Mapa cest</a>
+    <a href="#forrest-office" class="btn btn-fuchsia">Projekt #D352</a>
+    <a href="o-mne.html" class="btn btn-solar">O mně</a>
   </div>
   <div class="scroll-hint">
-    <span>Posunout dolů</span>
+    <span>Tak co? Jedeš taky?</span>
     <div class="scroll-arrow"></div>
   </div>
 </section>
@@ -784,30 +812,6 @@ section[id], div[id] { scroll-margin-top: 90px; }
   </div>
 </section>
 
-<!-- ═══════════ CESTA DO ÁZERBÁJDŽÁNU ═══════════ -->
-<section id="cesta-az" class="section">
-  <div class="container">
-    <div class="reveal">
-      <div class="section-label">— Cesta do Ázerbájdžánu · 2024</div>
-      <h2 class="section-title">7 758 km na kole</h2>
-      <div class="divider"></div>
-      <p class="body-text">Žďár nad Sázavou → Norsko → Istanbul → ✈ Oslo → zpět domů. Sólo, na kole, s batohem a zápisníkem.</p>
-    </div>
-    <div class="az-stats reveal">
-      <div class="az-stat"><div class="az-num">95</div><div class="az-lbl">dní na cestě</div></div>
-      <div class="az-stat"><div class="az-num">7 758</div><div class="az-lbl">kilometrů</div></div>
-      <div class="az-stat"><div class="az-num">29</div><div class="az-lbl">zastávek</div></div>
-      <div class="az-stat"><div class="az-num" style="color:var(--fuchsia)">12</div><div class="az-lbl">zemí</div></div>
-    </div>
-    <div id="azchart" class="reveal"></div>
-    <div class="az-legend">
-      <div class="az-legend-item"><div class="az-legend-line solar"></div> Cyklotrasa</div>
-      <div class="az-legend-item"><div class="az-legend-line fuchsia dashed"></div> Let Istanbul → Oslo</div>
-      <div class="az-legend-item"><div class="az-legend-dot solar"></div> Klíčové zastávky</div>
-    </div>
-  </div>
-</section>
-
 <!-- ═══════════ CESTOVNÍ DENÍK ═══════════ -->
 <section id="denik" class="section section-dark">
   <div class="container">
@@ -864,27 +868,20 @@ section[id], div[id] { scroll-margin-top: 90px; }
 <!-- ═══════════ INSTAGRAM ═══════════ -->
 <section id="instagram" class="section">
   <div class="container">
-    <div class="ig-layout">
-      <div class="reveal">
-        <div class="section-label">05 — Sleduj cestu</div>
-        <h2 class="section-title">Instagram</h2>
-        <div class="divider"></div>
-        <p class="body-text">
-          Fotky, reels, příběhy. Surový záběr ze silnice, zlatá hodina, smích i píchlé kolo. Bez scénáře.
-        </p>
-        <div class="ig-handle">@honzikovic_cesta</div>
-        <a href="https://www.instagram.com/honzikovic_cesta" target="_blank" class="btn btn-solar" style="margin-top: 1.5rem;">
-          Otevřít Instagram →
-        </a>
+    <div class="reveal">
+      <div class="section-label">05 — Sleduj cestu</div>
+      <h2 class="section-title">Sociální sítě</h2>
+      <div class="divider"></div>
+      <p class="body-text" style="margin-bottom:1.5rem;">Můžete sledovat i na sociálních sítích.</p>
+      <div class="social-icons">
+        <a href="https://www.facebook.com/jan.k.kohoutek/" target="_blank" class="social-icon-btn"><i class="fab fa-facebook-f"></i></a>
+        <a href="https://www.instagram.com/honzikovic_cesta" target="_blank" class="social-icon-btn"><i class="fab fa-instagram"></i></a>
+        <a href="https://www.youtube.com/@Honzikovic_cesta" target="_blank" class="social-icon-btn"><i class="fab fa-youtube"></i></a>
+        <a href="https://www.strava.com/athletes/158217101" target="_blank" class="social-icon-btn"><i class="fab fa-strava"></i></a>
       </div>
-      <div class="ig-grid reveal">
-        <div class="ig-cell">🚴</div>
-        <div class="ig-cell">🌅</div>
-        <div class="ig-cell">🏘️</div>
-        <div class="ig-cell">📖</div>
-        <div class="ig-cell">🌍</div>
-        <div class="ig-cell">💛</div>
-      </div>
+    </div>
+    <div class="reveal">
+      <behold-widget feed-id="xC9awMQhaSLY4Nzhlzw7"></behold-widget>
     </div>
   </div>
 </section>
@@ -899,36 +896,26 @@ section[id], div[id] { scroll-margin-top: 90px; }
     </div>
     <div class="kontakt-grid">
       <div class="kontakt-info reveal">
-        <h3>Pojďme se bavit</h3>
-        <p>Přednášky, spolupráce, otázky nebo jen tak. Čtu každou zprávu — odpovídám pomaleji, protože zrovna šlapu do kopce.</p>
-        <div class="socials">
-          <a href="https://www.instagram.com/honzikovic_cesta" target="_blank" class="social-link">
-            <span class="social-icon">📸</span>
-            <span>@honzikovic_cesta — Instagram</span>
-          </a>
-          <a href="https://www.strava.com" target="_blank" class="social-link">
-            <span class="social-icon">🏅</span>
-            <span>Honzíkovic Cesta — Strava</span>
-          </a>
-          <a href="#" class="social-link">
-            <span class="social-icon">📖</span>
-            <span>Domestici.cz — #nejedusam</span>
-          </a>
-        </div>
+        <h3 style="color:#fff;">Pojďme se spojit.</h3>
+        <p style="color:#fff;">Přednášky, spolupráce, otázky nebo prostě jen tak. Dobrá slova. Čtu každou zprávu, ale odpovídám pomaleji, pokud zrovna šlapu do kopce.</p>
       </div>
       <div class="reveal" style="transition-delay: .15s">
-        <form class="kontakt-form" onsubmit="handleForm(event)">
+        <form class="kontakt-form" action="https://formspree.io/f/meenwzaq" method="POST">
           <div class="form-group">
             <label>Jméno</label>
-            <input type="text" placeholder="Jak Ti říkají?">
+            <input type="text" name="jmeno" placeholder="Jak Ti říkají?" required>
           </div>
           <div class="form-group">
             <label>E-mail</label>
-            <input type="email" placeholder="kde Ti napsat zpět">
+            <input type="email" name="email" placeholder="kde Ti napsat zpět" required>
+          </div>
+          <div class="form-group">
+            <label>Důvod</label>
+            <input type="text" name="duvod" placeholder="Přednáška, spolupráce, jen tak…">
           </div>
           <div class="form-group">
             <label>Zpráva</label>
-            <textarea rows="5" placeholder="Co tě přivedlo na moji cestu?"></textarea>
+            <textarea rows="5" name="zprava" placeholder="Vaše zpráva" required></textarea>
           </div>
           <button type="submit" class="form-submit">Odeslat zprávu →</button>
         </form>
@@ -940,7 +927,7 @@ section[id], div[id] { scroll-margin-top: 90px; }
 <!-- ═══════════ FOOTER ═══════════ -->
 <footer>
   <div class="footer-logo">HONZÍKOVIC <span>CESTA</span></div>
-  <div class="footer-tagline">Život je jízda. Tak jedu!</div>
+  <div class="footer-tagline">Nejde neexistuje.</div>
   <nav class="footer-nav">
     <a href="o-mne.html">O mně</a>
     <a href="#forrest-office">Forrest Office</a>

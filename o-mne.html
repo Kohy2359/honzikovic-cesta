@@ -35,10 +35,10 @@
 
     /* ─── NAVIGACE ─── */
     #navbar {
-      position: fixed; top: 0; left: 1.5rem; right: 1.5rem; z-index: 1000;
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
       display: flex; align-items: center; justify-content: flex-start; gap: 3rem;
       padding: 0 2rem; height: 64px;
-      border-radius: 1.5rem;
+      border-radius: 0 0 6px 6px;
       background: #F5C518;
       box-sizing: border-box;
     }
@@ -260,13 +260,35 @@
     }
     @media (max-width: 860px) {
       #navbar { padding: 1rem 1.5rem; }
-      .nav-links { display: none; flex-direction: column; position: absolute; top: 100%; left: 0; right: 0; background: rgba(38,64,64,.97); backdrop-filter: blur(12px); padding: 1.5rem 2rem; gap: 1.25rem; border-top: 1px solid rgba(255,255,255,.08); }
+      .nav-links { display: none; flex-direction: column; position: fixed; top: 64px; left: 0; right: 0; transform: none; background: rgba(38,64,64,.97); backdrop-filter: blur(12px); padding: 1.5rem 2rem; gap: 1.25rem; border-radius: 0 0 6px 6px; border-top: 1px solid rgba(255,255,255,.08); z-index: 999; }
       .nav-links.open { display: flex; }
+      .nav-links a { color: var(--fuchsia) !important; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
       .hamburger { display: flex; }
       .section { padding: 4rem 1.25rem; }
       .bio-cards { flex-wrap: wrap; gap: .5rem; }
       .bio-card { flex: 1 1 120px; }
     }
+
+    /* ─── CESTA DO ÁZERBÁJDŽÁNU ─── */
+    .az-stats { display: flex; gap: 1rem; flex-wrap: wrap; margin: 1.5rem 0; }
+    .az-stat {
+      flex: 1 1 120px; text-align: center; padding: 1rem;
+      background: rgba(38,64,64,.05); border: 1px solid rgba(38,64,64,.12);
+      border-radius: 14px;
+    }
+    .az-num { font-family: 'Bebas Neue', sans-serif; font-size: 2.4rem; color: var(--solar); line-height: 1; }
+    .az-lbl { font-size: .62rem; letter-spacing: 3px; text-transform: uppercase; color: var(--earth); margin-top: .3rem; }
+    #azchart { width: 100%; height: 520px; border-radius: 16px; overflow: hidden; background: #1a2e2e; margin-top: 1rem; }
+    .az-legend { display: flex; gap: 2rem; margin-top: 1rem; flex-wrap: wrap; }
+    .az-legend-item { display: flex; align-items: center; gap: .6rem; font-size: .78rem; color: var(--earth); }
+    .az-legend-line { width: 28px; height: 3px; border-radius: 2px; }
+    .az-legend-line.solar { background: var(--solar); }
+    .az-legend-line.fuchsia { background: var(--fuchsia); }
+    .az-legend-line.dashed { background: none; border-top: 2.5px dashed var(--fuchsia); height: 0; }
+    .az-legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .az-legend-dot.solar { background: var(--solar); }
+    #cesta-az .section-label { color: var(--night); opacity: .5; }
+    #cesta-az .body-text { color: var(--earth); }
   </style>
 </head>
 <body>
@@ -357,6 +379,30 @@
       <div class="bio-gallery-item">
         <img src="F36EF649-2632-4CFD-947F-AE7DDEFF6F48_4_5005_c.jpeg" alt="Setkání na lodi">
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ CESTA DO ÁZERBÁJDŽÁNU ═══════════ -->
+<section id="cesta-az" class="section">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label">— Cesta do Ázerbájdžánu · 2024</div>
+      <h2 class="section-title">7 758 km na kole</h2>
+      <div class="divider"></div>
+      <p class="body-text">Žďár nad Sázavou → Norsko → Istanbul → ✈ Oslo → zpět domů. Sólo, na kole, s batohem a zápisníkem.</p>
+    </div>
+    <div class="az-stats reveal">
+      <div class="az-stat"><div class="az-num">95</div><div class="az-lbl">dní na cestě</div></div>
+      <div class="az-stat"><div class="az-num">7 758</div><div class="az-lbl">kilometrů</div></div>
+      <div class="az-stat"><div class="az-num">29</div><div class="az-lbl">zastávek</div></div>
+      <div class="az-stat"><div class="az-num" style="color:var(--fuchsia)">12</div><div class="az-lbl">zemí</div></div>
+    </div>
+    <div id="azchart" class="reveal"></div>
+    <div class="az-legend">
+      <div class="az-legend-item"><div class="az-legend-line solar"></div> Cyklotrasa</div>
+      <div class="az-legend-item"><div class="az-legend-line fuchsia dashed"></div> Let Istanbul → Oslo</div>
+      <div class="az-legend-item"><div class="az-legend-dot solar"></div> Klíčové zastávky</div>
     </div>
   </div>
 </section>
@@ -558,6 +604,56 @@
     document.getElementById("countryPanel").classList.remove("open");
     document.getElementById("panelOverlay").classList.remove("open");
   }
+
+  /* ── Mapa cesty do Ázerbájdžánu ── */
+  (function() {
+    const azRoot = am5.Root.new("azchart");
+    azRoot.setThemes([am5themes_Animated.new(azRoot)]);
+    const azChart = azRoot.container.children.push(am5map.MapChart.new(azRoot, {
+      panX: "translateX", panY: "translateY",
+      projection: am5map.geoMercator(),
+      minZoomLevel: 3.5, maxZoomLevel: 32, maxPanOut: 0.5,
+      homeGeoPoint: { longitude: 17, latitude: 51 }, homeZoomLevel: 3.5
+    }));
+    azChart.chartContainer.get("background").setAll({ fill: am5.color(0x1a2e2e), fillOpacity: 1 });
+    const azPolygons = azChart.series.push(am5map.MapPolygonSeries.new(azRoot, { geoJSON: am5geodata_worldLow, exclude: ["AQ"] }));
+    azPolygons.mapPolygons.template.setAll({ fill: am5.color(0x2a4040), fillOpacity: 0.9, stroke: am5.color(0x1a2e2e), strokeWidth: 0.8 });
+    const visitedAZ = ["CZ","DE","DK","NO","AT","HU","HR","BA","RS","BG","TR","SK"];
+    azPolygons.events.on("datavalidated", () => {
+      azPolygons.mapPolygons.each(p => {
+        if (visitedAZ.includes(p.dataItem?.get("id"))) p.setAll({ fill: am5.color(0x3D6060), fillOpacity: 1 });
+      });
+    });
+    const outboundCoords = [[15.94,49.56],[13.74,51.05],[13.40,52.52],[9.99,53.55],[8.70,55.00],[8.40,56.90],[8.15,58.15],[5.73,58.97],[5.32,60.39],[5.73,58.97],[8.15,58.15],[8.40,56.90],[9.99,53.55],[13.40,52.52],[15.94,49.56],[17.11,48.15],[19.04,47.50],[17.50,45.33],[18.41,44.20],[20.46,44.80],[21.89,43.32],[23.32,42.70],[25.60,43.84],[26.56,42.50],[27.50,41.70],[28.95,41.01]];
+    const returnCoords = [[10.74,59.91],[9.65,59.20],[9.05,58.74],[8.00,58.15],[8.40,56.90],[9.99,53.55],[13.40,52.52],[15.94,49.56]];
+    const azLineSeries = azChart.series.push(am5map.MapLineSeries.new(azRoot, {}));
+    azLineSeries.mapLines.template.setAll({ stroke: am5.color(0xF5C518), strokeWidth: 2.5, strokeOpacity: 0.95 });
+    azLineSeries.data.setAll([{ geometry: { type: "LineString", coordinates: outboundCoords } }, { geometry: { type: "LineString", coordinates: returnCoords } }]);
+    const azFlightSeries = azChart.series.push(am5map.MapLineSeries.new(azRoot, {}));
+    azFlightSeries.mapLines.template.setAll({ stroke: am5.color(0xEE3C95), strokeWidth: 2, strokeDasharray: [6,4], strokeOpacity: 0.9 });
+    azFlightSeries.data.setAll([{ geometry: { type: "LineString", coordinates: [[28.95,41.01],[10.74,59.91]] } }]);
+    const azStops = [
+      { lon:15.94, lat:49.56, name:"Žďár nad Sázavou", note:"🚴 Start cesty · Česká republika", color:0xF5C518, r:9 },
+      { lon:5.32,  lat:60.39, name:"Bergen, Norsko",   note:"🏔️ Nejsevernější bod · 60° s. š.",  color:0x2A9D8F, r:7 },
+      { lon:13.40, lat:52.52, name:"Berlín",           note:"🇩🇪 Německo",                        color:0xF5C518, r:6 },
+      { lon:8.40,  lat:56.90, name:"Dánsko",           note:"🇩🇰 Jutland · Dánsko",               color:0xF5C518, r:6 },
+      { lon:19.04, lat:47.50, name:"Budapešť",         note:"🇭🇺 Maďarsko",                       color:0xF5C518, r:6 },
+      { lon:20.46, lat:44.80, name:"Bělehrad",         note:"🇷🇸 Srbsko",                         color:0xF5C518, r:6 },
+      { lon:23.32, lat:42.70, name:"Sofie",            note:"🇧🇬 Bulharsko",                      color:0xF5C518, r:6 },
+      { lon:28.95, lat:41.01, name:"Istanbul",         note:"✈️ Konec kola · let do Osla",         color:0xEE3C95, r:8 },
+      { lon:10.74, lat:59.91, name:"Oslo",             note:"🛬 Přistání · návrat domů",           color:0xEE3C95, r:8 },
+    ];
+    const azPointSeries = azChart.series.push(am5map.MapPointSeries.new(azRoot, {}));
+    azPointSeries.bullets.push(function(root2, series, dataItem) {
+      const d = dataItem.dataContext;
+      const circle = am5.Circle.new(azRoot, { radius: d.r, fill: am5.color(d.color), stroke: am5.color(0x1a2e2e), strokeWidth: 2, tooltipText: "[bold]{name}[/]\n[fontSize:12px]{note}[/]", cursorOverStyle: "pointer" });
+      circle.states.create("hover", { scale: 1.4 });
+      return am5.Bullet.new(azRoot, { sprite: circle });
+    });
+    azPointSeries.data.setAll(azStops.map(s => ({ geometry: { type: "Point", coordinates: [s.lon, s.lat] }, name: s.name, note: s.note, color: s.color, r: s.r })));
+    azChart.set("zoomControl", am5map.ZoomControl.new(azRoot, {}));
+    azPolygons.events.on("datavalidated", function() { azChart.zoomToGeoPoint({ longitude: 17, latitude: 51 }, 3.5, true); });
+  })();
 
   /* ── Hamburger menu ── */
   function toggleMenu() {
