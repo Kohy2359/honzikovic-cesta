@@ -224,27 +224,16 @@
     .panel-overlay.open { display: block; }
 
     /* ─── FOOTER ─── */
-    footer {
-      background: var(--solar);
-      color: var(--night);
-      text-align: center; padding: 3rem 2rem;
-    }
-    .footer-logo {
-      font-family: 'Bebas Neue', sans-serif; font-size: 2rem;
-      letter-spacing: 3px; color: var(--night); margin-bottom: .3rem;
-    }
+    footer { background: var(--solar); color: var(--night); padding: 3rem 2rem; text-align: left; }
+    .footer-inner { display: flex; justify-content: space-between; align-items: flex-start; max-width: 960px; margin: 0 auto; padding-bottom: 2rem; }
+    .footer-logo { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 3px; color: var(--night); margin-bottom: .3rem; }
     .footer-logo span { color: rgba(38,64,64,.5); }
-    .footer-tagline {
-      font-family: 'Kohymaaa', cursive; font-size: 2.4rem;
-      color: rgba(38,64,64,.65); margin-bottom: 1.5rem;
-    }
-    .footer-nav { display: flex; justify-content: flex-start; align-items: center; gap: 2rem; flex-wrap: wrap; margin-bottom: 1.5rem; max-width: 860px; margin-left: auto; margin-right: auto; }
-    .footer-nav-logo { line-height: 1; flex-shrink: 0; }
-    .footer-nav a {
-      color: rgba(38,64,64,.6); text-decoration: none; font-size: .78rem;
-      letter-spacing: 1px; text-transform: uppercase; transition: color .2s;
-    }
+    .footer-tagline { font-family: 'Kohymaaa', cursive; font-size: 2.2rem; color: rgba(38,64,64,.65); }
+    .footer-brand { text-align: right; }
+    .footer-nav { display: flex; flex-direction: column; align-items: flex-start; gap: .8rem; }
+    .footer-nav a { color: rgba(38,64,64,.6); text-decoration: none; font-size: .78rem; letter-spacing: 1px; text-transform: uppercase; transition: color .2s; }
     .footer-nav a:hover { color: var(--night); }
+    .footer-divider { border: none; border-top: 1px solid rgba(38,64,64,.15); max-width: 960px; margin: 0 auto 1.5rem; }
     .footer-copy { font-size: .65rem; letter-spacing: 2px; text-transform: uppercase; color: rgba(38,64,64,.45); }
 
     /* ─── ANIMACE PŘÍJEZDU ─── */
@@ -442,15 +431,21 @@
 
 <!-- ═══════════ FOOTER ═══════════ -->
 <footer>
-  <div class="footer-logo">HONZÍKOVIC <span>CESTA</span></div>
-  <div class="footer-tagline">Život je jízda. Tak jedu!</div>
-  <nav class="footer-nav">
-    <a href="index.html">Hlavní stránka</a>
-    <a href="index.html#forrest-office">Forrest Office</a>
-    <a href="index.html#denik">Deník</a>
-    <a href="index.html#kontakt">Kontakt</a>
-  </nav>
-  <div class="footer-copy">© 2026 Jan Kohoutek · Honzíkovic Cesta</div>
+  <div class="footer-inner">
+    <nav class="footer-nav">
+      <a href="index.html">Hlavní stránka</a>
+      <a href="index.html#forrest-office">Forrest Office</a>
+      <a href="index.html#denik">Deník</a>
+      <a href="faq.html">FAQ</a>
+      <a href="index.html#kontakt">Kontakt</a>
+    </nav>
+    <div class="footer-brand">
+      <div class="footer-logo">HONZÍKOVIC <span>CESTA</span></div>
+      <div class="footer-tagline">Nejde neexistuje.</div>
+    </div>
+  </div>
+  <hr class="footer-divider">
+  <div class="footer-copy">© 2026 Jan Kohoutek · Honzíkovic Cesta · #nejedusam</div>
 </footer>
 
 <script>
