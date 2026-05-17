@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>O mně — Honza Kohoutek · Honzíkovic Cesta</title>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Jost:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
   <style>
     @font-face {
       font-family: 'Kohymaaa';
@@ -603,54 +604,102 @@
     document.getElementById("panelOverlay").classList.remove("open");
   }
 
-  /* ── Mapa cesty do Ázerbájdžánu ── */
+  /* ── Mapa cesty do Ázerbájdžánu – Leaflet + OSM ── */
   (function() {
-    const azRoot = am5.Root.new("azchart");
-    azRoot.setThemes([am5themes_Animated.new(azRoot)]);
-    const azChart = azRoot.container.children.push(am5map.MapChart.new(azRoot, {
-      panX: "translateX", panY: "translateY",
-      projection: am5map.geoMercator(),
-      minZoomLevel: 3.5, maxZoomLevel: 32, maxPanOut: 0.5,
-      homeGeoPoint: { longitude: 17, latitude: 51 }, homeZoomLevel: 3.5
-    }));
-    azChart.chartContainer.get("background").setAll({ fill: am5.color(0x1a2e2e), fillOpacity: 1 });
-    const azPolygons = azChart.series.push(am5map.MapPolygonSeries.new(azRoot, { geoJSON: am5geodata_worldLow, exclude: ["AQ"] }));
-    azPolygons.mapPolygons.template.setAll({ fill: am5.color(0x2a4040), fillOpacity: 0.9, stroke: am5.color(0x1a2e2e), strokeWidth: 0.8 });
-    const visitedAZ = ["CZ","DE","DK","NO","AT","HU","HR","BA","RS","BG","TR","SK"];
-    azPolygons.events.on("datavalidated", () => {
-      azPolygons.mapPolygons.each(p => {
-        if (visitedAZ.includes(p.dataItem?.get("id"))) p.setAll({ fill: am5.color(0x3D6060), fillOpacity: 1 });
+    const script = document.createElement('script');
+    script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+    script.onload = function() {
+      const map = L.map('azchart', {
+        center: [50, 18],
+        zoom: 5,
+        zoomControl: true
       });
-    });
-    const outboundCoords = [[15.94,49.56],[13.74,51.05],[13.40,52.52],[9.99,53.55],[8.70,55.00],[8.40,56.90],[8.15,58.15],[5.73,58.97],[5.32,60.39],[5.73,58.97],[8.15,58.15],[8.40,56.90],[9.99,53.55],[13.40,52.52],[15.94,49.56],[17.11,48.15],[19.04,47.50],[17.50,45.33],[18.41,44.20],[20.46,44.80],[21.89,43.32],[23.32,42.70],[25.60,43.84],[26.56,42.50],[27.50,41.70],[28.95,41.01]];
-    const returnCoords = [[10.74,59.91],[9.65,59.20],[9.05,58.74],[8.00,58.15],[8.40,56.90],[9.99,53.55],[13.40,52.52],[15.94,49.56]];
-    const azLineSeries = azChart.series.push(am5map.MapLineSeries.new(azRoot, {}));
-    azLineSeries.mapLines.template.setAll({ stroke: am5.color(0xF5C518), strokeWidth: 2.5, strokeOpacity: 0.95 });
-    azLineSeries.data.setAll([{ geometry: { type: "LineString", coordinates: outboundCoords } }, { geometry: { type: "LineString", coordinates: returnCoords } }]);
-    const azFlightSeries = azChart.series.push(am5map.MapLineSeries.new(azRoot, {}));
-    azFlightSeries.mapLines.template.setAll({ stroke: am5.color(0xEE3C95), strokeWidth: 2, strokeDasharray: [6,4], strokeOpacity: 0.9 });
-    azFlightSeries.data.setAll([{ geometry: { type: "LineString", coordinates: [[28.95,41.01],[10.74,59.91]] } }]);
-    const azStops = [
-      { lon:15.94, lat:49.56, name:"Žďár nad Sázavou", note:"🚴 Start cesty · Česká republika", color:0xF5C518, r:9 },
-      { lon:5.32,  lat:60.39, name:"Bergen, Norsko",   note:"🏔️ Nejsevernější bod · 60° s. š.",  color:0x2A9D8F, r:7 },
-      { lon:13.40, lat:52.52, name:"Berlín",           note:"🇩🇪 Německo",                        color:0xF5C518, r:6 },
-      { lon:8.40,  lat:56.90, name:"Dánsko",           note:"🇩🇰 Jutland · Dánsko",               color:0xF5C518, r:6 },
-      { lon:19.04, lat:47.50, name:"Budapešť",         note:"🇭🇺 Maďarsko",                       color:0xF5C518, r:6 },
-      { lon:20.46, lat:44.80, name:"Bělehrad",         note:"🇷🇸 Srbsko",                         color:0xF5C518, r:6 },
-      { lon:23.32, lat:42.70, name:"Sofie",            note:"🇧🇬 Bulharsko",                      color:0xF5C518, r:6 },
-      { lon:28.95, lat:41.01, name:"Istanbul",         note:"✈️ Konec kola · let do Osla",         color:0xEE3C95, r:8 },
-      { lon:10.74, lat:59.91, name:"Oslo",             note:"🛬 Přistání · návrat domů",           color:0xEE3C95, r:8 },
-    ];
-    const azPointSeries = azChart.series.push(am5map.MapPointSeries.new(azRoot, {}));
-    azPointSeries.bullets.push(function(root2, series, dataItem) {
-      const d = dataItem.dataContext;
-      const circle = am5.Circle.new(azRoot, { radius: d.r, fill: am5.color(d.color), stroke: am5.color(0x1a2e2e), strokeWidth: 2, tooltipText: "[bold]{name}[/]\n[fontSize:12px]{note}[/]", cursorOverStyle: "pointer" });
-      circle.states.create("hover", { scale: 1.4 });
-      return am5.Bullet.new(azRoot, { sprite: circle });
-    });
-    azPointSeries.data.setAll(azStops.map(s => ({ geometry: { type: "Point", coordinates: [s.lon, s.lat] }, name: s.name, note: s.note, color: s.color, r: s.r })));
-    azChart.set("zoomControl", am5map.ZoomControl.new(azRoot, {}));
-    azPolygons.events.on("datavalidated", function() { azChart.zoomToGeoPoint({ longitude: 17, latitude: 51 }, 3.5, true); });
+
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors © <a href="https://carto.com/">CARTO</a>',
+        subdomains: 'abcd',
+        maxZoom: 19
+      }).addTo(map);
+
+      // Výjezdová trasa: Žďár → Vídeň → Budapešť → Balkán → Istanbul
+      const outbound = [
+        [49.56, 15.94], // Žďár nad Sázavou
+        [48.21, 16.37], // Vídeň
+        [47.50, 19.04], // Budapešť
+        [45.56, 18.68], // Osijek (Chorvatsko)
+        [44.54, 18.68], // Bosna
+        [44.80, 20.46], // Bělehrad
+        [43.32, 21.89], // Niš
+        [42.70, 23.32], // Sofie
+        [42.14, 24.75], // Plovdiv
+        [41.68, 26.56], // Edirne
+        [41.01, 28.95], // Istanbul
+      ];
+
+      // Návratová trasa: Oslo → pobřeží Norska → Dánsko → Hamburk → Labe → Žďár
+      const returnRoute = [
+        [59.91, 10.74], // Oslo
+        [59.10, 10.25], // Vestfold (pobřeží)
+        [58.15,  7.99], // Kristiansand (jižní Norsko)
+        [57.59,  9.97], // Hirtshals (přívoz do Dánska)
+        [57.05,  9.92], // Aalborg
+        [56.45,  9.40], // střední Jutsko
+        [55.47,  8.46], // Esbjerg (záp. pobřeží)
+        [55.10,  8.98], // jižní Dánsko
+        [54.80,  9.43], // Flensburg/německá hranice
+        [53.55,  9.99], // Hamburk
+        [53.24, 10.42], // pod Hamburkem → na Labe
+        [52.40, 11.58], // Magdeburg (Labe)
+        [51.83, 12.24], // Dessau (Labe)
+        [51.34, 12.37], // Halle
+        [51.05, 13.74], // Drážďany
+        [50.90, 14.00], // Děčín (vstup do ČR po Labi)
+        [50.66, 14.05], // Ústí nad Labem
+        [50.23, 15.83], // Pardubice
+        [49.56, 15.94], // Žďár nad Sázavou
+      ];
+
+      // Let Istanbul → Oslo (přerušovaná čára)
+      const flight = [
+        [41.01, 28.95],
+        [59.91, 10.74]
+      ];
+
+      L.polyline(outbound,    { color: '#F5C518', weight: 3, opacity: 0.95 }).addTo(map);
+      L.polyline(returnRoute, { color: '#F5C518', weight: 3, opacity: 0.95 }).addTo(map);
+      L.polyline(flight,      { color: '#EE3C95', weight: 2, dashArray: '8, 6', opacity: 0.85 }).addTo(map);
+
+      // Zastávky
+      const stops = [
+        { latlng: [49.56, 15.94], label: '🚴 Žďár nad Sázavou', note: 'Start & cíl cesty', color: '#F5C518', big: true },
+        { latlng: [48.21, 16.37], label: '🇦🇹 Vídeň',           note: 'Rakousko' },
+        { latlng: [47.50, 19.04], label: '🇭🇺 Budapešť',         note: 'Maďarsko' },
+        { latlng: [44.80, 20.46], label: '🇷🇸 Bělehrad',         note: 'Srbsko' },
+        { latlng: [42.70, 23.32], label: '🇧🇬 Sofie',            note: 'Bulharsko' },
+        { latlng: [41.01, 28.95], label: '✈️ Istanbul',          note: 'Konec kola – let do Osla', color: '#EE3C95', big: true },
+        { latlng: [59.91, 10.74], label: '🛬 Oslo',              note: 'Přistání – start zpátky', color: '#EE3C95', big: true },
+        { latlng: [58.15,  7.99], label: '🇳🇴 Kristiansand',     note: 'Jižní Norsko – pobřeží' },
+        { latlng: [57.59,  9.97], label: '⛴️ Hirtshals',          note: 'Přívoz Norsko → Dánsko' },
+        { latlng: [55.47,  8.46], label: '🇩🇰 Esbjerg',          note: 'Záp. pobřeží Dánska' },
+        { latlng: [53.55,  9.99], label: '🇩🇪 Hamburk',          note: 'Napojení na Labe' },
+        { latlng: [51.05, 13.74], label: '🇩🇪 Drážďany',         note: 'Podél Labe' },
+        { latlng: [50.66, 14.05], label: '🇨🇿 Ústí nad Labem',   note: 'Vstup do ČR' },
+      ];
+
+      stops.forEach(s => {
+        const color = s.color || '#F5C518';
+        const r     = s.big ? 10 : 7;
+        const icon  = L.divIcon({
+          className: '',
+          html: `<div style="width:${r*2}px;height:${r*2}px;border-radius:50%;background:${color};border:2px solid #1a2e2e;box-shadow:0 0 6px rgba(0,0,0,.5);"></div>`,
+          iconAnchor: [r, r]
+        });
+        L.marker(s.latlng, { icon })
+          .addTo(map)
+          .bindPopup(`<strong>${s.label}</strong><br><span style="font-size:.85em;color:#666">${s.note}</span>`);
+      });
+    };
+    document.head.appendChild(script);
   })();
 
   /* ── Hamburger menu ── */
