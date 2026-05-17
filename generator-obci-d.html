@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>352 D-obcí — Generátor obcí</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&family=Caveat:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --solar:   #F5C518;
+      --meadow:  #2A9D8F;
+      --fuchsia: #EE3C95;
+      --sage:    #A8C4BC;
+      --cream:   #EDE8DC;
+      --night:   #264040;
+      --dust:    #8A9E9B;
+      --earth:   #6B5B4F;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { height: 100%; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--night);
+      color: #fff;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 1.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: -30%; left: -20%;
+      width: 140%; height: 160%;
+      background:
+        radial-gradient(ellipse at 70% 30%, rgba(245,197,24,0.10) 0%, transparent 50%),
+        radial-gradient(ellipse at 20% 80%, rgba(42,157,143,0.07) 0%, transparent 45%),
+        radial-gradient(ellipse at 85% 75%, rgba(238,60,149,0.05) 0%, transparent 40%);
+      pointer-events: none;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 480px;
+    }
+
+    .box-title {
+      font-size: .6rem;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--solar);
+      border: 1px solid rgba(245,197,24,.3);
+      padding: .3rem 1rem;
+      border-radius: 100px;
+      margin-bottom: .85rem;
+    }
+
+    /* WORD BOX */
+    .word-box {
+      width: 100%;
+      height: 370px;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(245,197,24,.2);
+      border-radius: 24px;
+      padding: 1.5rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      text-align: center;
+      transition: border-color .3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .word-box::after {
+      content: 'D';
+      position: absolute;
+      right: -10px;
+      bottom: -20px;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 10rem;
+      color: rgba(245,197,24,.04);
+      line-height: 1;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .word-box:hover {
+      border-color: rgba(245,197,24,.5);
+    }
+
+    .word {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2rem, 9vw, 3.2rem);
+      line-height: 1.05;
+      letter-spacing: 2px;
+      color: #fff;
+      margin-bottom: .5rem;
+      word-break: break-word;
+      overflow-wrap: break-word;
+      hyphens: auto;
+    }
+
+    .word .first-letter {
+      color: var(--solar);
+    }
+
+    .meta-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: .15rem;
+      width: 100%;
+    }
+
+    .obyvatel {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2rem, 8vw, 3.5rem);
+      line-height: 1;
+      letter-spacing: 2px;
+      color: var(--solar);
+    }
+
+    .obyvatel-label {
+      font-family: 'Caveat', cursive;
+      font-size: clamp(.9rem, 2.5vw, 1.1rem);
+      color: var(--dust);
+      margin-top: -.1rem;
+      margin-bottom: .35rem;
+    }
+
+    .kraj {
+      display: inline-block;
+      background: rgba(42,157,143,.15);
+      color: var(--meadow);
+      border-radius: 100px;
+      padding: .3rem 1.1rem;
+      font-family: 'Caveat', cursive;
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: .5px;
+    }
+
+    /* BUTTON */
+    button {
+      background: var(--solar);
+      color: var(--night);
+      border: none;
+      padding: .6rem 2rem;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.1rem;
+      letter-spacing: 2px;
+      border-radius: 100px;
+      cursor: pointer;
+      transition: all .2s;
+      margin-top: .5rem;
+    }
+
+    button:hover {
+      background: #ffd84a;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(245,197,24,.3);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    /* ANIMATION */
+    @keyframes slideUp {
+      0%  { opacity: 0; transform: translateY(16px); }
+      100%{ opacity: 1; transform: translateY(0); }
+    }
+
+    .animate {
+      animation: slideUp .35s cubic-bezier(.22,.68,0,1.2) forwards;
+    }
+
+    /* STATS */
+    .stats {
+      margin-top: 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .7rem;
+    }
+
+    .stats-bar-wrap {
+      width: 120px;
+      height: 4px;
+      background: rgba(255,255,255,.1);
+      border-radius: 100px;
+      overflow: hidden;
+    }
+
+    .stats-bar {
+      height: 100%;
+      background: var(--solar);
+      border-radius: 100px;
+      transition: width .4s ease;
+    }
+
+    .stats-label {
+      font-family: 'Caveat', cursive;
+      font-size: 1rem;
+      color: var(--dust);
+      white-space: nowrap;
+    }
+
+    .stats-label strong {
+      color: var(--solar);
+    }
+
+    @media (max-width: 480px) {
+      .word-box { padding: 2rem 1.5rem; min-height: 170px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="word-box">
+      <div class="box-title">352 D-obcí</div>
+      <div class="word" id="word"><span class="first-letter">D</span>omažlice</div>
+      <div class="meta-wrap">
+        <div>
+          <div class="obyvatel" id="obyvatel">11 056</div>
+          <div class="obyvatel-label">obyvatel</div>
+        </div>
+        <span class="kraj" id="kraj">Plzeňský kraj</span>
+      </div>
+      <button onclick="generate()">DALŠÍ OBEC</button>
+    </div>
+    <div class="stats">
+      <div class="stats-bar-wrap">
+        <div class="stats-bar" id="statsBar" style="width:0%"></div>
+      </div>
+      <span class="stats-label">Viděl jsi <strong id="statsCount">0</strong> z 351 obcí</span>
+    </div>
+  </div>
+
+  <script>
+    const obce = [{"obec":"Dalečín","obyvatel":650,"kraj":"Kraj Vysočina"},{"obec":"Daleké Dušníky","obyvatel":418,"kraj":"Středočeský kraj"},{"obec":"Dalešice","obyvatel":212,"kraj":"Liberecký kraj"},{"obec":"Dalešice","obyvatel":568,"kraj":"Kraj Vysočina"},{"obec":"Dalovice","obyvatel":265,"kraj":"Středočeský kraj"},{"obec":"Dalovice","obyvatel":1986,"kraj":"Karlovarský kraj"},{"obec":"Dambořice","obyvatel":1473,"kraj":"Jihomoravský kraj"},{"obec":"Damnice","obyvatel":359,"kraj":"Jihomoravský kraj"},{"obec":"Damníkov","obyvatel":694,"kraj":"Pardubický kraj"},{"obec":"Daňkovice","obyvatel":152,"kraj":"Kraj Vysočina"},{"obec":"Darkovice","obyvatel":1356,"kraj":"Moravskoslezský kraj"},{"obec":"Daskabát","obyvatel":621,"kraj":"Olomoucký kraj"},{"obec":"Dasnice","obyvatel":274,"kraj":"Karlovarský kraj"},{"obec":"Dasný","obyvatel":345,"kraj":"Jihočeský kraj"},{"obec":"Dašice","obyvatel":2365,"kraj":"Pardubický kraj"},{"obec":"Davle","obyvatel":1760,"kraj":"Středočeský kraj"},{"obec":"Deblín","obyvatel":1077,"kraj":"Jihomoravský kraj"},{"obec":"Děčany","obyvatel":394,"kraj":"Ústecký kraj"},{"obec":"Děčín","obyvatel":47951,"kraj":"Ústecký kraj"},{"obec":"Dědice","obyvatel":127,"kraj":"Kraj Vysočina"},{"obec":"Dědová","obyvatel":137,"kraj":"Pardubický kraj"},{"obec":"Dehtáře","obyvatel":113,"kraj":"Kraj Vysočina"},{"obec":"Děhylov","obyvatel":762,"kraj":"Moravskoslezský kraj"},{"obec":"Děkanovice","obyvatel":60,"kraj":"Středočeský kraj"},{"obec":"Děkov","obyvatel":220,"kraj":"Středočeský kraj"},{"obec":"Děpoltovice","obyvatel":394,"kraj":"Karlovarský kraj"},{"obec":"Desná","obyvatel":3112,"kraj":"Liberecký kraj"},{"obec":"Desná","obyvatel":363,"kraj":"Pardubický kraj"},{"obec":"Dešenice","obyvatel":712,"kraj":"Plzeňský kraj"},{"obec":"Dešná","obyvatel":595,"kraj":"Jihočeský kraj"},{"obec":"Dešná","obyvatel":211,"kraj":"Zlínský kraj"},{"obec":"Dešov","obyvatel":429,"kraj":"Kraj Vysočina"},{"obec":"Deštná","obyvatel":763,"kraj":"Jihočeský kraj"},{"obec":"Deštná","obyvatel":222,"kraj":"Jihomoravský kraj"},{"obec":"Deštné v Orlických horách","obyvatel":556,"kraj":"Královéhradecký kraj"},{"obec":"Deštnice","obyvatel":201,"kraj":"Ústecký kraj"},{"obec":"Dětenice","obyvatel":716,"kraj":"Královéhradecký kraj"},{"obec":"Dětkovice","obyvatel":271,"kraj":"Jihomoravský kraj"},{"obec":"Dětkovice","obyvatel":534,"kraj":"Olomoucký kraj"},{"obec":"Dětmarovice","obyvatel":4307,"kraj":"Moravskoslezský kraj"},{"obec":"Dětřichov","obyvatel":718,"kraj":"Liberecký kraj"},{"obec":"Dětřichov","obyvatel":348,"kraj":"Pardubický kraj"},{"obec":"Dětřichov nad Bystřicí","obyvatel":418,"kraj":"Moravskoslezský kraj"},{"obec":"Dětřichov u Moravské Třebové","obyvatel":190,"kraj":"Pardubický kraj"},{"obec":"Dílce","obyvatel":59,"kraj":"Královéhradecký kraj"},{"obec":"Díly","obyvatel":391,"kraj":"Plzeňský kraj"},{"obec":"Dírná","obyvatel":410,"kraj":"Jihočeský kraj"},{"obec":"Diváky","obyvatel":511,"kraj":"Jihomoravský kraj"},{"obec":"Dívčí Hrad","obyvatel":299,"kraj":"Moravskoslezský kraj"},{"obec":"Dívčí Kopy","obyvatel":72,"kraj":"Jihočeský kraj"},{"obec":"Dívčice","obyvatel":560,"kraj":"Jihočeský kraj"},{"obec":"Divec","obyvatel":247,"kraj":"Královéhradecký kraj"},{"obec":"Divišov","obyvatel":1762,"kraj":"Středočeský kraj"},{"obec":"Dlažkovice","obyvatel":122,"kraj":"Ústecký kraj"},{"obec":"Dlažov","obyvatel":487,"kraj":"Plzeňský kraj"},{"obec":"Dlouhá Brtnice","obyvatel":381,"kraj":"Kraj Vysočina"},{"obec":"Dlouhá Lhota","obyvatel":457,"kraj":"Středočeský kraj"},{"obec":"Dlouhá Lhota","obyvatel":431,"kraj":"Středočeský kraj"},{"obec":"Dlouhá Lhota","obyvatel":159,"kraj":"Jihočeský kraj"},{"obec":"Dlouhá Lhota","obyvatel":132,"kraj":"Jihomoravský kraj"},{"obec":"Dlouhá Loučka","obyvatel":562,"kraj":"Pardubický kraj"},{"obec":"Dlouhá Loučka","obyvatel":2000,"kraj":"Olomoucký kraj"},{"obec":"Dlouhá Stráň","obyvatel":91,"kraj":"Moravskoslezský kraj"},{"obec":"Dlouhá Třebová","obyvatel":1326,"kraj":"Pardubický kraj"},{"obec":"Dlouhá Ves","obyvatel":878,"kraj":"Plzeňský kraj"},{"obec":"Dlouhá Ves","obyvatel":458,"kraj":"Kraj Vysočina"},{"obec":"Dlouhé","obyvatel":258,"kraj":"Kraj Vysočina"},{"obec":"Dlouhomilov","obyvatel":489,"kraj":"Olomoucký kraj"},{"obec":"Dlouhoňovice","obyvatel":836,"kraj":"Pardubický kraj"},{"obec":"Dlouhopolsko","obyvatel":226,"kraj":"Středočeský kraj"},{"obec":"Dlouhý Most","obyvatel":916,"kraj":"Liberecký kraj"},{"obec":"Dlouhý Újezd","obyvatel":398,"kraj":"Plzeňský kraj"},{"obec":"Dnešice","obyvatel":844,"kraj":"Plzeňský kraj"},{"obec":"Dobelice","obyvatel":261,"kraj":"Jihomoravský kraj"},{"obec":"Dobev","obyvatel":971,"kraj":"Jihočeský kraj"},{"obec":"Dobkovice","obyvatel":657,"kraj":"Ústecký kraj"},{"obec":"Dobrá","obyvatel":3233,"kraj":"Moravskoslezský kraj"},{"obec":"Dobrá Voda","obyvatel":203,"kraj":"Kraj Vysočina"},{"obec":"Dobrá Voda","obyvatel":384,"kraj":"Kraj Vysočina"},{"obec":"Dobrá Voda u Českých Budějovic","obyvatel":2656,"kraj":"Jihočeský kraj"},{"obec":"Dobrá Voda u Hořic","obyvatel":591,"kraj":"Královéhradecký kraj"},{"obec":"Dobrá Voda u Pacova","obyvatel":96,"kraj":"Kraj Vysočina"},{"obec":"Dobratice","obyvatel":1312,"kraj":"Moravskoslezský kraj"},{"obec":"Dobrčice","obyvatel":232,"kraj":"Olomoucký kraj"},{"obec":"Dobré","obyvatel":862,"kraj":"Královéhradecký kraj"},{"obec":"Dobré Pole","obyvatel":461,"kraj":"Jihomoravský kraj"},{"obec":"Dobrkovice","obyvatel":245,"kraj":"Zlínský kraj"},{"obec":"Dobrná","obyvatel":431,"kraj":"Ústecký kraj"},{"obec":"Dobročkovice","obyvatel":229,"kraj":"Jihomoravský kraj"},{"obec":"Dobročovice","obyvatel":329,"kraj":"Středočeský kraj"},{"obec":"Dobrohošť","obyvatel":46,"kraj":"Jihočeský kraj"},{"obec":"Dobrochov","obyvatel":346,"kraj":"Olomoucký kraj"},{"obec":"Dobroměřice","obyvatel":1400,"kraj":"Ústecký kraj"},{"obec":"Dobromilice","obyvatel":836,"kraj":"Olomoucký kraj"},{"obec":"Dobronice u Bechyně","obyvatel":104,"kraj":"Jihočeský kraj"},{"obec":"Dobronín","obyvatel":1864,"kraj":"Kraj Vysočina"},{"obec":"Dobroslavice","obyvatel":761,"kraj":"Moravskoslezský kraj"},{"obec":"Dobroutov","obyvatel":296,"kraj":"Kraj Vysočina"},{"obec":"Dobrovice","obyvatel":3455,"kraj":"Středočeský kraj"},{"obec":"Dobrovítov","obyvatel":110,"kraj":"Středočeský kraj"},{"obec":"Dobrovíz","obyvatel":562,"kraj":"Středočeský kraj"},{"obec":"Dobršín","obyvatel":101,"kraj":"Plzeňský kraj"},{"obec":"Dobruška","obyvatel":6651,"kraj":"Královéhradecký kraj"},{"obec":"Dobřany","obyvatel":6169,"kraj":"Plzeňský kraj"},{"obec":"Dobřany","obyvatel":128,"kraj":"Královéhradecký kraj"},{"obec":"Dobřejovice","obyvatel":1239,"kraj":"Středočeský kraj"},{"obec":"Dobřeň","obyvatel":182,"kraj":"Středočeský kraj"},{"obec":"Dobřenice","obyvatel":586,"kraj":"Královéhradecký kraj"},{"obec":"Dobříč","obyvatel":437,"kraj":"Středočeský kraj"},{"obec":"Dobříč","obyvatel":412,"kraj":"Plzeňský kraj"},{"obec":"Dobřichov","obyvatel":772,"kraj":"Středočeský kraj"},{"obec":"Dobřichovice","obyvatel":3739,"kraj":"Středočeský kraj"},{"obec":"Dobříkov","obyvatel":556,"kraj":"Pardubický kraj"},{"obec":"Dobříň","obyvatel":539,"kraj":"Ústecký kraj"},{"obec":"Dobřínsko","obyvatel":389,"kraj":"Jihomoravský kraj"},{"obec":"Dobříš","obyvatel":8828,"kraj":"Středočeský kraj"},{"obec":"Dobřív","obyvatel":1323,"kraj":"Plzeňský kraj"},{"obec":"Dobšice","obyvatel":247,"kraj":"Středočeský kraj"},{"obec":"Dobšice","obyvatel":121,"kraj":"Jihočeský kraj"},{"obec":"Dobšice","obyvatel":2418,"kraj":"Jihomoravský kraj"},{"obec":"Dobšín","obyvatel":281,"kraj":"Středočeský kraj"},{"obec":"Dohalice","obyvatel":457,"kraj":"Královéhradecký kraj"},{"obec":"Doksany","obyvatel":443,"kraj":"Ústecký kraj"},{"obec":"Doksy","obyvatel":1708,"kraj":"Středočeský kraj"},{"obec":"Doksy","obyvatel":5178,"kraj":"Liberecký kraj"},{"obec":"Dolánky nad Ohří","obyvatel":276,"kraj":"Ústecký kraj"},{"obec":"Dolany","obyvatel":302,"kraj":"Středočeský kraj"},{"obec":"Dolany","obyvatel":939,"kraj":"Plzeňský kraj"},{"obec":"Dolany","obyvatel":295,"kraj":"Plzeňský kraj"},{"obec":"Dolany","obyvatel":661,"kraj":"Královéhradecký kraj"},{"obec":"Dolany","obyvatel":407,"kraj":"Pardubický kraj"},{"obec":"Dolany","obyvatel":2845,"kraj":"Olomoucký kraj"},{"obec":"Dolany nad Vltavou","obyvatel":935,"kraj":"Středočeský kraj"},{"obec":"Dolce","obyvatel":289,"kraj":"Plzeňský kraj"},{"obec":"Dolenice","obyvatel":134,"kraj":"Jihomoravský kraj"},{"obec":"Dolní Bečva","obyvatel":1868,"kraj":"Zlínský kraj"},{"obec":"Dolní Bělá","obyvatel":465,"kraj":"Plzeňský kraj"},{"obec":"Dolní Benešov","obyvatel":4052,"kraj":"Moravskoslezský kraj"},{"obec":"Dolní Beřkovice","obyvatel":1503,"kraj":"Středočeský kraj"},{"obec":"Dolní Bezděkov","obyvatel":226,"kraj":"Pardubický kraj"},{"obec":"Dolní Bojanovice","obyvatel":3017,"kraj":"Jihomoravský kraj"},{"obec":"Dolní Bousov","obyvatel":2814,"kraj":"Středočeský kraj"},{"obec":"Dolní Branná","obyvatel":1000,"kraj":"Královéhradecký kraj"},{"obec":"Dolní Brusnice","obyvatel":407,"kraj":"Královéhradecký kraj"},{"obec":"Dolní Břežany","obyvatel":4399,"kraj":"Středočeský kraj"},{"obec":"Dolní Bukovsko","obyvatel":1765,"kraj":"Jihočeský kraj"},{"obec":"Dolní Cerekev","obyvatel":1270,"kraj":"Kraj Vysočina"},{"obec":"Dolní Čermná","obyvatel":1334,"kraj":"Pardubický kraj"},{"obec":"Dolní Dobrouč","obyvatel":2604,"kraj":"Pardubický kraj"},{"obec":"Dolní Domaslavice","obyvatel":1392,"kraj":"Moravskoslezský kraj"},{"obec":"Dolní Dubňany","obyvatel":483,"kraj":"Jihomoravský kraj"},{"obec":"Dolní Dunajovice","obyvatel":1690,"kraj":"Jihomoravský kraj"},{"obec":"Dolní Dvořiště","obyvatel":1388,"kraj":"Jihočeský kraj"},{"obec":"Dolní Dvůr","obyvatel":273,"kraj":"Královéhradecký kraj"},{"obec":"Dolní Habartice","obyvatel":586,"kraj":"Ústecký kraj"},{"obec":"Dolní Hbity","obyvatel":902,"kraj":"Středočeský kraj"},{"obec":"Dolní Heřmanice","obyvatel":527,"kraj":"Kraj Vysočina"},{"obec":"Dolní Hořice","obyvatel":839,"kraj":"Jihočeský kraj"},{"obec":"Dolní Hradiště","obyvatel":66,"kraj":"Plzeňský kraj"},{"obec":"Dolní Hrachovice","obyvatel":133,"kraj":"Jihočeský kraj"},{"obec":"Dolní Chvatliny","obyvatel":487,"kraj":"Středočeský kraj"},{"obec":"Dolní Kalná","obyvatel":687,"kraj":"Královéhradecký kraj"},{"obec":"Dolní Kounice","obyvatel":2471,"kraj":"Jihomoravský kraj"},{"obec":"Dolní Kralovice","obyvatel":890,"kraj":"Středočeský kraj"},{"obec":"Dolní Krupá","obyvatel":250,"kraj":"Středočeský kraj"},{"obec":"Dolní Krupá","obyvatel":429,"kraj":"Kraj Vysočina"},{"obec":"Dolní Lánov","obyvatel":781,"kraj":"Královéhradecký kraj"},{"obec":"Dolní Lažany","obyvatel":150,"kraj":"Kraj Vysočina"},{"obec":"Dolní Lhota","obyvatel":664,"kraj":"Zlínský kraj"},{"obec":"Dolní Lhota","obyvatel":1490,"kraj":"Moravskoslezský kraj"},{"obec":"Dolní Libochová","obyvatel":152,"kraj":"Kraj Vysočina"},{"obec":"Dolní Lochov","obyvatel":46,"kraj":"Královéhradecký kraj"},{"obec":"Dolní Lomná","obyvatel":923,"kraj":"Moravskoslezský kraj"},{"obec":"Dolní Loučky","obyvatel":1271,"kraj":"Jihomoravský kraj"},{"obec":"Dolní Lukavice","obyvatel":1018,"kraj":"Plzeňský kraj"},{"obec":"Dolní Lutyně","obyvatel":5298,"kraj":"Moravskoslezský kraj"},{"obec":"Dolní Město","obyvatel":919,"kraj":"Kraj Vysočina"},{"obec":"Dolní Morava","obyvatel":418,"kraj":"Pardubický kraj"},{"obec":"Dolní Moravice","obyvatel":387,"kraj":"Moravskoslezský kraj"},{"obec":"Dolní Němčí","obyvatel":2958,"kraj":"Zlínský kraj"},{"obec":"Dolní Nětčice","obyvatel":245,"kraj":"Olomoucký kraj"},{"obec":"Dolní Nivy","obyvatel":354,"kraj":"Karlovarský kraj"},{"obec":"Dolní Novosedly","obyvatel":249,"kraj":"Jihočeský kraj"},{"obec":"Dolní Olešnice","obyvatel":377,"kraj":"Královéhradecký kraj"},{"obec":"Dolní Pěna","obyvatel":396,"kraj":"Jihočeský kraj"},{"obec":"Dolní Podluží","obyvatel":1173,"kraj":"Ústecký kraj"},{"obec":"Dolní Pohleď","obyvatel":99,"kraj":"Středočeský kraj"},{"obec":"Dolní Poustevna","obyvatel":1727,"kraj":"Ústecký kraj"},{"obec":"Dolní Přím","obyvatel":734,"kraj":"Královéhradecký kraj"},{"obec":"Dolní Radechová","obyvatel":776,"kraj":"Královéhradecký kraj"},{"obec":"Dolní Roveň","obyvatel":2076,"kraj":"Pardubický kraj"},{"obec":"Dolní Rožínka","obyvatel":597,"kraj":"Kraj Vysočina"},{"obec":"Dolní Rychnov","obyvatel":1316,"kraj":"Karlovarský kraj"},{"obec":"Dolní Řasnice","obyvatel":532,"kraj":"Liberecký kraj"},{"obec":"Dolní Ředice","obyvatel":977,"kraj":"Pardubický kraj"},{"obec":"Dolní Slivno","obyvatel":344,"kraj":"Středočeský kraj"},{"obec":"Dolní Sokolovec","obyvatel":86,"kraj":"Kraj Vysočina"},{"obec":"Dolní Stakory","obyvatel":318,"kraj":"Středočeský kraj"},{"obec":"Dolní Studénky","obyvatel":1378,"kraj":"Olomoucký kraj"},{"obec":"Dolní Těšice","obyvatel":70,"kraj":"Olomoucký kraj"},{"obec":"Dolní Tošanovice","obyvatel":353,"kraj":"Moravskoslezský kraj"},{"obec":"Dolní Třebonín","obyvatel":1348,"kraj":"Jihočeský kraj"},{"obec":"Dolní Újezd","obyvatel":1961,"kraj":"Pardubický kraj"},{"obec":"Dolní Újezd","obyvatel":1210,"kraj":"Olomoucký kraj"},{"obec":"Dolní Věstonice","obyvatel":304,"kraj":"Jihomoravský kraj"},{"obec":"Dolní Vilémovice","obyvatel":430,"kraj":"Kraj Vysočina"},{"obec":"Dolní Vilímeč","obyvatel":105,"kraj":"Kraj Vysočina"},{"obec":"Dolní Zálezly","obyvatel":582,"kraj":"Ústecký kraj"},{"obec":"Dolní Zimoř","obyvatel":94,"kraj":"Středočeský kraj"},{"obec":"Dolní Žandov","obyvatel":1234,"kraj":"Karlovarský kraj"},{"obec":"Dolní Žďár","obyvatel":151,"kraj":"Jihočeský kraj"},{"obec":"Dolní Životice","obyvatel":1037,"kraj":"Moravskoslezský kraj"},{"obec":"Doloplazy","obyvatel":1360,"kraj":"Olomoucký kraj"},{"obec":"Doloplazy","obyvatel":540,"kraj":"Olomoucký kraj"},{"obec":"Domamil","obyvatel":317,"kraj":"Kraj Vysočina"},{"obec":"Domanín","obyvatel":386,"kraj":"Jihočeský kraj"},{"obec":"Domanín","obyvatel":1017,"kraj":"Jihomoravský kraj"},{"obec":"Dománovice","obyvatel":109,"kraj":"Středočeský kraj"},{"obec":"Domašín","obyvatel":191,"kraj":"Ústecký kraj"},{"obec":"Domašov","obyvatel":670,"kraj":"Jihomoravský kraj"},{"obec":"Domašov nad Bystřicí","obyvatel":482,"kraj":"Olomoucký kraj"},{"obec":"Domašov u Šternberka","obyvatel":345,"kraj":"Olomoucký kraj"},{"obec":"Domaželice","obyvatel":551,"kraj":"Olomoucký kraj"},{"obec":"Domažlice","obyvatel":11056,"kraj":"Plzeňský kraj"},{"obec":"Domoraz","obyvatel":55,"kraj":"Plzeňský kraj"},{"obec":"Domousnice","obyvatel":271,"kraj":"Středočeský kraj"},{"obec":"Domoušice","obyvatel":656,"kraj":"Ústecký kraj"},{"obec":"Doňov","obyvatel":84,"kraj":"Jihočeský kraj"},{"obec":"Doubek","obyvatel":497,"kraj":"Středočeský kraj"},{"obec":"Doubice","obyvatel":112,"kraj":"Ústecký kraj"},{"obec":"Doubrava","obyvatel":1201,"kraj":"Moravskoslezský kraj"},{"obec":"Doubravčice","obyvatel":961,"kraj":"Středočeský kraj"},{"obec":"Doubravice","obyvatel":311,"kraj":"Jihočeský kraj"},{"obec":"Doubravice","obyvatel":270,"kraj":"Jihočeský kraj"},{"obec":"Doubravice","obyvatel":363,"kraj":"Královéhradecký kraj"},{"obec":"Doubravice nad Svitavou","obyvatel":1385,"kraj":"Jihomoravský kraj"},{"obec":"Doubravička","obyvatel":158,"kraj":"Středočeský kraj"},{"obec":"Doubravník","obyvatel":837,"kraj":"Jihomoravský kraj"},{"obec":"Doubravy","obyvatel":588,"kraj":"Zlínský kraj"},{"obec":"Doudleby","obyvatel":478,"kraj":"Jihočeský kraj"},{"obec":"Doudleby nad Orlicí","obyvatel":1769,"kraj":"Královéhradecký kraj"},{"obec":"Doupě","obyvatel":101,"kraj":"Kraj Vysočina"},{"obec":"Doupovské Hradiště","obyvatel":164,"kraj":"Karlovarský kraj"},{"obec":"Drahanovice","obyvatel":1763,"kraj":"Olomoucký kraj"},{"obec":"Drahany","obyvatel":517,"kraj":"Olomoucký kraj"},{"obec":"Drahelčice","obyvatel":1229,"kraj":"Středočeský kraj"},{"obec":"Drahenice","obyvatel":160,"kraj":"Středočeský kraj"},{"obec":"Drahkov","obyvatel":142,"kraj":"Plzeňský kraj"},{"obec":"Drahlín","obyvatel":563,"kraj":"Středočeský kraj"},{"obec":"Drahňovice","obyvatel":107,"kraj":"Středočeský kraj"},{"obec":"Drahobudice","obyvatel":255,"kraj":"Středočeský kraj"},{"obec":"Drahobuz","obyvatel":280,"kraj":"Ústecký kraj"},{"obec":"Drahonice","obyvatel":371,"kraj":"Jihočeský kraj"},{"obec":"Drahonín","obyvatel":119,"kraj":"Jihomoravský kraj"},{"obec":"Drahoňův Újezd","obyvatel":130,"kraj":"Plzeňský kraj"},{"obec":"Drahotěšice","obyvatel":335,"kraj":"Jihočeský kraj"},{"obec":"Drahotín","obyvatel":191,"kraj":"Plzeňský kraj"},{"obec":"Drahouš","obyvatel":81,"kraj":"Středočeský kraj"},{"obec":"Drahov","obyvatel":151,"kraj":"Jihočeský kraj"},{"obec":"Drachkov","obyvatel":195,"kraj":"Jihočeský kraj"},{"obec":"Dráchov","obyvatel":230,"kraj":"Jihočeský kraj"},{"obec":"Drásov","obyvatel":433,"kraj":"Středočeský kraj"},{"obec":"Drásov","obyvatel":2002,"kraj":"Jihomoravský kraj"},{"obec":"Dražeň","obyvatel":155,"kraj":"Plzeňský kraj"},{"obec":"Draženov","obyvatel":425,"kraj":"Plzeňský kraj"},{"obec":"Dražice","obyvatel":819,"kraj":"Jihočeský kraj"},{"obec":"Dražíč","obyvatel":258,"kraj":"Jihočeský kraj"},{"obec":"Dražičky","obyvatel":168,"kraj":"Jihočeský kraj"},{"obec":"Drážov","obyvatel":238,"kraj":"Jihočeský kraj"},{"obec":"Dražovice","obyvatel":162,"kraj":"Plzeňský kraj"},{"obec":"Dražovice","obyvatel":955,"kraj":"Jihomoravský kraj"},{"obec":"Dražůvky","obyvatel":267,"kraj":"Jihomoravský kraj"},{"obec":"Drevníky","obyvatel":341,"kraj":"Středočeský kraj"},{"obec":"Drhovice","obyvatel":222,"kraj":"Jihočeský kraj"},{"obec":"Drhovle","obyvatel":576,"kraj":"Jihočeský kraj"},{"obec":"Drhovy","obyvatel":265,"kraj":"Středočeský kraj"},{"obec":"Drmoul","obyvatel":1013,"kraj":"Karlovarský kraj"},{"obec":"Drnek","obyvatel":176,"kraj":"Středočeský kraj"},{"obec":"Drnholec","obyvatel":1851,"kraj":"Jihomoravský kraj"},{"obec":"Drnovice","obyvatel":1332,"kraj":"Jihomoravský kraj"},{"obec":"Drnovice","obyvatel":2387,"kraj":"Jihomoravský kraj"},{"obec":"Drnovice","obyvatel":435,"kraj":"Zlínský kraj"},{"obec":"Drobovice","obyvatel":402,"kraj":"Středočeský kraj"},{"obec":"Droužetice","obyvatel":140,"kraj":"Jihočeský kraj"},{"obec":"Droužkovice","obyvatel":850,"kraj":"Ústecký kraj"},{"obec":"Drozdov","obyvatel":780,"kraj":"Středočeský kraj"},{"obec":"Drozdov","obyvatel":352,"kraj":"Olomoucký kraj"},{"obec":"Drslavice","obyvatel":93,"kraj":"Jihočeský kraj"},{"obec":"Drslavice","obyvatel":505,"kraj":"Zlínský kraj"},{"obec":"Druhanov","obyvatel":163,"kraj":"Kraj Vysočina"},{"obec":"Drunče","obyvatel":52,"kraj":"Jihočeský kraj"},{"obec":"Druztová","obyvatel":816,"kraj":"Plzeňský kraj"},{"obec":"Družec","obyvatel":1078,"kraj":"Středočeský kraj"},{"obec":"Drysice","obyvatel":612,"kraj":"Jihomoravský kraj"},{"obec":"Držkov","obyvatel":586,"kraj":"Liberecký kraj"},{"obec":"Držková","obyvatel":357,"kraj":"Zlínský kraj"},{"obec":"Držovice","obyvatel":1473,"kraj":"Olomoucký kraj"},{"obec":"Dřenice","obyvatel":406,"kraj":"Pardubický kraj"},{"obec":"Dřešín","obyvatel":322,"kraj":"Jihočeský kraj"},{"obec":"Dřetovice","obyvatel":470,"kraj":"Středočeský kraj"},{"obec":"Dřevčice","obyvatel":796,"kraj":"Středočeský kraj"},{"obec":"Dřevěnice","obyvatel":256,"kraj":"Královéhradecký kraj"},{"obec":"Dřevnovice","obyvatel":489,"kraj":"Olomoucký kraj"},{"obec":"Dřevohostice","obyvatel":1523,"kraj":"Olomoucký kraj"},{"obec":"Dřínov","obyvatel":482,"kraj":"Středočeský kraj"},{"obec":"Dřínov","obyvatel":344,"kraj":"Středočeský kraj"},{"obec":"Dřínov","obyvatel":432,"kraj":"Zlínský kraj"},{"obec":"Dřísy","obyvatel":1047,"kraj":"Středočeský kraj"},{"obec":"Dříteč","obyvatel":555,"kraj":"Pardubický kraj"},{"obec":"Dříteň","obyvatel":1697,"kraj":"Jihočeský kraj"},{"obec":"Dub","obyvatel":395,"kraj":"Jihočeský kraj"},{"obec":"Dub nad Moravou","obyvatel":1625,"kraj":"Olomoucký kraj"},{"obec":"Dubá","obyvatel":1702,"kraj":"Liberecký kraj"},{"obec":"Dubany","obyvatel":288,"kraj":"Pardubický kraj"},{"obec":"Dubčany","obyvatel":252,"kraj":"Olomoucký kraj"},{"obec":"Dubenec","obyvatel":372,"kraj":"Středočeský kraj"},{"obec":"Dubenec","obyvatel":663,"kraj":"Královéhradecký kraj"},{"obec":"Dubí","obyvatel":7809,"kraj":"Ústecký kraj"},{"obec":"Dubicko","obyvatel":1102,"kraj":"Olomoucký kraj"},{"obec":"Dubičné","obyvatel":410,"kraj":"Jihočeský kraj"},{"obec":"Dublovice","obyvatel":1092,"kraj":"Středočeský kraj"},{"obec":"Dubňany","obyvatel":6327,"kraj":"Jihomoravský kraj"},{"obec":"Dubné","obyvatel":1654,"kraj":"Jihočeský kraj"},{"obec":"Dubnice","obyvatel":650,"kraj":"Liberecký kraj"},{"obec":"Dubno","obyvatel":332,"kraj":"Středočeský kraj"},{"obec":"Dubovice","obyvatel":81,"kraj":"Kraj Vysočina"},{"obec":"Dudín","obyvatel":189,"kraj":"Kraj Vysočina"},{"obec":"Duchcov","obyvatel":8582,"kraj":"Ústecký kraj"},{"obec":"Dukovany","obyvatel":901,"kraj":"Kraj Vysočina"},{"obec":"Důl","obyvatel":51,"kraj":"Kraj Vysočina"},{"obec":"Dunajovice","obyvatel":217,"kraj":"Jihočeský kraj"},{"obec":"Dunice","obyvatel":68,"kraj":"Středočeský kraj"},{"obec":"Dušejov","obyvatel":477,"kraj":"Kraj Vysočina"},{"obec":"Dušníky","obyvatel":446,"kraj":"Ústecký kraj"},{"obec":"Dvakačovice","obyvatel":179,"kraj":"Pardubický kraj"},{"obec":"Dvorce","obyvatel":195,"kraj":"Kraj Vysočina"},{"obec":"Dvorce","obyvatel":1286,"kraj":"Moravskoslezský kraj"},{"obec":"Dvory","obyvatel":570,"kraj":"Středočeský kraj"},{"obec":"Dvory","obyvatel":97,"kraj":"Jihočeský kraj"},{"obec":"Dvory nad Lužnicí","obyvatel":358,"kraj":"Jihočeský kraj"},{"obec":"Dvůr Králové nad Labem","obyvatel":15471,"kraj":"Královéhradecký kraj"},{"obec":"Dyjákovice","obyvatel":848,"kraj":"Jihomoravský kraj"},{"obec":"Dyjákovičky","obyvatel":575,"kraj":"Jihomoravský kraj"},{"obec":"Dyje","obyvatel":486,"kraj":"Jihomoravský kraj"},{"obec":"Dyjice","obyvatel":133,"kraj":"Kraj Vysočina"},{"obec":"Dymokury","obyvatel":887,"kraj":"Středočeský kraj"},{"obec":"Dynín","obyvatel":323,"kraj":"Jihočeský kraj"},{"obec":"Dýšina","obyvatel":1857,"kraj":"Plzeňský kraj"},{"obec":"Dzbel","obyvatel":227,"kraj":"Olomoucký kraj"},{"obec":"Džbánice","obyvatel":136,"kraj":"Jihomoravský kraj"},{"obec":"Džbánov","obyvatel":359,"kraj":"Pardubický kraj"}];
+
+    const videne = new Set(JSON.parse(localStorage.getItem('videneObce') || '[]'));
+    let fronta = [];
+
+    function shuffle(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    function nextIndex() {
+      if (!fronta.length) fronta = shuffle([...Array(obce.length).keys()]);
+      return fronta.pop();
+    }
+
+    function formatPocet(n) {
+      return n.toLocaleString('cs-CZ');
+    }
+
+    function updateStats() {
+      const count = videne.size;
+      const pct   = (count / obce.length) * 100;
+      document.getElementById('statsCount').textContent = count;
+      document.getElementById('statsBar').style.width   = pct + '%';
+    }
+
+    generate();
+
+    function generate() {
+      if (!obce.length) return;
+
+      const index = nextIndex();
+      const item = obce[index];
+
+      const wordEl     = document.getElementById('word');
+      const obyvatelEl = document.getElementById('obyvatel');
+      const krajEl     = document.getElementById('kraj');
+
+      wordEl.classList.remove('animate');
+      obyvatelEl.classList.remove('animate');
+      void wordEl.offsetWidth;
+
+      const prvni  = item.obec[0];
+      const zbytek = item.obec.slice(1);
+      wordEl.innerHTML = `<span class="first-letter">${prvni}</span>${zbytek}`;
+
+      obyvatelEl.textContent = formatPocet(item.obyvatel);
+      krajEl.textContent     = item.kraj;
+
+      wordEl.classList.add('animate');
+      obyvatelEl.classList.add('animate');
+
+      videne.add(index);
+      localStorage.setItem('videneObce', JSON.stringify([...videne]));
+      updateStats();
+    }
+  </script>
+</body>
+</html>
