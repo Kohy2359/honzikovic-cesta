@@ -457,69 +457,35 @@
 <script>
   /* ── DATA: navštívené a plánované země ── */
   const countries = {
-    CZ: {
-      name: "Česká republika",
-      flag: "🇨🇿",
-      tagline: "Domov. 352 D-obcí.",
-      text: "Domovská základna i vlajkový projekt. Projekt Forrest Office: projet všech 352 obcí začínajících na D na kole Rekola. D jako Domestici, Domov, Dobrota, Důstojnost. Každá obec — příběh.",
-      status: "visited",
-      photos: ["🚴","🏘️","📖","🌻"],
-      links: [{ icon: "🏅", label: "Sleduj trasu na Stravě", url: "https://www.strava.com" }]
-    },
-    AZ: {
-      name: "Ázerbájdžán",
-      flag: "🇦🇿",
-      tagline: "Kniha se teprve píše...",
-      text: "Cesta, která změnila všechno. Z Ázerbájdžánu vzniká první kniha — cestopis plný setkání s lidmi, kultura, chuť jídla a pocity, které se nevejdou na Instagram. Vyjde brzy.",
-      status: "visited",
-      photos: ["🕌","🍽️","🌄","✍️"],
-      links: [{ icon: "📖", label: "Více o knize", url: "index.html#denik" }]
-    },
-    DE: {
-      name: "Německo",
-      flag: "🇩🇪",
-      tagline: "Na kole přes hranice",
-      text: "Sousední země, první výjezd za hranice. Německé cyklotrasy a lidi, kteří vždy nabídnou pivo.",
-      status: "visited",
-      photos: ["🚴","🍺","🌲","🏰"],
-      links: []
-    },
-    AT: {
-      name: "Rakousko",
-      flag: "🇦🇹",
-      tagline: "Kopce a káva",
-      text: "Alpy. Kopce, které bolí. Výhledy, kvůli kterým to stálo za to. Vídeňská káva jako odměna.",
-      status: "visited",
-      photos: ["⛰️","☕","🚴","🎵"],
-      links: []
-    },
-    SK: {
-      name: "Slovensko",
-      flag: "🇸🇰",
-      tagline: "Bratři na kole",
-      text: "Nejbližší sousedé, nejrychlejší výlet. Slovensko je jako Česko — jen s vyššími kopci a silnějšími kořalkami.",
-      status: "visited",
-      photos: ["🏔️","🌲","🚴","🥃"],
-      links: []
-    },
-    HR: {
-      name: "Chorvatsko",
-      flag: "🇭🇷",
-      tagline: "Moře na dohled",
-      text: "Jadranské moře, úzké silničky podél pobřeží a Jadran pod sluneční zlatou hodinou. Sem se vždy chce vracet.",
-      status: "visited",
-      photos: ["🌊","🚴","🌅","🦞"],
-      links: []
-    },
-    PL: {
-      name: "Polsko",
-      flag: "🇵🇱",
-      tagline: "Plánováno",
-      text: "Na seznamu. Kraków, Tatry a polské placky. Zatím jen plán.",
-      status: "planned",
-      photos: [],
-      links: []
-    }
+    CZ: { name: "Česká republika", flag: "🇨🇿", tagline: "#D352 — coming soon", text: "Domovská základna a vlajkový projekt. Projet všech 352 obcí začínajících na D — D jako Domestici, Domov, Důstojnost. Start 16. června 2026.", status: "planned", photos: ["🚴","🏘️","📖","🌻"], links: [{ icon: "🏅", label: "Sleduj trasu na Stravě", url: "https://www.strava.com/athletes/158217101" }] },
+    AZ: { name: "Ázerbájdžán", flag: "🇦🇿", tagline: "Kniha se teprve píše...", text: "Cesta, která změnila všechno. Z Ázerbájdžánu vzniká první kniha — cestopis plný setkání s lidmi, kultura, chuť jídla a pocity, které se nevejdou na Instagram.", status: "visited", photos: ["🕌","🍽️","🌄","✍️"], links: [{ icon: "📖", label: "Více o knize", url: "index.html#denik" }] },
+    DE: { name: "Německo", flag: "🇩🇪", tagline: "Na kole přes hranice", text: "Sousední země, přejezd na kole i pěšky. Podél Labe přes Drážďany a Hamburk až k Severnímu moři.", status: "visited", photos: ["🚴","🍺","🌲","🏰"], links: [] },
+    AT: { name: "Rakousko", flag: "🇦🇹", tagline: "Kopce a káva", text: "Alpy. Kopce, které bolí. Výhledy, kvůli kterým to stálo za to. Vídeňská káva jako odměna.", status: "visited", photos: ["⛰️","☕","🚴","🎵"], links: [] },
+    SK: { name: "Slovensko", flag: "🇸🇰", tagline: "Bratři na kole", text: "Nejbližší sousedé, nejrychlejší výlet. Slovensko je jako Česko — jen s vyššími kopci.", status: "visited", photos: ["🏔️","🌲","🚴","🥃"], links: [] },
+    HR: { name: "Chorvatsko", flag: "🇭🇷", tagline: "Moře na dohled", text: "Jadranské moře, úzké silničky podél pobřeží a západ slunce nad Jadranem.", status: "visited", photos: ["🌊","🚴","🌅","🦞"], links: [] },
+    ES: { name: "Španělsko", flag: "🇪🇸", tagline: "Sol y fiesta", text: "Španělsko — slunce, tapas a neskutečné silnice pro cyklisty.", status: "visited", photos: ["☀️","🚴","🍷","🏖️"], links: [] },
+    PT: { name: "Portugalsko", flag: "🇵🇹", tagline: "Край světa", text: "Nejzápadnější bod Evropy. Atlantik, pastel de nata a saudade.", status: "visited", photos: ["🌊","🍮","🚴","🏰"], links: [] },
+    GR: { name: "Řecko", flag: "🇬🇷", tagline: "Kolébka civilizace", text: "Athény, ostrovy, olivovníky a nejlepší gyros na světě.", status: "visited", photos: ["🏛️","🌊","🫒","🐟"], links: [] },
+    FR: { name: "Francie (vč. Korsiky)", flag: "🇫🇷", tagline: "Liberté, Égalité, Baguette", text: "Francie včetně Korsiky. Paříž, Alpy, středomořské pobřeží.", status: "visited", photos: ["🗼","🥐","🍷","🚴"], links: [] },
+    GB: { name: "Anglie / Velká Británie", flag: "🇬🇧", tagline: "God Save the King", text: "Londýn, venkov a ranní mlhy. Jezdí vlevo, ale cyklisti to zvládnou.", status: "visited", photos: ["🎡","☕","🌧️","🚴"], links: [] },
+    LU: { name: "Lucembursko", flag: "🇱🇺", tagline: "Nejmenší, ale drahé", text: "Malinké, ale překvapivě zelené. Průjezd přes jedno z nejbohatších míst světa.", status: "visited", photos: ["🏰","🚴","💶","🌲"], links: [] },
+    BE: { name: "Belgie", flag: "🇧🇪", tagline: "Čokoláda a pivo", text: "Brusel, waffle, nejlepší pivo na světě a hodně kopců pro cyklisty.", status: "visited", photos: ["🍫","🍺","🚴","🏙️"], links: [] },
+    NL: { name: "Nizozemí", flag: "🇳🇱", tagline: "Země kol a kanálů", text: "Plochá země, nekonečné cyklostezky a tulipány. Cyklistický ráj.", status: "visited", photos: ["🚲","🌷","🧀","🏙️"], links: [] },
+    DK: { name: "Dánsko", flag: "🇩🇰", tagline: "Záp. pobřeží na kole", text: "Přes celé Jutsko podél západního pobřeží. Vítr do obličeje, ale výhled k nezaplacení.", status: "visited", photos: ["🚴","🌊","🐟","🏰"], links: [] },
+    NO: { name: "Norsko", flag: "🇳🇴", tagline: "Fjordy a déšť", text: "Norské pobřeží — nejkrásnější krajina na světě. A také nejdražší.", status: "visited", photos: ["🏔️","🚴","🌊","🌧️"], links: [] },
+    PL: { name: "Polsko", flag: "🇵🇱", tagline: "Přes hranice na kole", text: "Polsko průjezdem — ploché, rychlé a s dobrým jídlem.", status: "visited", photos: ["🚴","🥟","🌲","🏰"], links: [] },
+    SI: { name: "Slovinsko", flag: "🇸🇮", tagline: "Skryté překvapení Evropy", text: "Bled, Triglav a zelené řeky. Slovinsko je nejkrásnější malá země Evropy.", status: "visited", photos: ["🏔️","🌊","🚴","🌲"], links: [] },
+    IT: { name: "Itálie (vč. Sardinie)", flag: "🇮🇹", tagline: "La dolce vita", text: "Itálie — pasta, espresso a neskutečné silnice. Sardinie jako bonus.", status: "visited", photos: ["🍝","☕","🚴","🌊"], links: [] },
+    HU: { name: "Maďarsko", flag: "🇭🇺", tagline: "Budapešť v noci", text: "Maďarsko na trase do Istanbulu. Budapešť v noci je nezapomenutelná.", status: "visited", photos: ["🏰","🌃","🚴","🌶️"], links: [] },
+    AL: { name: "Albánie", flag: "🇦🇱", tagline: "Skryté poklady Balkánu", text: "Albánie — jedno z posledních míst v Evropě, kde vás překvapí.", status: "visited", photos: ["🏔️","🌊","🚴","🦅"], links: [] },
+    BA: { name: "Bosna a Hercegovina", flag: "🇧🇦", tagline: "Sarajevo a ćevapi", text: "Balkánský klenot. Mostar, Sarajevo a nejlepší ćevapi na světě.", status: "visited", photos: ["🕌","🌉","🚴","🥩"], links: [] },
+    MK: { name: "Severní Makedonie", flag: "🇲🇰", tagline: "Antické stopy", text: "Makedonie — jezero Ohrid a stopy antické historie.", status: "visited", photos: ["🏛️","🌊","🚴","⛪"], links: [] },
+    LT: { name: "Litva", flag: "🇱🇹", tagline: "Baltský stát", text: "Litva — Vilnius, borovicové lesy a jantarové pobřeží.", status: "visited", photos: ["🌲","🏰","🚴","🌊"], links: [] },
+    KR: { name: "Jižní Korea", flag: "🇰🇷", tagline: "Budoucnost přítomnosti", text: "Soul, kimchi, K-pop a nejrychlejší internet na světě. Asie na první pohled.", status: "visited", photos: ["🏙️","🍜","🎵","⛩️"], links: [] },
+    ID: { name: "Indonésie", flag: "🇮🇩", tagline: "17 000 ostrovů", text: "Bali, jungle, sopky a úsměvy na každém kroku. Indonésie je kouzelná.", status: "visited", photos: ["🌴","🌋","🏖️","🛵"], links: [] },
+    CD: { name: "Dem. republika Kongo", flag: "🇨🇩", tagline: "Srdce Afriky", text: "Největší frankofonní země světa. Kinshasa, řeka Kongo a nespočet příběhů.", status: "visited", photos: ["🌿","🦁","🌊","🥁"], links: [] },
+    ZA: { name: "Jihoafrická republika", flag: "🇿🇦", tagline: "Rainbow Nation", text: "Kapské Město, safari, Drakensberge. JAR je kontinent sám o sobě.", status: "visited", photos: ["🦁","🏔️","🌊","🍷"], links: [] },
+    IL: { name: "Izrael", flag: "🇮🇱", tagline: "Kde se světy setkávají", text: "Jeruzalém, Tel Aviv, Mrtvé moře. Místo, kde se věky prolínají.", status: "visited", photos: ["🕍","🌊","🏙️","🫒"], links: [] }
   };
 
   /* ── amCharts 5 Mapa světa ── */
