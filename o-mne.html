@@ -270,7 +270,7 @@
     .az-lbl { font-size: .62rem; letter-spacing: 3px; text-transform: uppercase; color: var(--earth); margin-top: .3rem; }
     #azchart { width: 100%; height: 520px; border-radius: 16px; overflow: hidden; background: #1a2e2e; margin-top: 1rem; }
     .az-tiles-green { filter: hue-rotate(140deg) saturate(0.6) brightness(0.7); }
-    #azchart .leaflet-tile-pane { filter: sepia(1) hue-rotate(100deg) saturate(1.4) brightness(0.45); }
+    #azchart .leaflet-tile-pane { filter: invert(1) hue-rotate(175deg) saturate(0.6) brightness(0.65); }
     .az-legend { display: flex; gap: 2rem; margin-top: 1rem; flex-wrap: wrap; }
     .az-legend-item { display: flex; align-items: center; gap: .6rem; font-size: .78rem; color: var(--earth); }
     .az-legend-line { width: 28px; height: 3px; border-radius: 2px; }
@@ -583,7 +583,7 @@
         zoomControl: true
       });
 
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
         attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors © <a href="https://carto.com/">CARTO</a>',
         subdomains: 'abcd',
         maxZoom: 19,
