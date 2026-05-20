@@ -152,16 +152,16 @@
 
     .bio-cards {
       display: flex;
-      flex-wrap: nowrap;
-      gap: .75rem; margin-top: 2rem;
+      flex-wrap: wrap;
+      gap: 1rem; margin-top: 2rem;
+      align-items: stretch;
     }
-    .bio-card { flex: 0 0 140px; }
     .bio-card {
-      aspect-ratio: 1;
+      flex: 1 1 200px;
       display: flex; flex-direction: column;
-      justify-content: center; align-items: center; text-align: center;
-      border-radius: 14px; padding: 1rem;
-      border: 2.5px solid; transition: transform .3s, box-shadow .3s;
+      align-items: flex-start; text-align: left;
+      border-radius: 14px; padding: 1.25rem 1.25rem 1.5rem;
+      border: 1.5px solid; transition: transform .3s, box-shadow .3s;
     }
     .bio-card:nth-child(1) { background: rgba(245,197,24,.08);  border-color: var(--solar);   }
     .bio-card:nth-child(2) { background: rgba(42,157,143,.08);  border-color: var(--meadow);  }
@@ -171,9 +171,9 @@
     .bio-card:nth-child(2):hover { transform: translateY(-4px); box-shadow: 0 10px 28px rgba(42,157,143,.25); }
     .bio-card:nth-child(3):hover { transform: translateY(-4px); box-shadow: 0 10px 28px rgba(238,60,149,.25); }
     .bio-card:nth-child(4):hover { transform: translateY(-4px); box-shadow: 0 10px 28px rgba(107,91,79,.2);  }
-    .bio-card .icon { font-size: 1.6rem; margin-bottom: .4rem; }
-    .bio-card h3 { font-family: 'Bebas Neue', sans-serif; font-size: .95rem; letter-spacing: 1px; margin-bottom: 0; }
-    .bio-card p { font-size: .72rem; color: var(--earth); line-height: 1.4; margin-top: .35rem; }
+    .bio-card .icon { font-size: 1.3rem; margin-bottom: .6rem; color: var(--night); opacity: .5; }
+    .bio-card h3 { font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 1px; margin-bottom: 0; }
+    .bio-card p { font-size: .8rem; color: var(--earth); line-height: 1.5; margin-top: .4rem; }
 
     /* ─── MAPA ─── */
     #mapa { background: var(--cream); }
@@ -320,22 +320,22 @@
       <div class="divider"></div>
       <div class="bio-cards">
         <div class="bio-card">
-          <div class="icon">🧭</div>
+          <div class="icon"><i class="far fa-compass"></i></div>
           <h3>Odvaha bez mapy</h3>
           <p>Dal jsem výpověď. Bez plánu B. Bez záruky. Udělal jsem krok — a sleduji kam mne vede. Čekat na správný moment? To není život. To je odkládání života.</p>
         </div>
         <div class="bio-card">
-          <div class="icon">🚴</div>
+          <div class="icon"><i class="fas fa-bicycle"></i></div>
           <h3>Pohyb = Život</h3>
           <p>Pohyb není jenom sport, je to životní balanc. Kolo není jenom sport, je to i forma svobody. Před každým kopcem si kladu otázku, proč jedu? Proč to bolí. Na vrcholu vím proč.</p>
         </div>
         <div class="bio-card">
-          <div class="icon">⚡</div>
+          <div class="icon"><i class="fas fa-bolt"></i></div>
           <h3>#nejedusam</h3>
           <p>Neprodávám mindset. Přenáším zážitek. Píchlé kolo ve 3 ráno, slzy na kopci, smích v dešti. Jedu sám — ale necítím se tak. Pojedeš se mnou?</p>
         </div>
         <div class="bio-card">
-          <div class="icon">🤝</div>
+          <div class="icon"><i class="far fa-handshake"></i></div>
           <h3>Duch Domestiků</h3>
           <p>Jsem Domestik. Podporuji myšlenku důstojného života. Ať je ve svém začátku, nebo se chýlí ke konci. Proto jedu, pro to žiju. Dokud žiju, můžu, dokud můžu, žiju.</p>
         </div>
