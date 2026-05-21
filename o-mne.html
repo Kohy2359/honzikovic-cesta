@@ -212,7 +212,27 @@
       aspect-ratio: 1; border-radius: 8px; background: rgba(255,255,255,.05);
       display: flex; align-items: center; justify-content: center;
       color: var(--dust); font-size: .7rem; letter-spacing: 2px;
+      cursor: pointer; overflow: hidden; transition: transform .2s;
     }
+    .panel-photo:hover { transform: scale(1.03); }
+    .lightbox {
+      display: none; position: fixed; inset: 0; z-index: 9999;
+      background: rgba(0,0,0,.92); align-items: center; justify-content: center;
+      cursor: zoom-out;
+    }
+    .lightbox.open { display: flex; }
+    .lightbox img {
+      max-width: 92vw; max-height: 92vh; border-radius: 10px;
+      object-fit: contain; box-shadow: 0 8px 60px rgba(0,0,0,.6);
+      cursor: default;
+    }
+    .lightbox-close {
+      position: absolute; top: 1.2rem; right: 1.4rem;
+      background: rgba(255,255,255,.15); border: none; color: #fff;
+      width: 40px; height: 40px; border-radius: 50%; font-size: 1.2rem;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+    }
+    .lightbox-close:hover { background: var(--fuchsia); }
     .panel-photo-placeholder { display: flex; flex-direction: column; align-items: center; gap: .4rem; }
     .panel-photo-icon { font-size: 1.8rem; }
     .panel-links { margin-top: 1.5rem; display: flex; flex-direction: column; gap: .6rem; }
@@ -573,7 +593,7 @@
     const photosEl = document.getElementById("panelPhotos");
     photosEl.innerHTML = c.photos.length
       ? c.photos.map(p => p.startsWith("fotky/")
-          ? `<div class="panel-photo"><img src="${p}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:6px;display:block;"></div>`
+          ? `<div class="panel-photo" onclick="openLightbox('${p}')"><img src="${p}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:6px;display:block;pointer-events:none;"></div>`
           : `<div class="panel-photo"><div class="panel-photo-placeholder"><div class="panel-photo-icon">${p}</div><div style="font-size:.6rem;color:var(--dust);letter-spacing:1px">Foto</div></div></div>`
         ).join("")
       : "";
@@ -711,6 +731,22 @@
     entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
   }, { threshold: 0.12 });
   document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+  <img id="lightboxImg" src="" alt="" onclick="event.stopPropagation()">
+</div>
+<script>
+  function openLightbox(src) {
+    document.getElementById('lightboxImg').src = src;
+    document.getElementById('lightbox').classList.add('open');
+  }
+  function closeLightbox() {
+    document.getElementById('lightbox').classList.remove('open');
+  }
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
 </script>
 </body>
 </html>
