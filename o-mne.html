@@ -203,7 +203,8 @@
     .panel-flag { font-size: 2rem; }
     .panel-country { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 2px; color: #fff; margin-bottom: .25rem; }
     .panel-header { display: flex; align-items: center; gap: .6rem; margin-bottom: .25rem; }
-    .panel-tagline { font-family: 'Kohymaaa', cursive; font-size: 1.6rem; line-height: 1.5; color: var(--solar); margin-bottom: .6rem; }
+    .panel-date { font-size: .8rem; color: var(--dust); letter-spacing: .1em; margin-bottom: .4rem; }
+    .panel-tagline { font-family: 'Kohymaaa', cursive; font-size: 2rem; line-height: 1.4; color: var(--solar); margin-bottom: .6rem; }
     .panel-divider { width: 40px; height: 2px; background: var(--solar); margin-bottom: 1.5rem; }
     .panel-text { font-size: .9rem; color: var(--sage); line-height: 1.8; }
     .panel-photos { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; margin-top: 1.5rem; }
@@ -436,6 +437,7 @@
     <div class="panel-flag" id="panelFlag"></div>
     <div class="panel-country" id="panelCountry"></div>
   </div>
+  <div class="panel-date" id="panelDate"></div>
   <div class="panel-tagline" id="panelTagline"></div>
   <div class="panel-divider"></div>
   <div class="panel-text" id="panelText"></div>
@@ -490,7 +492,7 @@
     LT: { name: "Litva", flag: "🇱🇹", tagline: "Baltský stát", text: "Litva — Vilnius, borovicové lesy a jantarové pobřeží.", status: "visited", photos: ["🌲","🏰","🚴","🌊"], links: [] },
     KR: { name: "Jižní Korea", flag: "🇰🇷", tagline: "Budoucnost přítomnosti", text: "Soul, kimchi, K-pop a nejrychlejší internet na světě. Asie na první pohled.", status: "visited", photos: ["🏙️","🍜","🎵","⛩️"], links: [] },
     ID: { name: "Indonésie", flag: "🇮🇩", tagline: "17 000 ostrovů", text: "Bali, jungle, sopky a úsměvy na každém kroku. Indonésie je kouzelná.", status: "visited", photos: ["🌴","🌋","🏖️","🛵"], links: [] },
-    CD: { name: "Dem. republika Kongo", flag: "🇨🇩", tagline: "Nejbohatší země pod povrchem. Nejchudší na jeho povrchu. · 5/2022 – 6/2023", text: "Největší frankofonní země světa. Kinshasa, řeka Kongo a nespočet příběhů.", status: "visited", photos: ["fotky/DRC/IMG_1964.jpeg","fotky/DRC/IMG_3790.jpeg","fotky/DRC/IMG_4730.jpeg","fotky/DRC/IMG_6731.jpeg"], links: [] },
+    CD: { name: "Dem. republika Kongo", flag: "🇨🇩", date: "5/2022 – 6/2023", tagline: "Nejbohatší země pod povrchem. Nejchudší na jeho povrchu.", text: "Největší frankofonní země světa. Kinshasa, řeka Kongo a nespočet příběhů.", status: "visited", photos: ["fotky/DRC/IMG_1964.jpeg","fotky/DRC/IMG_3790.jpeg","fotky/DRC/IMG_4730.jpeg","fotky/DRC/IMG_6731.jpeg"], links: [] },
     ZA: { name: "Jihoafrická republika", flag: "🇿🇦", tagline: "Rainbow Nation", text: "Kapské Město, safari, Drakensberge. JAR je kontinent sám o sobě.", status: "visited", photos: ["🦁","🏔️","🌊","🍷"], links: [] },
     IL: { name: "Izrael", flag: "🇮🇱", tagline: "Kde se světy setkávají", text: "Jeruzalém, Tel Aviv, Mrtvé moře. Místo, kde se věky prolínají.", status: "visited", photos: ["🕍","🌊","🏙️","🫒"], links: [] },
     TR: { name: "Turecko", flag: "🇹🇷", tagline: "Brána mezi světy", text: "Istanbul, Kappadokie, Egejské pobřeží. Turecko je most mezi Evropou a Asií.", status: "visited", photos: ["🕌","🫖","🚴","🌉"], links: [] },
@@ -564,6 +566,7 @@
     const c = countries[code];
     document.getElementById("panelFlag").textContent = c.flag;
     document.getElementById("panelCountry").textContent = c.name;
+    document.getElementById("panelDate").textContent = c.date || "";
     document.getElementById("panelTagline").textContent = c.tagline;
     document.getElementById("panelText").textContent = c.text;
 
