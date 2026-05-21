@@ -822,7 +822,7 @@ section[id], div[id] { scroll-margin-top: 90px; }
         <div class="fo-strava" id="strava-widget">
           <div class="strava-icon">🚴</div>
           <h3>POSLEDNÍ AKTIVITA</h3>
-          <p id="strava-name" style="font-weight:600;color:#fff;font-size:.95rem;margin-bottom:.4rem;">—</p>
+          <a id="strava-name" href="https://www.strava.com/athletes/158217101" target="_blank" rel="noopener" style="font-weight:600;color:#fff;font-size:.95rem;margin-bottom:.4rem;display:block;text-decoration:none;transition:color .2s;" onmouseover="this.style.color='var(--solar)'" onmouseout="this.style.color='#fff'">—</a>
           <div style="display:flex;gap:1.2rem;flex-wrap:wrap;margin:.5rem 0;">
             <span style="color:var(--solar);font-size:.85rem;">📏 <strong id="strava-km">—</strong> km</span>
             <span style="color:var(--solar);font-size:.85rem;">⛰ <strong id="strava-elev">—</strong> m</span>
@@ -1699,7 +1699,9 @@ section[id], div[id] { scroll-margin-top: 90px; }
     .then(r => r.json())
     .then(d => {
       const a = d.last_activity;
-      document.getElementById('strava-name').textContent = a.name;
+      const nameEl = document.getElementById('strava-name');
+      nameEl.textContent = a.name;
+      if (a.activity_url) nameEl.href = a.activity_url;
       document.getElementById('strava-km').textContent   = a.distance_km.toFixed(1);
       document.getElementById('strava-elev').textContent = a.elevation_m;
       const h = Math.floor(a.moving_time_min / 60);
