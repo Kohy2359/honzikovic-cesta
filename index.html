@@ -323,6 +323,7 @@ section[id], div[id] { scroll-margin-top: 90px; }
       border-radius: 12px; padding: 1rem 1.25rem;
       display: flex; flex-direction: column; align-items: center; justify-content: center;
       text-align: center; gap: .4rem;
+      height: 100%;
     }
     .fo-strava .strava-icon { font-size: 1.6rem; }
     .fo-strava h3 { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 2px; color: #fff; }
@@ -1089,23 +1090,23 @@ section[id], div[id] { scroll-margin-top: 90px; }
   // ─ Aktualizace — přidej novou vždy na začátek pole ─
   // Formát: { date: "Měsíc RRRR", title: "Nadpis", text: "Popis co se děje." }
   const foUpdates = [
-    { date: "Duben 2026", title: "Přípravy vrcholí", text: "Trasa naplánována, kolo připraveno. Do startu zbývá pár týdnů.", color: "var(--solar)" },
+    { date: "18. května 2026", title: "Přípravy před vrcholem", text: "Ten čas vážně utíká! Oznámení projektu #D352 na spadnutí. A nic ještě není hotové. Kolo mám! Trasu ne, webovky se připravují. To je život. Nic nemá být dokonalé :)", color: "var(--fuchsia)" },
+    { date: "Duben 2026", title: "Příprava zahájena", text: "Výběr bodů na trase, příprava partnerů, čas utíká — zatím to moc nevnímám.", color: "var(--solar)" },
   ];
 
-  // ─ Vykreslení poslední aktualizace ─
+  // ─ Vykreslení aktualizací ─
   (function renderUpdate() {
     const el = document.getElementById("foUpdates");
     if (!el || foUpdates.length === 0) return;
-    const u = foUpdates[0]; // vždy první = nejnovější
-    el.innerHTML = `
-      <div class="fo-updates-title">Poslední aktualizace</div>
+    el.innerHTML = `<div class="fo-updates-title">Poslední aktualizace</div>` +
+      foUpdates.map(u => `
       <div class="fo-update-item">
         <div class="fo-update-dot" style="background:${u.color || 'var(--meadow)'}"></div>
         <div>
           <div class="fo-update-text"><strong>${u.title}</strong> — ${u.text}</div>
           <div class="fo-update-date">${u.date}</div>
         </div>
-      </div>`;
+      </div>`).join('');
   })();
 
   function updateCountdown() {
