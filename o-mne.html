@@ -646,48 +646,65 @@
         className: 'az-tiles-green'
       }).addTo(map);
 
-      // Výjezdová trasa: Žďár → Vídeň → Budapešť → Balkán → Istanbul
+      // Výjezdová trasa: Žďár → Brno → Vídeň → Štýrský Hradec → Chorvatsko → Srbsko → Rumunsko → Bulharsko → Istanbul
       const outbound = [
         [49.56, 15.94], // Žďár nad Sázavou
+        [49.19, 16.61], // Brno
+        [48.96, 16.92], // česko-rakouská hranice
         [48.21, 16.37], // Vídeň
-        [47.50, 19.04], // Budapešť
-        [45.56, 18.68], // Osijek (Chorvatsko)
-        [44.54, 18.68], // Bosna
-        [44.80, 20.46], // Bělehrad
-        [43.32, 21.89], // Niš
-        [42.70, 23.32], // Sofie
-        [42.14, 24.75], // Plovdiv
-        [41.68, 26.56], // Edirne
-        [41.01, 28.95], // Istanbul
+        [47.07, 15.44], // Štýrský Hradec (Graz)
+        [46.56, 15.65], // Maribor / slovinská hranice
+        [46.36, 16.34], // chorvatská hranice
+        [45.18, 17.99], // Slavonski Brod
+        [45.27, 19.83], // Novi Sad
+        [44.81, 20.46], // Bělehrad
+        [44.87, 21.65], // Đerdapská soutěska (srbsko-rumunská hranice)
+        [44.63, 22.66], // Drobeta-Turnu Severin (Rumunsko)
+        [45.17, 22.30], // Reșița
+        [44.32, 23.79], // Craiova
+        [43.99, 25.33], // rumunsko-bulharská hranice
+        [43.62, 24.62], // Pleven
+        [42.43, 25.65], // Stara Zagora
+        [42.48, 26.50], // Jambol
+        [42.50, 27.47], // Burgas (Černé moře)
+        [41.98, 27.51], // bulharsko-turecká hranice
+        [40.98, 27.51], // Tekirdağ
+        [40.88, 28.20], // pobřeží Marmarského moře
+        [41.01, 28.97], // Istanbul
       ];
 
-      // Návratová trasa: Oslo → pobřeží Norska → Dánsko → Hamburk → Labe → Žďár
+      // Návratová trasa: Oslo → norské pobřeží → Kristiansand → přívoz → Dánsko záp. pobřeží → Německo → Žďár
       const returnRoute = [
-        [59.91, 10.74], // Oslo
-        [59.10, 10.25], // Vestfold (pobřeží)
+        [59.91, 10.75], // Oslo
+        [59.59, 10.73], // Moss
+        [59.13, 11.38], // Halden
         [58.15,  7.99], // Kristiansand (jižní Norsko)
-        [57.59,  9.97], // Hirtshals (přívoz do Dánska)
+        [57.59,  9.97], // Hirtshals (přívoz Norsko → Dánsko)
+        [57.47,  9.98], // Hjørring
         [57.05,  9.92], // Aalborg
-        [56.45,  9.40], // střední Jutsko
-        [55.47,  8.46], // Esbjerg (záp. pobřeží)
-        [55.10,  8.98], // jižní Dánsko
-        [54.80,  9.43], // Flensburg/německá hranice
-        [53.55,  9.99], // Hamburk
-        [53.24, 10.42], // pod Hamburkem → na Labe
-        [52.40, 11.58], // Magdeburg (Labe)
-        [51.83, 12.24], // Dessau (Labe)
-        [51.34, 12.37], // Halle
+        [56.55,  8.11], // Lemvig (záp. Jutsko)
+        [56.00,  8.24], // Ringkøbing
+        [55.47,  8.46], // Esbjerg
+        [54.91,  8.79], // Tønder / dánsko-německá hranice
+        [54.91,  8.57], // Westerland / Sylt
+        [54.91,  8.79], // zpět z Syltu
+        [54.79,  9.44], // Flensburg
+        [54.32, 10.14], // Kiel
+        [53.58, 10.02], // Hamburk
+        [52.52, 11.00], // Magdeburg
+        [51.34, 12.37], // Lipsko (Leipzig)
         [51.05, 13.74], // Drážďany
-        [50.90, 14.00], // Děčín (vstup do ČR po Labi)
+        [50.78, 14.21], // Děčín
         [50.66, 14.05], // Ústí nad Labem
-        [50.23, 15.83], // Pardubice
+        [50.77, 15.05], // Liberec
+        [50.40, 15.83], // Hradec Králové
         [49.56, 15.94], // Žďár nad Sázavou
       ];
 
       // Let Istanbul → Oslo (přerušovaná čára)
       const flight = [
-        [41.01, 28.95],
-        [59.91, 10.74]
+        [41.01, 28.97],
+        [59.91, 10.75]
       ];
 
       L.polyline(outbound,    { color: '#F5C518', weight: 3, opacity: 0.95 }).addTo(map);
@@ -708,18 +725,22 @@
 
       // Zastávky
       const stops = [
-        { latlng: [49.56, 15.94], label: '🚴 Žďár nad Sázavou', note: 'Start & cíl cesty', color: '#F5C518', big: true },
-        { latlng: [48.21, 16.37], label: '🇦🇹 Vídeň',           note: 'Rakousko' },
-        { latlng: [47.50, 19.04], label: '🇭🇺 Budapešť',         note: 'Maďarsko' },
-        { latlng: [44.80, 20.46], label: '🇷🇸 Bělehrad',         note: 'Srbsko' },
-        { latlng: [42.70, 23.32], label: '🇧🇬 Sofie',            note: 'Bulharsko' },
-        { latlng: [41.01, 28.95], label: '✈️ Istanbul',          note: 'Konec kola – let do Osla', color: '#EE3C95', big: true },
-        { latlng: [59.91, 10.74], label: '🛬 Oslo',              note: 'Přistání – start zpátky', color: '#EE3C95', big: true },
-        { latlng: [58.15,  7.99], label: '🇳🇴 Kristiansand',     note: 'Jižní Norsko – pobřeží' },
-        { latlng: [57.59,  9.97], label: '⛴️ Hirtshals',          note: 'Přívoz Norsko → Dánsko' },
-        { latlng: [55.47,  8.46], label: '🇩🇰 Esbjerg',          note: 'Záp. pobřeží Dánska' },
-        { latlng: [53.55,  9.99], label: '🇩🇪 Hamburk',          note: 'Napojení na Labe' },
-        { latlng: [51.05, 13.74], label: '🇩🇪 Drážďany',         note: 'Podél Labe' },
+        { latlng: [49.56, 15.94], label: '🚴 Žďár nad Sázavou', note: 'Start & cíl cesty · 8 299 km · 95 dní', color: '#F5C518', big: true },
+        { latlng: [48.21, 16.37], label: '🇦🇹 Vídeň',            note: 'Rakousko' },
+        { latlng: [47.07, 15.44], label: '🇦🇹 Graz',             note: 'Štýrský Hradec' },
+        { latlng: [44.81, 20.46], label: '🇷🇸 Bělehrad',         note: 'Srbsko' },
+        { latlng: [44.63, 22.66], label: '🇷🇴 Turnu Severin',    note: 'Rumunsko' },
+        { latlng: [43.62, 24.62], label: '🇧🇬 Pleven',           note: 'Bulharsko' },
+        { latlng: [42.50, 27.47], label: '🌊 Burgas',            note: 'Černé moře' },
+        { latlng: [41.01, 28.97], label: '✈️ Istanbul',          note: 'Konec kola – let do Osla', color: '#EE3C95', big: true },
+        { latlng: [59.91, 10.75], label: '🛬 Oslo',              note: 'Přistání – start zpátky', color: '#EE3C95', big: true },
+        { latlng: [58.15,  7.99], label: '🇳🇴 Kristiansand',     note: 'Jižní Norsko' },
+        { latlng: [57.59,  9.97], label: '⛴️ Hirtshals',         note: 'Přívoz Norsko → Dánsko' },
+        { latlng: [56.55,  8.11], label: '🇩🇰 Lemvig',           note: 'Záp. pobřeží Dánska' },
+        { latlng: [55.47,  8.46], label: '🇩🇰 Esbjerg',          note: 'Jižní Dánsko' },
+        { latlng: [54.32, 10.14], label: '🇩🇪 Kiel',             note: 'Německo – sever' },
+        { latlng: [53.58, 10.02], label: '🇩🇪 Hamburk',          note: 'Hamburk' },
+        { latlng: [51.05, 13.74], label: '🇩🇪 Drážďany',         note: 'Sasko' },
         { latlng: [50.66, 14.05], label: '🇨🇿 Ústí nad Labem',   note: 'Vstup do ČR' },
       ];
 
