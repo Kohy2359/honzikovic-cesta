@@ -646,100 +646,124 @@
         className: 'az-tiles-green'
       }).addTo(map);
 
-      // Výjezdová trasa: Žďár → Brno → Vídeň → Graz → Chorvatsko → Srbsko → Rumunsko → Bulharsko → Istanbul
+      // Výjezdová trasa: Žďár → Brno → Vídeň → Graz → Ljubljana → Zagreb → Slavonski Brod → Srbsko → Rumunsko → Bulharsko → Istanbul
       const outbound = [
         [49.56, 15.94], // Žďár nad Sázavou
+        [49.48, 15.95], // Bohemian-Moravian Highlands
         [49.36, 16.01], // Velké Meziříčí
-        [49.19, 16.61], // Brno
-        [48.96, 16.64], // Mikulov / hranice ČR-AT
-        [48.52, 16.52], // Poysdorf
-        [48.21, 16.37], // Vídeň
+        [49.28, 16.20], // Tišnov oblast
+        [49.20, 16.61], // Brno
+        [49.03, 16.62], // jih od Brna
+        [48.88, 16.55], // Pohořelice
+        [48.72, 16.53], // Mikulov / hranice ČR-AT
+        [48.56, 16.40], // Poysdorf
+        [48.42, 16.36], // Stockerau
+        [48.26, 16.39], // Vídeň sever
+        [48.20, 16.37], // Vídeň
+        [47.97, 16.23], // Wiener Neustadt směr
         [47.81, 16.24], // Wiener Neustadt
-        [47.59, 15.80], // Mürzzuschlag
-        [47.41, 15.27], // Bruck an der Mur
+        [47.67, 16.12], // Sopron oblast
+        [47.50, 15.97], // styrijské kopce
+        [47.35, 15.92], // přiblížení ke Grazu
         [47.07, 15.44], // Graz
-        [46.78, 15.54], // Leibnitz
+        [46.85, 15.53], // jih od Grazu
         [46.56, 15.65], // Maribor
-        [46.42, 15.87], // Ptuj
-        [46.31, 16.34], // Varaždin
-        [46.16, 16.83], // Koprivnica
-        [45.83, 17.38], // Virovitica
-        [45.35, 17.68], // Đakovo oblast
-        [45.18, 17.99], // Slavonski Brod
-        [45.28, 18.81], // Vinkovci
-        [45.12, 19.22], // Šid
-        [45.27, 19.83], // Novi Sad
-        [44.81, 20.46], // Bělehrad
-        [44.62, 21.19], // Požarevac
-        [44.65, 21.63], // Golubac
-        [44.68, 21.90], // Đerdapská soutěska
+        [46.23, 15.27], // Celje
+        [46.05, 14.51], // Ljubljana
+        [45.98, 14.88], // jihovýchod Lublaně
+        [45.82, 15.97], // Zagreb
+        [45.72, 16.12], // jihovýchod Záhřebu
+        [45.58, 16.28], // Sisak oblast
+        [45.47, 16.37], // Sisak
+        [45.34, 17.00], // Novska
+        [45.25, 17.38], // Nova Gradiška
+        [45.16, 18.01], // Slavonski Brod
+        [45.08, 18.42], // podél Sávy
+        [45.00, 18.90], // Vinkovci oblast
+        [44.98, 19.22], // Šid / vstup do Srbska
+        [44.97, 19.62], // Sremska Mitrovica
+        [45.05, 19.68], // sever k Novi Sadu
+        [45.25, 19.85], // Novi Sad
+        [45.22, 20.25], // východ od Novi Sadu
+        [44.87, 21.00], // Vršac oblast
+        [44.75, 21.35], // u rumunské hranice
+        [44.63, 21.88], // Kladovo / Železná vrata
         [44.63, 22.37], // Orșova
         [44.63, 22.66], // Drobeta-Turnu Severin
-        [44.72, 22.39], // Băile Herculane
-        [45.10, 22.10], // Caransebeș
-        [45.30, 21.89], // Reșița
-        [45.05, 22.60], // zpět jihovýchodem
-        [44.70, 23.10], // Balș oblast
-        [44.32, 23.79], // Craiova
-        [44.10, 23.05], // Calafat (přechod do Bulharska)
-        [43.99, 22.87], // Vidin (Bulharsko)
+        [44.15, 22.90], // Calafat (podél Dunaje)
+        [43.99, 22.87], // Vidin (přechod do Bulharska)
+        [43.75, 23.10], // přiblížení k Montaně
         [43.41, 23.22], // Montana
-        [43.42, 23.90], // Vratsa
-        [43.42, 24.62], // Pleven
-        [43.14, 24.72], // Lovech
-        [42.89, 24.71], // Trojan
+        [43.20, 23.55], // Vratsa oblast
+        [43.13, 23.90], // Lovech oblast
+        [42.90, 24.71], // Trojan / průsmyk
         [42.62, 25.40], // Kazanlak
-        [42.43, 25.65], // Stara Zagora
+        [42.43, 25.64], // Stara Zagora
+        [42.68, 26.32], // Sliven
         [42.48, 26.50], // Jambol
-        [42.50, 27.08], // Karnobat
+        [42.50, 27.00], // Karnobat oblast
         [42.50, 27.47], // Burgas (Černé moře)
-        [42.10, 27.52], // bulharsko-turecká hranice
+        [42.10, 27.70], // bulharsko-turecká hranice
         [41.74, 27.22], // Kırklareli
-        [41.41, 27.35], // Lüleburgaz
+        [41.58, 27.35], // přes Thrákii
+        [41.40, 27.36], // Lüleburgaz
+        [41.16, 27.80], // Çorlu oblast
         [40.98, 27.51], // Tekirdağ
-        [41.02, 28.30], // Silivri
-        [41.01, 28.97], // Istanbul
+        [41.07, 28.25], // Silivri
+        [41.01, 28.95], // Istanbul
       ];
 
-      // Návratová trasa: Oslo → norské pobřeží → Kristiansand → přívoz → Dánsko → Německo → Žďár
+      // Návratová trasa: Oslo → Telemark → Kristiansand → přívoz → Dánsko → Německo → Žďár
       const returnRoute = [
         [59.91, 10.75], // Oslo
+        [59.87, 10.60], // jihozápad Osla
         [59.74, 10.20], // Drammen
-        [59.56,  9.65], // Kongsberg
-        [59.21,  9.61], // Skien
-        [58.87,  9.52], // Kragerø oblast
+        [59.65, 10.05], // jih od Drammenu
+        [59.55, 10.00], // Kongsberg oblast
+        [59.40,  9.80], // Notodden / Telemark
+        [59.20,  9.61], // Skien
+        [59.10,  9.75], // přiblížení ke Kragerø
+        [58.93, 10.05], // Larvik oblast
+        [58.75,  9.20], // Risør oblast (pobřeží)
         [58.46,  8.77], // Arendal
+        [58.37,  7.97], // Vennesla / přiblížení ke Kristiansandu
         [58.15,  7.99], // Kristiansand
         [57.59,  9.97], // Hirtshals (přívoz Norsko → Dánsko)
-        [57.47,  9.98], // Hjørring
+        [57.46,  9.98], // Hjørring
         [57.05,  9.92], // Aalborg
-        [56.89,  8.68], // Skive
-        [56.55,  8.11], // Lemvig
-        [56.18,  8.12], // Struer
-        [56.00,  8.24], // Ringkøbing
-        [55.70,  8.40], // Varde
-        [55.47,  8.46], // Esbjerg
-        [55.09,  8.60], // Tønder
+        [56.63,  9.50], // Hobro oblast
+        [56.55,  8.31], // Lemvig
+        [56.09,  8.24], // Ringkøbing
+        [55.76,  8.45], // jih záp. pobřeží
+        [55.47,  8.45], // Esbjerg
+        [55.10,  8.90], // Tønder oblast
         [54.91,  8.57], // Westerland / Sylt
-        [54.91,  8.85], // zpět z Syltu
+        [54.91,  8.85], // zpět ze Syltu
         [54.91,  9.02], // Schleswig
         [54.79,  9.44], // Flensburg
-        [54.51,  9.85], // Rendsburg
+        [54.52,  9.55], // jih od Flensburgu
         [54.32, 10.14], // Kiel
-        [53.97, 10.56], // Lübeck oblast
-        [53.58, 10.02], // Hamburk
-        [53.23, 10.40], // Lüneburg
-        [52.87, 11.42], // Stendal
-        [52.52, 11.00], // Magdeburg
-        [51.85, 12.24], // Dessau
-        [51.34, 12.37], // Lipsko
+        [53.92,  9.88], // Bad Bramstedt
+        [53.55,  9.99], // Hamburk
+        [53.45, 10.20], // jihovýchod Hamburku
+        [53.63, 11.42], // Schwerin oblast
+        [53.30, 11.55], // jih od Schwerinu
+        [52.12, 11.62], // Magdeburg
+        [52.20, 12.00], // východ od Magdeburgu
+        [52.39, 13.06], // Postupim (Potsdam)
+        [52.35, 13.40], // jih Berlína
+        [51.90, 13.20], // Fläming oblast
+        [51.55, 13.20], // Lausitz oblast
+        [51.34, 12.38], // Lipsko
         [51.05, 13.74], // Drážďany
+        [50.95, 13.95], // jih Drážďan, Labe
         [50.78, 14.21], // Děčín
         [50.66, 14.05], // Ústí nad Labem
-        [50.77, 15.05], // Liberec
-        [50.52, 15.55], // Jičín oblast
-        [50.40, 15.83], // Hradec Králové
-        [49.90, 15.96], // Chrudim oblast
+        [50.77, 15.06], // Liberec
+        [50.60, 15.50], // Bohemia
+        [50.20, 15.80], // Hradec Králové oblast
+        [49.95, 15.95], // Chrudim oblast
+        [49.70, 15.92], // Hlinsko oblast
         [49.56, 15.94], // Žďár nad Sázavou
       ];
 
