@@ -233,6 +233,20 @@
       cursor: pointer; display: flex; align-items: center; justify-content: center;
     }
     .lightbox-close:hover { background: var(--fuchsia); }
+    .lightbox-nav {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      background: rgba(255,255,255,.15); border: none; color: #fff;
+      width: 48px; height: 48px; border-radius: 50%; font-size: 2rem;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: background .2s; line-height: 1;
+    }
+    .lightbox-nav:hover { background: rgba(255,255,255,.3); }
+    .lightbox-prev { left: 1.2rem; }
+    .lightbox-next { right: 1.2rem; }
+    .lightbox-counter {
+      position: absolute; bottom: 1.2rem; left: 50%; transform: translateX(-50%);
+      color: rgba(255,255,255,.5); font-size: .8rem; letter-spacing: .1em;
+    }
     .panel-photo-placeholder { display: flex; flex-direction: column; align-items: center; gap: .4rem; }
     .panel-photo-icon { font-size: 1.8rem; }
     .panel-links { margin-top: 1.5rem; display: flex; flex-direction: column; gap: .6rem; }
@@ -590,10 +604,11 @@
     document.getElementById("panelTagline").textContent = c.tagline;
     document.getElementById("panelText").textContent = c.text;
 
+    const realPhotos = c.photos.filter(p => p.startsWith("fotky/"));
     const photosEl = document.getElementById("panelPhotos");
     photosEl.innerHTML = c.photos.length
-      ? c.photos.map(p => p.startsWith("fotky/")
-          ? `<div class="panel-photo" onclick="openLightbox('${p}')"><img src="${p}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:6px;display:block;pointer-events:none;"></div>`
+      ? c.photos.map((p, i) => p.startsWith("fotky/")
+          ? `<div class="panel-photo" onclick="openLightbox(${JSON.stringify(realPhotos)}, ${realPhotos.indexOf(p)})"><img src="${p}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:6px;display:block;pointer-events:none;"></div>`
           : `<div class="panel-photo"><div class="panel-photo-placeholder"><div class="panel-photo-icon">${p}</div><div style="font-size:.6rem;color:var(--dust);letter-spacing:1px">Foto</div></div></div>`
         ).join("")
       : "";
@@ -736,17 +751,39 @@
 <!-- Lightbox -->
 <div class="lightbox" id="lightbox" onclick="closeLightbox()">
   <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+  <button class="lightbox-nav lightbox-prev" onclick="event.stopPropagation(); lightboxNav(-1)">‹</button>
   <img id="lightboxImg" src="" alt="" onclick="event.stopPropagation()">
+  <button class="lightbox-nav lightbox-next" onclick="event.stopPropagation(); lightboxNav(1)">›</button>
+  <div class="lightbox-counter" id="lightboxCounter"></div>
 </div>
 <script>
-  function openLightbox(src) {
-    document.getElementById('lightboxImg').src = src;
+  let _lbPhotos = [], _lbIndex = 0;
+
+  function openLightbox(photos, index) {
+    _lbPhotos = photos;
+    _lbIndex = index;
+    _showLightbox();
     document.getElementById('lightbox').classList.add('open');
+  }
+  function _showLightbox() {
+    document.getElementById('lightboxImg').src = _lbPhotos[_lbIndex];
+    document.getElementById('lightboxCounter').textContent = `${_lbIndex + 1} / ${_lbPhotos.length}`;
+    document.querySelector('.lightbox-prev').style.visibility = _lbPhotos.length > 1 ? 'visible' : 'hidden';
+    document.querySelector('.lightbox-next').style.visibility = _lbPhotos.length > 1 ? 'visible' : 'hidden';
+  }
+  function lightboxNav(dir) {
+    _lbIndex = (_lbIndex + dir + _lbPhotos.length) % _lbPhotos.length;
+    _showLightbox();
   }
   function closeLightbox() {
     document.getElementById('lightbox').classList.remove('open');
   }
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+  document.addEventListener('keydown', e => {
+    if (!document.getElementById('lightbox').classList.contains('open')) return;
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowRight') lightboxNav(1);
+    if (e.key === 'ArrowLeft')  lightboxNav(-1);
+  });
 </script>
 </body>
 </html>
