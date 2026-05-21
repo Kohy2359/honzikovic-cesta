@@ -200,9 +200,10 @@
       transition: background .2s;
     }
     .panel-close:hover { background: var(--fuchsia); }
-    .panel-flag { font-size: 3.5rem; margin-bottom: .5rem; }
+    .panel-flag { font-size: 2rem; }
     .panel-country { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 2px; color: #fff; margin-bottom: .25rem; }
-    .panel-tagline { font-family: 'Kohymaaa', cursive; font-size: 1.3rem; line-height: 1.4; color: var(--solar); margin-bottom: .6rem; }
+    .panel-header { display: flex; align-items: center; gap: .6rem; margin-bottom: .25rem; }
+    .panel-tagline { font-family: 'Kohymaaa', cursive; font-size: 1.6rem; line-height: 1.5; color: var(--solar); margin-bottom: .6rem; }
     .panel-divider { width: 40px; height: 2px; background: var(--solar); margin-bottom: 1.5rem; }
     .panel-text { font-size: .9rem; color: var(--sage); line-height: 1.8; }
     .panel-photos { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; margin-top: 1.5rem; }
@@ -431,8 +432,10 @@
 <div class="panel-overlay" id="panelOverlay" onclick="closeCountryPanel()"></div>
 <div class="country-panel" id="countryPanel">
   <button class="panel-close" onclick="closeCountryPanel()">✕</button>
-  <div class="panel-flag" id="panelFlag"></div>
-  <div class="panel-country" id="panelCountry"></div>
+  <div class="panel-header">
+    <div class="panel-flag" id="panelFlag"></div>
+    <div class="panel-country" id="panelCountry"></div>
+  </div>
   <div class="panel-tagline" id="panelTagline"></div>
   <div class="panel-divider"></div>
   <div class="panel-text" id="panelText"></div>
