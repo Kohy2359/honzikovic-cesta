@@ -333,6 +333,17 @@ section[id], div[id] { scroll-margin-top: 90px; }
     #dmapchart { width: 100%; height: 520px; border-radius: 16px; overflow: hidden; }
     .fo-updates { margin-top: 2rem; }
     .fo-updates-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; letter-spacing: 2px; color: var(--solar); margin-bottom: 1rem; }
+    .fo-updates-scroll {
+      max-height: 260px;
+      overflow-y: auto;
+      padding-right: .5rem;
+      mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+      -webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+    }
+    .fo-updates-scroll::-webkit-scrollbar { width: 3px; }
+    .fo-updates-scroll::-webkit-scrollbar-track { background: transparent; }
+    .fo-updates-scroll::-webkit-scrollbar-thumb { background: rgba(168,196,188,.3); border-radius: 3px; }
+    .fo-updates-scroll::-webkit-scrollbar-thumb:hover { background: rgba(245,197,24,.5); }
     .fo-update-item {
       display: flex; gap: 1rem; padding: .9rem 0;
       border-bottom: 1px solid rgba(255,255,255,.06);
@@ -1099,7 +1110,8 @@ section[id], div[id] { scroll-margin-top: 90px; }
   (function renderUpdate() {
     const el = document.getElementById("foUpdates");
     if (!el || foUpdates.length === 0) return;
-    el.innerHTML = `<div class="fo-updates-title">Poslední aktualizace</div>` +
+    el.innerHTML = `<div class="fo-updates-title">Poslední aktualizace</div>
+    <div class="fo-updates-scroll">` +
       foUpdates.map(u => `
       <div class="fo-update-item">
         <div class="fo-update-dot" style="background:${u.color || 'var(--meadow)'}"></div>
@@ -1107,7 +1119,7 @@ section[id], div[id] { scroll-margin-top: 90px; }
           <div class="fo-update-text"><strong>${u.title}</strong> — ${u.text}</div>
           <div class="fo-update-date">${u.date}</div>
         </div>
-      </div>`).join('');
+      </div>`).join('') + `</div>`;
   })();
 
   function updateCountdown() {
