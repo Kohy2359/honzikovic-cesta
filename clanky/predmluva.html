@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Předmluva — Honzíkovic Cesta</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Jost:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    @font-face {
+      font-family: 'Kohymaaa';
+      src: url('../Kohymaaa-Regular.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+      font-display: swap;
+    }
+    :root {
+      --solar:   #F5C518;
+      --meadow:  #2A9D8F;
+      --fuchsia: #EE3C95;
+      --sage:    #A8C4BC;
+      --cream:   #EDE8DC;
+      --night:   #264040;
+      --dust:    #8A9E9B;
+      --earth:   #6B5B4F;
+    }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Jost', sans-serif;
+      background: var(--night);
+      color: var(--cream);
+      line-height: 1.8;
+      overflow-x: hidden;
+    }
+
+    /* ─── NAV ─── */
+    .article-nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 2rem;
+      background: rgba(38,64,64,.92);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(168,196,188,.15);
+    }
+    .nav-back {
+      display: flex; align-items: center; gap: .5rem;
+      color: var(--sage); text-decoration: none;
+      font-size: .8rem; letter-spacing: 1.5px; text-transform: uppercase;
+      transition: color .2s;
+    }
+    .nav-back:hover { color: var(--solar); }
+    .nav-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.3rem; letter-spacing: 2px;
+      color: var(--cream); text-decoration: none;
+    }
+    .nav-logo span { color: var(--solar); }
+    .nav-label {
+      font-size: .75rem; letter-spacing: 2px; text-transform: uppercase;
+      color: var(--dust);
+    }
+
+    /* ─── HERO ─── */
+    .article-hero {
+      padding: 8rem 2rem 4rem;
+      max-width: 740px; margin: 0 auto;
+    }
+    .article-meta {
+      display: flex; align-items: center; gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .article-tag {
+      background: rgba(245,197,24,.15);
+      color: var(--solar);
+      border: 1px solid rgba(245,197,24,.3);
+      font-size: .65rem; letter-spacing: 2px; text-transform: uppercase;
+      padding: .3rem .8rem; border-radius: 20px;
+    }
+    .article-date {
+      font-size: .75rem; letter-spacing: 2px; text-transform: uppercase;
+      color: var(--dust);
+    }
+    .article-book {
+      font-size: .75rem; letter-spacing: 1px; text-transform: uppercase;
+      color: var(--dust); opacity: .7;
+    }
+    .article-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(3.5rem, 10vw, 6rem);
+      letter-spacing: 3px;
+      color: #fff;
+      line-height: 1;
+      margin-bottom: 1rem;
+    }
+    .article-subtitle {
+      font-size: 1.1rem; color: var(--sage);
+      line-height: 1.6; max-width: 560px;
+    }
+
+    /* ─── COVER PHOTO ─── */
+    .article-cover {
+      width: 100%; max-width: 740px; margin: 0 auto 0;
+      padding: 0 2rem;
+    }
+    .article-cover img {
+      width: 100%; border-radius: 8px;
+      display: block;
+      max-height: 440px; object-fit: cover;
+    }
+    .article-cover-caption {
+      text-align: right; font-size: .7rem;
+      color: var(--dust); margin-top: .5rem;
+      font-style: italic;
+    }
+
+    /* ─── ARTICLE BODY ─── */
+    .article-body {
+      max-width: 740px; margin: 0 auto;
+      padding: 3rem 2rem 5rem;
+    }
+    .article-body p {
+      font-size: 1.05rem;
+      color: rgba(237,232,220,.9);
+      margin-bottom: 1.8rem;
+      line-height: 1.9;
+    }
+    .article-body p.scene {
+      font-style: italic;
+      color: var(--sage);
+      border-left: 2px solid rgba(245,197,24,.4);
+      padding-left: 1.5rem;
+      margin-left: 0;
+    }
+    .article-divider {
+      width: 40px; height: 2px;
+      background: var(--solar);
+      margin: 2.5rem 0;
+    }
+
+    /* ─── INLINE PHOTO ─── */
+    .article-photo {
+      margin: 2.5rem 0;
+    }
+    .article-photo img {
+      width: 100%; border-radius: 6px;
+      display: block;
+    }
+    .article-photo figcaption {
+      font-size: .72rem; color: var(--dust);
+      margin-top: .6rem; font-style: italic;
+    }
+
+    /* ─── PULL QUOTE ─── */
+    .pull-quote {
+      margin: 3rem 0;
+      padding: 2rem 0;
+      border-top: 1px solid rgba(168,196,188,.2);
+      border-bottom: 1px solid rgba(168,196,188,.2);
+    }
+    .pull-quote p {
+      font-family: 'Kohymaaa', cursive;
+      font-size: clamp(1.6rem, 4vw, 2.2rem);
+      line-height: 1.5;
+      color: var(--solar) !important;
+      margin: 0 !important;
+      font-style: normal !important;
+    }
+
+    /* ─── FOOTER ─── */
+    .article-footer {
+      background: rgba(0,0,0,.2);
+      padding: 3rem 2rem;
+      text-align: center;
+    }
+    .article-footer-text {
+      font-size: .8rem; color: var(--dust); margin-bottom: 1.5rem;
+    }
+    .btn-back {
+      display: inline-block;
+      padding: .75rem 2rem;
+      border: 1px solid rgba(168,196,188,.4);
+      color: var(--sage);
+      text-decoration: none;
+      font-size: .8rem; letter-spacing: 2px; text-transform: uppercase;
+      border-radius: 3px;
+      transition: all .2s;
+    }
+    .btn-back:hover {
+      border-color: var(--solar); color: var(--solar);
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 600px) {
+      .article-hero { padding: 7rem 1.25rem 2.5rem; }
+      .article-cover { padding: 0 1.25rem; }
+      .article-body { padding: 2rem 1.25rem 4rem; }
+      .article-nav { padding: .75rem 1.25rem; }
+      .nav-label { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="article-nav">
+  <a href="../index.html#denik" class="nav-back">← Deník</a>
+  <a href="../index.html" class="nav-logo">Honzíkovic<span>Cesta</span></a>
+  <span class="nav-label">Zápisek z cesty</span>
+</nav>
+
+<!-- HERO -->
+<div class="article-hero">
+  <div class="article-meta">
+    <span class="article-tag">Předmluva</span>
+    <span class="article-date">Květen 2026</span>
+    <span class="article-book">Cesta PRO MĚny</span>
+  </div>
+  <h1 class="article-title">Předmluva</h1>
+  <p class="article-subtitle">Karpatské údolí, vzpomínky na Karolínu a medvěd deset metrů ode mě. Moment, který mi připomněl, že jsem naživu.</p>
+</div>
+
+<!-- COVER PHOTO — bear warning sign in forest -->
+<div class="article-cover">
+  <img src="Ázerbajdžán/05_26_2026/IMG_3880.jpeg" alt="Varování před medvědem v rumunském lese">
+  <p class="article-cover-caption">Rumunské Karpaty — Karpatské údolí Černá Sat</p>
+</div>
+
+<!-- ARTICLE BODY -->
+<div class="article-body">
+
+  <p>„Je konec. Už to pochop! Neotáčej se a koukej dopředu na cestu. Jinak spadneš," říkám si snad už po tisící. Vracím se vzpomínkami do svého rozpadlého vztahu s Karolínou. Do diskusí, které jsme spolu vedli, do míst a zážitků, které jsme spolu sdíleli. Probíhá mi v hlavě vnitřní dialog co všechno se mohlo stát jinak. Co jsem mohl lépe vykomunikovat, kde jsem mohl přidat, kde naopak ubrat. Doopravdy to nemohl skončit jinak?</p>
+
+  <div class="article-divider"></div>
+
+  <p class="scene">Jedeme odlehlým Karpatským údolím Černá Sat. Je pozdní odpoledne. Slunce se nám pomalu ale jistě stáčí do zad. Jedeme po zarostlé, neutěšené lesní cestě. Tráva je zde tak vysoká, že se nám tu a tam zamotává do řetězu. Jedu několik desítek metrů před Koljou a Alise, cyklistickým párem z Německa.</p>
+
+  <p class="scene">Projíždím zatáčkou, když se mi na obzoru zjeví medvěd! Deset metrů ode mě si hoví hned vedle cesty pod stínem velkého smrku. V tu chvíli se v mé hlavě přestane obracet ten samý příběh stále dokola. Místo omílání těch samých vět je zničehonic ve stavu maximální pozornosti. Instinktivně brzdím a sesedám z kola. Stavím jej mezi medvěda a mě. Srdce se mi prudce rozbuší.</p>
+
+  <p class="scene">Medvěd se na mě podívá se stejně udiveným výrazem, jakým se dívám já na něho. Zařve. Tak zařvu i já. Bleskurychle se zvedá na všechny čtyři. Kam se teď pohne tahle masa? Místo útoku naštěstí volí útěk. Sleduji do lesa mizející hnědý kolos. Přestanu křičet a slyším jak se to ohromné a respekt budící zvíře žene lesem.</p>
+
+  <!-- inline photo — daisy in bike chain -->
+  <figure class="article-photo">
+    <img src="Ázerbajdžán/05_26_2026/IMG_3889.jpg" alt="Sedmikráska zamotaná v řetězu kola">
+    <figcaption>Tráva tak vysoká, že nám občas kvetla v řetězu.</figcaption>
+  </figure>
+
+  <p class="scene">Konečně začnu vědomě dýchat. Nádech, výdech. Nádech, výdech, snažím se zklidnit svoji mysl i tělo. Kolja a Alise se zjevují zpoza zatáčky: „We heard a lot of screaming. What was that?" „There was a bear here," odpovídám se stále ještě vyděšeným výrazem. „Beer? You could have keep a bit for us too. Now I understand why were you screaming so much," reaguje Kolja se svým klasickým a vždy povzbuzujícím humorem. Už pochopil i moji obsesi dobrým pivem. Alise se na ty fórky moc netváří.</p>
+
+  <div class="article-divider"></div>
+
+  <p>Se stále klepoucíma nohama usedám vedle cesty. Ještě před pěti minutami jsem byl hlavou všude možně, jenom né na cestě. A v momentě, kdy jsem se díval smrti do očí celý tento proces prostě zmizel. Jenom já a medvěd. Teď a tady. Minulost ani budoucnost přestaly existovat.</p>
+
+  <div class="pull-quote">
+    <p>Snad nikdy jsem nebyl naživu více než právě teď. V momentě blízkosti mé vlastní smrtelnosti.</p>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer class="article-footer">
+  <p class="article-footer-text">Z knihy <em>Cesta PRO MĚny</em> — pracovní název</p>
+  <a href="../index.html#denik" class="btn-back">← Zpět na Deník</a>
+</footer>
+
+</body>
+</html>
