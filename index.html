@@ -1001,6 +1001,30 @@ section[id], div[id] { scroll-margin-top: 90px; }
     display: flex; align-items: center; justify-content: center;
   }
   #gen-toggle:hover { transform: scale(1.1); box-shadow: 0 6px 20px rgba(0,0,0,.35); }
+  #gen-hint {
+    position: fixed; bottom: 4.5rem; right: 4.8rem; z-index: 2001;
+    background: var(--night); color: var(--solar);
+    font-family: 'Jost', sans-serif; font-size: .72rem; font-weight: 700;
+    letter-spacing: .5px; line-height: 1.4;
+    padding: .55rem .9rem; border-radius: 10px;
+    white-space: nowrap;
+    box-shadow: 0 4px 14px rgba(0,0,0,.3);
+    pointer-events: none;
+    animation: hintBounce 2.4s ease-in-out infinite;
+  }
+  #gen-hint::after {
+    content: '';
+    position: absolute; bottom: -.45rem; right: .9rem;
+    width: 0; height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 7px solid var(--night);
+  }
+  #gen-hint.hidden { display: none; }
+  @keyframes hintBounce {
+    0%, 100% { transform: translateY(0); }
+    50%       { transform: translateY(-5px); }
+  }
   #gen-panel {
     position: fixed; bottom: 5.5rem; right: 1.5rem; z-index: 1999;
     width: 320px; height: 460px;
@@ -1020,6 +1044,7 @@ section[id], div[id] { scroll-margin-top: 90px; }
   }
 </style>
 
+<div id="gen-hint">Dnes Dobrý? Další D? Dávej! 🎲</div>
 <button id="gen-toggle" onclick="toggleGen()" title="Generátor D-slov">🎲</button>
 <div id="gen-panel">
   <iframe src="generator-slov-d.html" loading="lazy"></iframe>
@@ -1028,6 +1053,7 @@ section[id], div[id] { scroll-margin-top: 90px; }
 <script>
   function toggleGen() {
     document.getElementById('gen-panel').classList.toggle('open');
+    document.getElementById('gen-hint').classList.add('hidden');
   }
 
   /* ── Hero slideshow ── */
