@@ -144,7 +144,7 @@
     }
     .article-photo img {
       width: 100%; border-radius: 6px;
-      display: block;
+      display: block; max-height: 480px; object-fit: cover;
     }
     .article-photo figcaption {
       font-size: .72rem; color: var(--dust);
@@ -159,9 +159,10 @@
       border-bottom: 1px solid rgba(168,196,188,.2);
     }
     .pull-quote p {
-      font-family: 'Kohymaaa', cursive;
-      font-size: clamp(1.6rem, 4vw, 2.2rem);
-      line-height: 1.5;
+      font-family: 'Jost', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 500;
+      line-height: 1.8;
       color: var(--solar) !important;
       margin: 0 !important;
       font-style: normal !important;
