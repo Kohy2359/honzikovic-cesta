@@ -157,12 +157,22 @@
     .bio-intro-text { flex: 1; min-width: 0; }
     .bio-intro-photo {
       flex-shrink: 0; width: 340px;
+      position: relative; cursor: pointer;
     }
     .bio-intro-photo img {
       width: 100%; border-radius: 14px;
       display: block; object-fit: cover;
       box-shadow: 0 8px 24px rgba(0,0,0,.12);
+      transition: opacity .4s ease;
     }
+    .bio-intro-photo img.photo-alt {
+      position: absolute; inset: 0;
+      opacity: 0;
+    }
+    .bio-intro-photo:hover img.photo-main,
+    .bio-intro-photo.tapped img.photo-main { opacity: 0; }
+    .bio-intro-photo:hover img.photo-alt,
+    .bio-intro-photo.tapped img.photo-alt  { opacity: 1; }
     @media (max-width: 700px) {
       .bio-intro-wrap { flex-direction: column-reverse; }
       .bio-intro-photo { width: 100%; }
@@ -414,8 +424,9 @@
         „Život není o tom, jak je dlouhej, nýbrž o tom, jak je kvalitní."
       </p>
       </div><!-- bio-intro-text -->
-      <div class="bio-intro-photo">
-        <img src="fotky/ed1cc653-d13a-4582-a3cf-e113da6c50e3.JPG" alt="Honza Kohoutek — Domestici">
+      <div class="bio-intro-photo" ontouchstart="this.classList.toggle('tapped')">
+        <img class="photo-main" src="fotky/ed1cc653-d13a-4582-a3cf-e113da6c50e3.JPG" alt="Honza Kohoutek — Domestici">
+        <img class="photo-alt"  src="fotky/acb84889-e46a-4272-bc87-85eb113dbcd8.JPG" alt="Honza Kohoutek">
       </div>
       </div><!-- bio-intro-wrap -->
     </div>
