@@ -151,6 +151,23 @@
     }
     .bio-gallery-item:hover img { transform: scale(1.05); }
 
+    .bio-intro-wrap {
+      display: flex; gap: 3rem; align-items: flex-start; margin-top: 2.5rem;
+    }
+    .bio-intro-text { flex: 1; min-width: 0; }
+    .bio-intro-photo {
+      flex-shrink: 0; width: 260px;
+    }
+    .bio-intro-photo img {
+      width: 100%; border-radius: 14px;
+      display: block; object-fit: cover;
+      box-shadow: 0 8px 24px rgba(0,0,0,.12);
+    }
+    @media (max-width: 700px) {
+      .bio-intro-wrap { flex-direction: column-reverse; }
+      .bio-intro-photo { width: 100%; }
+    }
+
     .bio-cards {
       display: flex;
       flex-wrap: wrap;
@@ -379,6 +396,8 @@
           <p>Jsem Domestik. Podporuji myšlenku důstojného života. Ať je ve svém začátku, nebo se chýlí ke konci. Proto jedu, pro to žiju. Můžu dokud žiju. Žiju dokud můžu.</p>
         </div>
       </div>
+      <div class="bio-intro-wrap">
+      <div class="bio-intro-text">
       <p class="body-text">
         Jsem Honza. Milovník nevšednosti, dobrodruh, filozof amatér, zkušební technik parních turbín a teď už i cyklista. V roce 2025 jsem si po těžkém životním období koupil kolo a bez předchozího nadšení k cyklistice vyrazil na bikepackingovou tůru do Ázerbajdžánu. Za 93 dní jsem ujel 5 500 km. Po cestě jsem se potýkal s nástrahami okolního světa i těmi ve vlastní hlavě. <em>Cesta mi dala možnost dozvědět se o sobě možná i víc, než bych chtěl.</em> I díky tomu jsem se rozhodl dát výpověď v práci, která slibovala jistoty a finanční stabilitu. Chtěl jsem zjistit, zda mohu žít svůj autentický příběh, nikoli ten, který se ode mě očekává. Dovolit si plnit své sny, dokud to ještě jde.
       </p>
@@ -394,6 +413,11 @@
       <p style="margin-top: 1rem; font-family: 'Kohymaaa', cursive; font-size: 2.2rem; color: var(--night); max-width: 640px; line-height: 1.5;">
         „Život není o tom, jak je dlouhej, nýbrž o tom, jak je kvalitní."
       </p>
+      </div><!-- bio-intro-text -->
+      <div class="bio-intro-photo">
+        <img src="fotky/ed1cc653-d13a-4582-a3cf-e113da6c50e3.JPG" alt="Honza Kohoutek — Domestici">
+      </div>
+      </div><!-- bio-intro-wrap -->
     </div>
 
     <!-- ── Fotogalerie ── -->
